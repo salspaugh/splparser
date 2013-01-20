@@ -1,0 +1,4 @@
+- parse things like 24h and 30m correctly
+- lat long
+- boolean
+- money

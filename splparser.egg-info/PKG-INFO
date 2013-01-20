@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: splparser
+Version: 0.1.0
+Summary: A simple parser for the Splunk Processing Language which emits parse trees.
+Home-page: http://pypi.python.org/splparser
+Author: Sara Alspaugh
+Author-email: saraalspaugh@gmail.com
+License: BSD
+Description: This project provides a simple parser for the Splunk Processing Language (SPL) in Python.
+        It outputs parse trees of SPL queries.
+        It is not necessarily intended to be used as part of a compiler.
+        
+        It is currently in early stages of development.
+        
+        Contact:
+        Sara Alspaugh saraalspaugh@gmail.com
+        
+Keywords: Splunk Processing Language SPL parser
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Programming Language :: Other
+Classifier: Topic :: Software Development :: Compilers
+Classifier: License :: OSI Approved :: BSD License
+Requires: ply
