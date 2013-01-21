@@ -5,7 +5,7 @@ class SPLSyntaxError(SyntaxError):
         SyntaxError.__init__(self, message)
 
 # HACK: The class below is needed because PLY catches SyntaxErrors and attempts
-        to continue parsing. Use this when you want to force it to propagate errors. 
+#        to continue parsing. Use this when you want to force it to propagate errors. 
 class TerminatingSPLSyntaxError(Exception):
     
     def __init__(self, message, *args):
