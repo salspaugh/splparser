@@ -86,7 +86,7 @@ logging.basicConfig(
 log = logging.getLogger()
 
 def parse(data, ldebug=False, ldebuglog=log, pdebug=False, pdebuglog=log):
-    parser = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog)
+    parser = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog, tabmodule="head_parsetab")
     return parser.parse(data, debug=pdebuglog, lexer=lexer)
 
 if __name__ == "__main__":

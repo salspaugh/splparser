@@ -53,7 +53,7 @@ log = logging.getLogger()
 
 def parse(data, ldebug=False, ldebuglog=log, pdebug=False, pdebuglog=log):
     lexer = ply.lex.lex(debug=ldebug, debuglog=ldebuglog)
-    yp = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog)
+    yp = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog, tabmodule="toplevel_parsetab")
     parsetree = None
     try:
         parsetree = yp.parse(data, debug=pdebuglog, lexer=lexer)
