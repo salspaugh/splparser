@@ -2,3 +2,5 @@
 - lat long
 - boolean
 - money
+- clean up individual lexers and rules now that parsers are separate
+- elaborate on the TODO list so undergrads can take over
