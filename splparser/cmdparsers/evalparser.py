@@ -86,7 +86,7 @@ def p_opexpr_not(p):
     p[0].add_child(p[2])
 
 def p_opexpr_nonassociative_op(p):
-    """opexpr : value nonassociative_op value"""
+    """opexpr : opexpr nonassociative_op opexpr"""
     p[0] = p[2]
     p[0].add_children([p[1], p[3]])
 
