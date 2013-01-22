@@ -9,11 +9,9 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
-    #'WILDCARD',
     # TODO: considering eliminating some rules with 'COMPARISON',
     'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDES', 'MODULUS',
-    'COLON', 
     'LPAREN', 'RPAREN',
     'IPV4ADDR', 'IPV6ADDR',
     'WORD',
@@ -118,11 +116,6 @@ def t_PERIOD(t):
     r'\.'
     t.lexer.begin('ipunchecked')
     return t
-
-#@TOKEN(wildcard)
-#def t_WILDCARD(t):
-#    t.lexer.begin('ipunchecked')
-#    return t
 
 @TOKEN(plus)
 def t_PLUS(t):
