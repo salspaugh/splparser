@@ -12,6 +12,7 @@ from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.uminusrules import *
 from splparser.cmdparsers.common.valuerules import *
+from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.headlexer import lexer, precedence, tokens
 

@@ -22,10 +22,6 @@ def p_field_nbstr(p):
     """field : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
 
-def p_field_wildcard(p):
-    """field : WILDCARD"""
-    p[0] = ParseTreeNode('WILDCARD', raw=p[1])
-
 # TODO: Think about if other key values can be field names too ...
 # TODO: EVAL_FN can probably be field names too.
 #def p_field_stats_fn(p):

@@ -13,6 +13,7 @@ from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.statsfnrules import *
 from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
+from splparser.cmdparsers.common.wildcardrules import *
     
 from splparser.cmdparsers.renamelexer import lexer, tokens
 

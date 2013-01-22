@@ -9,10 +9,6 @@ def p_value_times(p):
 #    """value : email"""
 #    p[0] = p[1]
 
-def p_value_hostname(p):
-    """value : hostname"""
-    p[0] = p[1]
-
 #def p_value_url(p):
 #    """value : url"""
 #    p[0] = p[1]

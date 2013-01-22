@@ -9,6 +9,7 @@ from splparser.exceptions import SPLSyntaxError
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
 from splparser.cmdparsers.common.typerules import *
+from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.tablelexer import lexer, precedence, tokens
 

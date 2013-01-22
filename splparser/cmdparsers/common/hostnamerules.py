@@ -1,6 +1,10 @@
 
 from splparser.parsetree import *
 
+def p_value_hostname(p):
+    """value : hostname"""
+    p[0] = p[1]
+
 def p_hostname(p):
     """hostname : wordid PERIOD wordid
                 | wordid PERIOD id
