@@ -7,8 +7,6 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.hostnamerules import *
-from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.uminusrules import *
 from splparser.cmdparsers.common.valuerules import *
@@ -34,6 +32,14 @@ def p_evalexpr(p):
 
 def p_eqevalfnexpr(p):
     """eqevalfnexpr : EQ evalfnexpr"""
+    p[0] = p[2]
+
+def p_eqevalfnexpr_field(p):
+    """eqevalfnexpr : EQ field"""
+    p[0] = p[2]
+
+def p_eqevalfnexpr_opexpr(p):
+    """eqevalfnexpr : EQ opexpr"""
     p[0] = p[2]
 
 def p_evalfnexpr_evalfn(p):
@@ -86,7 +92,7 @@ def p_opexpr_nonassociative_op(p):
 
 def p_opexpr_minus(p):
     """opexpr : value MINUS value"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('MINUS')
     p[0].add_children([p[1], p[3]])
 
 #def p_nonassociative_op_minus(p):
@@ -95,7 +101,7 @@ def p_opexpr_minus(p):
 
 def p_nonassociative_op_divides(p):
     """nonassociative_op : DIVIDES"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('DIVIDE')
 
 def p_nonassociative_op_modulus(p):
     """nonassociative_op : MODULUS"""

@@ -4,12 +4,12 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.cmdparsers.searchregexes import *
+from splparser.cmdparsers.evalregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
-    'WILDCARD',
+    #'WILDCARD',
     # TODO: considering eliminating some rules with 'COMPARISON',
     'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDES', 'MODULUS',
@@ -119,10 +119,10 @@ def t_PERIOD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(wildcard)
-def t_WILDCARD(t):
-    t.lexer.begin('ipunchecked')
-    return t
+#@TOKEN(wildcard)
+#def t_WILDCARD(t):
+#    t.lexer.begin('ipunchecked')
+#    return t
 
 @TOKEN(plus)
 def t_PLUS(t):
