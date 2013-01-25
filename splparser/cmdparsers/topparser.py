@@ -38,7 +38,7 @@ def p_top_fieldlist_by(p):
 def p_top_topopt_fieldlist(p):
     """topcmd : TOP topoptlist fieldlist"""
     p[0] = ParseTreeNode('TOP')
-    p[0].add_child(p[2])
+    p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
 def p_top_topopt_fieldlist_by(p):
@@ -46,7 +46,7 @@ def p_top_topopt_fieldlist_by(p):
     by_node = ParseTreeNode('BY')
     by_node.add_children(p[5].children)
     p[0] = ParseTreeNode('TOP')
-    p[0].add_child(p[2])
+    p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
     p[0].add_child(by_node)
 
