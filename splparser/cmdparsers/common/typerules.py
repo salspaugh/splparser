@@ -28,6 +28,7 @@ def p_wordid_id(p):
     """wordid : ID"""
     p[0] = ParseTreeNode('ID', raw=p[1])
 
+
 # TODO: OBSOLETE? Now lexes to nbstr.
 #def p_timestamp(p):
 #    """timestamp : num SLASH num SLASH num COLON num COLON num COLON num
