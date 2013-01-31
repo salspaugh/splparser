@@ -1,6 +1,5 @@
 # Project Specific
-search_parsetab.py
-toplevel_parsetab.py
+*_parsetab.py
 *.log
 
 # Python cached files
