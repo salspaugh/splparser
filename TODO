@@ -1,6 +1,18 @@
-- parse things like 24h and 30m correctly
-- lat long
-- boolean
-- money
-- clean up individual lexers and rules now that parsers are separate
-- elaborate on the TODO list so undergrads can take over
+TODO
+====
+
+- (salspaugh) Add NotImplementedError to parser.
+- (salspaugh) Make a script to find unimplemented commands.
+- Implement the following commands:
+-- (richie) lookup
+-- (beidi) multikv
+-- (salspaugh) chart
+-- (salspaugh) timechart
+-- dedup
+-- bin
+-- fillnull
+-- rex
+- Implement ParseTreeNode for common Splunk time units like 24h and 30m.
+- Implement ParseTreeNode for latlong values.
+- Implement ParseTreeNode for boolean values. Update parsing rules where appropriate. 
+- Clean up individual lexers and regular expression files to remove code that is not being used.
