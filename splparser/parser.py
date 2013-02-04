@@ -6,7 +6,7 @@ import logging
 from splparser.parsetree import *
 from splparser.startlexer import *
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
-from splparser.cmdparsers.common.cmdrules import *
+from splparser.commandrules import *
 
 start = 'start'
 
@@ -57,9 +57,10 @@ def parse(data, ldebug=False, ldebuglog=log, pdebug=False, pdebuglog=log):
     parsetree = None
     try:
         parsetree = yp.parse(data, debug=pdebuglog, lexer=lexer)
-    except Exception as e:
-        print type(e), e
-        raise SPLSyntaxError("Caught error while parsing.")
+    except NotImplementedError:
+        raise
+    except Exception:
+        raise
     return parsetree
 
 if __name__ == "__main__":
