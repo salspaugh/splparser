@@ -4,6 +4,7 @@ import ply.yacc
 import logging
 
 from splparser.parsetree import *
+from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.asrules import *
 from splparser.cmdparsers.common.fieldrules import *

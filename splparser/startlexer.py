@@ -8,7 +8,7 @@ tokens = [
     'PIPE',
 #    'LBRACKET', TODO: Add support for subsearches anad macros.
 #    'RBRACKET',
-#    'TIC',
+    'MACRO',
     'ARGS'
     ]
 
@@ -149,7 +149,10 @@ t_ignore = ' '
 t_PIPE = r'\|'
 #t_LBRACKET = r'\['
 #t_RBRACKET = r'\]'
-#t_TIC = r'`'
+
+def t_MACRO(t):
+    r"""(`[^`]*`)"""
+    return t
 
 def t_ARGS(t):
     r"""(\'[^\']*\')|("[^"]*")|([^|\[\]`\s]+)"""
