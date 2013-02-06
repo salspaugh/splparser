@@ -1,17 +1,13 @@
 TODO
 ====
 
-- (salspaugh) Add NotImplementedError to parser.
-- (salspaugh) Make a script to find unimplemented commands.
+- <del>(salspaugh) Add NotImplementedError to parser.</del>
+- <del>(salspaugh) Make a script to find unimplemented commands.</del>
 - Implement the following commands:
 -- (richie) lookup
 -- (beidi) multikv
--- (salspaugh) chart
--- (salspaugh) timechart
--- dedup
--- bin
--- fillnull
--- rex
+- Implement macros.
+- Implement commands from command list. 
 - Implement ParseTreeNode for common Splunk time units like 24h and 30m.
 - Implement ParseTreeNode for latlong values.
 - Implement ParseTreeNode for boolean values. Update parsing rules where appropriate. 

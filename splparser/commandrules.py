@@ -1,47 +1,6 @@
 
 from splparser.decorators import *
 
-@splcommandrule
-def p_cmdexpr_eval(p):
-    """cmdexpr : EVAL arglist"""
-
-@splcommandrule
-def p_cmdexpr_fields(p):
-    """cmdexpr : FIELDS
-               | FIELDS arglist"""
-
-@splcommandrule
-def p_cmdexpr_head(p):
-    """cmdexpr : HEAD arglist"""
-
-@splcommandrule
-def p_cmdexpr_rename(p):
-    """cmdexpr : RENAME arglist"""
-
-@splcommandrule
-def p_cmdexpr_reverse(p):
-    """cmdexpr : REVERSE"""
-
-@splcommandrule
-def p_cmdexpr_search(p):
-    """cmdexpr : SEARCH arglist"""
-
-@splcommandrule
-def p_cmdexpr_stats(p):
-    """cmdexpr : STATS arglist"""
-
-@splcommandrule
-def p_cmdexpr_table(p):
-    """cmdexpr : TABLE arglist"""
-
-@splcommandrule
-def p_cmdexpr_tail(p):
-    """cmdexpr : TAIL arglist"""
-
-@splcommandrule
-def p_cmdexpr_top(p):
-    """cmdexpr : TOP arglist"""
-
 @notimplemented
 def p_cmdexpr_abstract(p):
     """cmdexpr : ABSTRACT arglist"""
@@ -162,6 +121,10 @@ def p_cmdexpr_diff(p):
 def p_cmdexpr_erex(p):
     """cmdexpr : EREX arglist"""
 
+@splcommandrule
+def p_cmdexpr_eval(p):
+    """cmdexpr : EVAL arglist"""
+
 @notimplemented
 def p_cmdexpr_eventcount(p):
     """cmdexpr : EVENTCOUNT arglist"""
@@ -178,6 +141,11 @@ def p_cmdexpr_extractkv(p):
 @notimplemented
 def p_cmdexpr_fieldformat(p):
     """cmdexpr : FIELDFORMAT arglist"""
+
+@splcommandrule
+def p_cmdexpr_fields(p):
+    """cmdexpr : FIELDS
+               | FIELDS arglist"""
 
 @notimplemented
 def p_cmdexpr_fieldsummary(p):
@@ -210,6 +178,10 @@ def p_cmdexpr_gauge(p):
 @notimplemented
 def p_cmdexpr_gentimes(p):
     """cmdexpr : GENTIMES arglist"""
+
+@splcommandrule
+def p_cmdexpr_head(p):
+    """cmdexpr : HEAD arglist"""
 
 @notimplemented
 def p_cmdexpr_highlight(p):
@@ -351,6 +323,10 @@ def p_cmdexpr_relevancy(p):
 def p_cmdexpr_reltime(p):
     """cmdexpr : RELTIME arglist"""
 
+@splcommandrule
+def p_cmdexpr_rename(p):
+    """cmdexpr : RENAME arglist"""
+
 @notimplemented
 def p_cmdexpr_replace(p):
     """cmdexpr : REPLACE arglist"""
@@ -362,6 +338,10 @@ def p_cmdexpr_rest(p):
 @notimplemented
 def p_cmdexpr_return(p):
     """cmdexpr : RETURN arglist"""
+
+@splcommandrule
+def p_cmdexpr_reverse(p):
+    """cmdexpr : REVERSE"""
 
 @notimplemented
 def p_cmdexpr_rex(p):
@@ -386,6 +366,10 @@ def p_cmdexpr_script(p):
 @notimplemented
 def p_cmdexpr_scrub(p):
     """cmdexpr : SCRUB arglist"""
+
+@splcommandrule
+def p_cmdexpr_search(p):
+    """cmdexpr : SEARCH arglist"""
 
 @notimplemented
 def p_cmdexpr_searchtxn(p):
@@ -435,6 +419,10 @@ def p_cmdexpr_sort(p):
 def p_cmdexpr_spath(p):
     """cmdexpr : SPATH arglist"""
 
+@splcommandrule
+def p_cmdexpr_stats(p):
+    """cmdexpr : STATS arglist"""
+
 @notimplemented
 def p_cmdexpr_strcat(p):
     """cmdexpr : STRCAT arglist"""
@@ -443,13 +431,25 @@ def p_cmdexpr_strcat(p):
 def p_cmdexpr_streamstats(p):
     """cmdexpr : STREAMSTATS arglist"""
 
+@splcommandrule
+def p_cmdexpr_table(p):
+    """cmdexpr : TABLE arglist"""
+
 @notimplemented
 def p_cmdexpr_tags(p):
     """cmdexpr : TAGS arglist"""
 
+@splcommandrule
+def p_cmdexpr_tail(p):
+    """cmdexpr : TAIL arglist"""
+
 @notimplemented
 def p_cmdexpr_timechart(p):
     """cmdexpr : TIMECHART arglist"""
+
+@splcommandrule
+def p_cmdexpr_top(p):
+    """cmdexpr : TOP arglist"""
 
 @notimplemented
 def p_cmdexpr_transaction(p):
