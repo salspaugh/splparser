@@ -1,0 +1,58 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> parsed = splparser.parser.parse("table CheckSum")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('TABLE')
+            ('WORD': 'CheckSum')
+
+>>> parsed = splparser.parser.parse("table AlertTime Name UserName category ThreatName action severity FullFilePath")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('TABLE')
+            ('WORD': 'AlertTime')
+            ('WORD': 'Name')
+            ('WORD': 'UserName')
+            ('WORD': 'category')
+            ('WORD': 'ThreatName')
+            ('WORD': 'action')
+            ('WORD': 'severity')
+            ('WORD': 'FullFilePath')
+
+>>> parsed = splparser.parser.parse("table dest_host dest_ip dest_domain os src_asset end_time")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('TABLE')
+            ('WORD': 'dest_host')
+            ('WORD': 'dest_ip')
+            ('WORD': 'dest_domain')
+            ('WORD': 'os')
+            ('WORD': 'src_asset')
+            ('WORD': 'end_time')
+
+>>> parsed = splparser.parser.parse("table TargetUrl, count, percent")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('TABLE')
+            ('WORD': 'TargetUrl')
+            ('WORD': 'count')
+            ('WORD': 'percent')
+
+>>> parsed = splparser.parser.parse("table _time,Host,st,hostrole,os")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('TABLE')
+            ('WORD': '_time')
+            ('WORD': 'Host')
+            ('WORD': 'st')
+            ('WORD': 'hostrole')
+            ('WORD': 'os')
+
