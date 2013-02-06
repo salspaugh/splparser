@@ -39,6 +39,10 @@ def p_arglist_arg(p):
     """arglist : arglist ARGS"""
     p[0] = ' '.join(p[1:])
 
+def p_arglist_macro(p):
+    """arglist : MACRO"""
+    p[0] = ParseTreeNode('MACRO', raw=p[1])
+
 def p_error(p):
     raise TerminatingSPLSyntaxError("Syntax error in top-level parser input!")
 
