@@ -35,7 +35,8 @@ TODO
 -- fieldformat
 -- replace
 - (salspaugh) Implement tests for existing untested commands.
-- Implement macros.
+- <del> (salspaugh) Implement macros. </del>
+- Make sure existing commands handle macros.
 - Implement ParseTreeNode for common Splunk time units like 24h and 30m.
 - Implement ParseTreeNode for latlong values.
 - Implement ParseTreeNode for boolean values. Update parsing rules where appropriate. 
