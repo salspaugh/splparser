@@ -6,6 +6,34 @@ TODO
 - Implement the following commands:
 -- (richie) lookup
 -- (beidi) multikv
+-- summaryindex
+-- rex
+-- timechart
+-- sort
+-- dedup
+-- where
+-- convert
+-- export
+-- sitimechart
+-- sistats
+-- chart
+-- fillnull
+-- collect
+-- rangemap
+-- join
+-- transaction
+-- inputlookup
+-- regex
+-- bucket
+-- append
+-- outputlookup
+-- delta
+-- strcat
+-- eventstats
+-- sitop
+-- mvexpand
+-- fieldformat
+-- replace
 - Implement macros.
 - Implement commands from command list. 
 - Implement ParseTreeNode for common Splunk time units like 24h and 30m.
