@@ -34,6 +34,7 @@ TODO
 -- mvexpand
 -- fieldformat
 -- replace
+- Implement tests for existing untested commands.
 - Implement macros.
 - Implement commands from command list. 
 - Implement ParseTreeNode for common Splunk time units like 24h and 30m.
