@@ -1,0 +1,33 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> parsed = splparser.parser.parse("head 20")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('HEAD')
+            ('INT': '20')
+
+>>> parsed = splparser.parser.parse("head limit=20")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('HEAD')
+            ('LIMIT')
+                ('INT': '20')
+
+>>> parsed = splparser.parser.parse("head -25")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('HEAD')
+            ('INT': '-25')
+
+>>> parsed = splparser.parser.parse("head 750000")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('HEAD')
+            ('INT': '750000')
