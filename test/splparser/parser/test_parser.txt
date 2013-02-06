@@ -1,0 +1,21 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> parsed = splparser.parser.parse("search eventtype=pageview | `makesessions`")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('SEARCH')
+            ('EQ')
+                ('EVENTTYPE')
+                ('WORD': 'pageview')
+    ('STAGE')
+        ('MACRO': '`makesessions`')
+
+>>> parsed = splparser.parser.parse("`pageviews_per_second(span=1h)`")
+>>> parsed.print_tree()
+('ROOT')
+    ('STAGE')
+        ('MACRO': '`pageviews_per_second(span=1h)`')
