@@ -263,9 +263,10 @@ def p_cmdexpr_localize(p):
 def p_cmdexpr_localop(p):
     """cmdexpr : LOCALOP arglist"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_lookup(p):
-    """cmdexpr : LOOKUP arglist"""
+    """cmdexpr : LOOKUP
+               | LOOKUP arglist"""
 
 @notimplemented
 def p_cmdexpr_makecontinuous(p):
