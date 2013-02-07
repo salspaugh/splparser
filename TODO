@@ -34,8 +34,9 @@ TODO
 -- mvexpand
 -- fieldformat
 -- replace
-- (salspaugh) Implement tests for existing untested commands.
-- <del> (salspaugh) Implement macros. </del>
+- (salspaugh) Clean up existing command regex situation.
+- <del>(salspaugh) Implement tests for existing untested commands.</del>
+- <del>(salspaugh) Implement macros.</del>
 - Make sure existing commands handle macros.
 - Implement ParseTreeNode for common Splunk time units like 24h and 30m.
 - Implement ParseTreeNode for latlong values.
