@@ -109,6 +109,11 @@ def t_MACRO(t):
     r"""(`[^`]*`)"""
     return t
 
+def t_COMMA(t):
+    r'''(?:\,)|(?:"\,")|(?:'\,')'''
+    t.lexer.begin('ipunchecked')
+    return t
+
 @TOKEN(ipv4_addr)
 def t_ipunchecked_IPV4ADDR(t):
     if is_ipv4addr(t.value):
