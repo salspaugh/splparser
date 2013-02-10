@@ -7,13 +7,13 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.hostnamerules import *
-from splparser.cmdparsers.common.idrules import *
+#from splparser.cmdparsers.common.hostnamerules import *
+#from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.keyrules import *
-from splparser.cmdparsers.common.typerules import *
-from splparser.cmdparsers.common.uminusrules import *
+#from splparser.cmdparsers.common.typerules import *
+#from splparser.cmdparsers.common.uminusrules import *
 from splparser.cmdparsers.common.valuerules import *
-from splparser.cmdparsers.common.wildcardrules import *
+#from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.searchlexer import lexer, precedence, tokens
 
@@ -28,9 +28,9 @@ def p_searchexpr_parentheses(p):
     """searchexpr : LPAREN searchexpr RPAREN"""
     p[0] = p[2]
     
-#def p_searchexpr_macro(p):
-#    """searchexpr : MACRO"""
-#    p[0] = ('MACRO', p[1])
+def p_searchexpr_macro(p):
+    """searchexpr : MACRO"""
+    p[0] = ('MACRO', p[1])
 
 #def p_searchexpr_subsearch(p):
 #    """searchexpr : subsearch"""
