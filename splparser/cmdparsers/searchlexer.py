@@ -9,6 +9,7 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
+    'MACRO',
     'WILDCARD',
     'EQ', 'LT', 'LE', 'GE', 'GT', 'NE',
     'PLUS', 'MINUS',
@@ -106,6 +107,10 @@ def type_if_reserved(t, default):
         return 'SEARCH_KEY'
     else:
         return reserved.get(t.value, default)
+
+def t_MACRO(t):
+    r"""(`[^`]*`)"""
+    return t
 
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''

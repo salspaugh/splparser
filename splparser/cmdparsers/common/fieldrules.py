@@ -1,6 +1,14 @@
 
 from splparser.parsetree import *
 
+def p_field_word(p):
+    """field : WORD"""
+    p[0] = ParseTreeNode('WORD', raw=p[1])
+
+def p_field_id(p):
+    """field : ID"""
+    p[0] = ParseTreeNode('ID', raw=p[1])
+
 def p_field_literal(p):
     """field : LITERAL"""
     p[0] = ParseTreeNode('LITERAL', raw=p[1])
@@ -9,9 +17,9 @@ def p_field_literal(p):
 #    """field : timestamp"""
 #    p[0] = p[1]
 
-def p_field_word(p):
-    """field : wordid"""
-    p[0] = p[1]
+#def p_field_word(p):
+#    """field : wordid"""
+#    p[0] = p[1]
 
 def p_field_email(p):
     """field : EMAIL"""
