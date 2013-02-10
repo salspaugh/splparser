@@ -11,12 +11,12 @@ tokens = [
     'COMMA', 'PERIOD',
     'EQ',
     'PLUS', 'MINUS',
+    'IPV4ADDR', 'IPV6ADDR',
     'WORD',
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'OUTPUT',
-    'OPTION',
     'UPDATE',
 ]
 
@@ -122,12 +122,6 @@ def t_FLOAT(t):
 @TOKEN(word)
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
-    return t
-
-@TOKEN(option)
-def t_OPTION(t):
-    print "asdfasdf"
-    t.type = type_if_reserved(t, 'OPTION')
     return t
 
 @TOKEN(int)

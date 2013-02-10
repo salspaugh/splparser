@@ -8,6 +8,8 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.delimiterrules import *
 from splparser.cmdparsers.common.typerules import *
+from splparser.cmdparsers.common.keyrules import *
+from splparser.cmdparsers.common.valuerules import *
 
 from splparser.cmdparsers.lookuplexer import lexer, tokens
 
@@ -23,14 +25,12 @@ def p_lookup_tablename(p):
     p[0].add_children(p[2])
 
 def p_lookup_options_tablename(p):
-    """lookupcmd :  LOOKUP OPTION table"""
+    """lookupcmd :  LOOKUP key EQ value table"""
     p[0] = ParseTreeNode('LOOKUP')
-    #opt = p[2].split("=")
-    opt = ["LOCAL", "asdf"]
-    option = ParseTreeNode(opt[0].upper())
-    boolean = ParseTreeNode('WORD', raw=opt[1])
+    option = ParseTreeNode(p[2].raw.upper())
+    boolean = p[4]
     option.add_child(boolean)
-    p[0].add_children([option] + p[3])
+    p[0].add_children([option] + p[5])
 
 def p_table_tablename(p):
     """table : tablename"""
