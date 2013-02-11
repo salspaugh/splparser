@@ -28,7 +28,7 @@ hex_no_end = r'-?0(?:x|X)[0-9a-fA-F*]+(?:\.[0-9a-fA-F*]+)?'
 hex = r'(?:' + hex_no_end + int_end_of_token + r')|(?:"\s*' + hex_no_end + r'\s*"' + int_end_of_token + r')' 
 
 #id = r'([a-zA-Z0-9_"*:-]+)+' + end_of_token
-id = r'([a-zA-Z0-9_"*:]+)+' + end_of_token
+id = r'([a-zA-Z0-9_"*:.]+)+' + end_of_token
 
 #nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s]+' + end_of_token
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
