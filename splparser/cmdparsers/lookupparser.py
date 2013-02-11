@@ -6,8 +6,6 @@ import logging
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.cmdparsers.common.delimiterrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.valuerules import *
 
@@ -40,6 +38,10 @@ def p_table_tablename_field(p):
     """table : tablename field"""
     p[0] = [p[1], p[2]]
 
+def p_table_tablename_field_output(p):
+    """table : tablename field out"""
+    p[0] = [p[1], p[2], p[3]]
+
 def p_tablename(p):
     """tablename : WORD"""
     p[0] = ParseTreeNode('WORD', raw=p[1])
@@ -56,26 +58,14 @@ def p_field_as(p):
     _as.add_child(ParseTreeNode('WORD', raw=p[3]))
     p[0].add_child(_as)
 
-#def p_optionlist(p):
-#    """optionlist : option"""
-#    p[0] = [p[1]]
-#
-#def p_optionlist_list(p):
-#    """optionlist : option optionlist"""
-#    p[0] = [p[1]] + p[2]
-#
-#def p_option_debug(p):
-#    """option : OPTION"""
-#    p[0] = [ParseTreeNode('LOCAL')]
-#
-#def p_option(p):
-#    """option : LOCAL EQ WORD"""
-#    p[0] = ParseTreeNode(p[1], raw=p[1])
-#    boolean = ParseTreeNode('WORD', raw=p[3])
-#    p[0].add_child(boolean)
+def p_out(p):
+    """out : OUTPUT field
+           | OUTPUTNEW field"""
+    p[0] = ParseTreeNode(p[1])
+    p[0].add_child(p[2])
 
 def p_error(p):
-    raise SPLSyntaxError("Syntax error in lookup parser input!") 
+    raise SPLSyntaxError("Syntax error in lookup parser input!")
 
 logging.basicConfig(
     level = logging.DEBUG,

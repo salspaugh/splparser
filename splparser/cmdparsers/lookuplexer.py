@@ -8,7 +8,6 @@ from splparser.cmdparsers.lookupregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
-    'COMMA', 'PERIOD',
     'EQ',
     'PLUS', 'MINUS',
     'IPV4ADDR', 'IPV6ADDR',
@@ -16,8 +15,7 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
-    'OUTPUT',
-    'UPDATE',
+    'OUTPUT', 'OUTPUTNEW',
 ]
 
 reserved = {
@@ -79,14 +77,6 @@ def type_if_reserved(t, default):
     else:
         return reserved.get(t.value, default)
 
-def t_COMMA(t):
-    r'''(?:\,)|(?:"\,")|(?:'\,')'''
-    return t
-
-def t_PERIOD(t):
-    r'\.'
-    return t
-
 @TOKEN(plus)
 def t_PLUS(t):
     return t
@@ -102,6 +92,14 @@ def t_SEARCH_KEY(t):
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
     return(t)
+
+def t_OUTPUT(t):
+    r'OUTPUT'
+    return t
+
+def t_OUTPUTNEW(t):
+    r'OUTPUTNEW'
+    return t
 
 @TOKEN(bin)
 def t_BIN(t):
