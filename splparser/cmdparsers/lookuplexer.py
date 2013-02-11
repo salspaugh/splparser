@@ -8,6 +8,7 @@ from splparser.cmdparsers.lookupregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
+    'COMMA', 'PERIOD',
     'EQ',
     'IPV4ADDR', 'IPV6ADDR',
     'WORD', 'ID',
@@ -39,14 +40,12 @@ t_EQ = r'='
 def type_if_reserved(t, default):
     return reserved.get(t.value, default)
 
-@TOKEN(word)
-def t_WORD(t):
-    t.type = type_if_reserved(t, 'WORD')
+def t_COMMA(t):
+    r'''(?:\,)|(?:"\,")|(?:'\,')'''
     return t
 
-@TOKEN(id)
-def t_ID(t):
-    t.type = type_if_reserved(t, 'ID')
+def t_PERIOD(t):
+    r'\.'
     return t
 
 @TOKEN(int)
@@ -79,6 +78,16 @@ def t_MINUS(t):
 
 def t_COLON(t):
     r':'
+    return t
+
+@TOKEN(word)
+def t_WORD(t):
+    t.type = type_if_reserved(t, 'WORD')
+    return t
+
+@TOKEN(id)
+def t_ID(t):
+    t.type = type_if_reserved(t, 'ID')
     return t
 
 def t_LITERAL(t):
