@@ -1,6 +1,7 @@
 # Project Specific
 *parsetab.py
 *.log
+parse.py
 
 # Python cached files
 *.py[cod]
