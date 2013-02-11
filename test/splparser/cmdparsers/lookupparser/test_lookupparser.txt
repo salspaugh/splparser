@@ -103,7 +103,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('OUTPUTNEW')
                 ('WORD': 'desc')
 
->>> splparser.parser.parse("lookup ip AS dst OUTPUT ip,hostname, loc1, loc2,loc3,sig").print_tree().print_tree()
+>>> splparser.parser.parse("lookup ip AS dst OUTPUT ip,hostname, loc1, loc2,loc3,sig").print_tree()
 ('ROOT')
     ('STAGE')
         ('LOOKUP')

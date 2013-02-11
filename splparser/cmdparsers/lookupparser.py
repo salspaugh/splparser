@@ -7,6 +7,7 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
+from splparser.cmdparsers.common.fieldlistrules import *
 from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.typerules import *
@@ -34,16 +35,14 @@ def p_lookup_options_tablename(p):
     p[0].add_children([option] + p[5])
 
 def p_table_tablename(p):
-    """table : field"""
-    p[0] = [p[1]]
-
-def p_table_tablename_field(p):
-    """table : field field"""
-    p[0] = [p[1], p[2]]
+    """table : fieldlist"""
+    p[0] = p[1].children
 
 def p_table_tablename_field_output(p):
-    """table : field field out"""
-    p[0] = [p[1], p[2], p[3]]
+    """table : fieldlist out"""
+    table = p[1].children
+    table.append(p[2])
+    p[0] = table
 
 def p_field_as(p):
     """field : field ASLC field
@@ -54,17 +53,17 @@ def p_field_as(p):
     p[0] = p[1]
 
 def p_out(p):
-    """out : OUTPUT field
-           | OUTPUTNEW field"""
+    """out : OUTPUT fieldlist
+           | OUTPUTNEW fieldlist"""
     p[0] = ParseTreeNode(p[1])
-    p[0].add_child(p[2])
+    p[0].add_children(p[2].children)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in lookup parser input!")
 
 logging.basicConfig(
     level = logging.DEBUG,
-    filename = "statsparser.log",
+    filename = "lookupparser.log",
     filemode = "w",
     format = "%(filename)10s:%(lineno)4d:%(message)s"
 )
