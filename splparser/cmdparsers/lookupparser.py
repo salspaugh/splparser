@@ -45,18 +45,18 @@ def p_table_tablename_field_output(p):
     p[0] = table
 
 def p_field_as(p):
-    """field : field ASLC field
-             | field ASUC field"""
+    """field : field ASLC fieldlist
+             | field ASUC fieldlist"""
     _as = ParseTreeNode('AS')
-    _as.add_child(p[3])
+    _as.add_children(p[3].children)
     p[1].add_child(_as)
     p[0] = p[1]
 
 def p_out(p):
-    """out : OUTPUT fieldlist
-           | OUTPUTNEW fieldlist"""
+    """out : OUTPUT field
+           | OUTPUTNEW field"""
     p[0] = ParseTreeNode(p[1])
-    p[0].add_children(p[2].children)
+    p[0].add_child(p[2])
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in lookup parser input!")
