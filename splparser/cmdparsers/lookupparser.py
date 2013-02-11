@@ -53,10 +53,10 @@ def p_field_as(p):
     p[0] = p[1]
 
 def p_out(p):
-    """out : OUTPUT field
-           | OUTPUTNEW field"""
+    """out : OUTPUT fieldlist
+           | OUTPUTNEW fieldlist"""
     p[0] = ParseTreeNode(p[1])
-    p[0].add_child(p[2])
+    p[0].add_children(p[2].children)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in lookup parser input!")
