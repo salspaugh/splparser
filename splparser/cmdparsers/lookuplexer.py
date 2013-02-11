@@ -9,12 +9,8 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'EQ',
-    'PLUS', 'MINUS',
     'IPV4ADDR', 'IPV6ADDR',
     'WORD',
-    'ID',
-    'NBSTR', # non-breaking string
-    'LITERAL', # in quotes
     'OUTPUT', 'OUTPUTNEW',
 ]
 
@@ -72,26 +68,7 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    if re.match(search_key, t.value):
-        return 'SEARCH_KEY'
-    else:
-        return reserved.get(t.value, default)
-
-@TOKEN(plus)
-def t_PLUS(t):
-    return t
-
-@TOKEN(minus)
-def t_MINUS(t):
-    return t
-
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
-    return(t)
-
-def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
-    return(t)
+    return reserved.get(t.value, default)
 
 def t_OUTPUT(t):
     r'OUTPUT'
@@ -101,39 +78,14 @@ def t_OUTPUTNEW(t):
     r'OUTPUTNEW'
     return t
 
-@TOKEN(bin)
-def t_BIN(t):
-    return t
-
-@TOKEN(oct)
-def t_OCT(t):
-    return t
-
-@TOKEN(hex)
-def t_HEX(t):
-    return t
-
-@TOKEN(float)
-def t_FLOAT(t):
-    return t
-
 @TOKEN(word)
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
     return t
 
-@TOKEN(int)
-def t_INT(t):
-    return t
-
 @TOKEN(id)
 def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
-    return t
-
-@TOKEN(nbstr)
-def t_NBSTR(t): # non-breaking string
-    t.type = type_if_reserved(t, 'NBSTR')
     return t
 
 def t_error(t):
