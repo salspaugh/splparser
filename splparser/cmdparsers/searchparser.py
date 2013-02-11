@@ -7,13 +7,9 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
-#from splparser.cmdparsers.common.hostnamerules import *
-#from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.keyrules import *
-#from splparser.cmdparsers.common.typerules import *
-#from splparser.cmdparsers.common.uminusrules import *
 from splparser.cmdparsers.common.valuerules import *
-#from splparser.cmdparsers.common.wildcardrules import *
+from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.searchlexer import lexer, precedence, tokens
 
@@ -111,13 +107,9 @@ def p_searchexpr_gt(p):
     p[0] = ParseTreeNode('GT')
     p[0].add_children([p[1], p[3]])    
 
-def p_key(p):
-    """key : SEARCH_KEY""" 
-    p[0] = ParseTreeNode(p[1].upper()) 
-
 def p_field_searchkey(p):
     """field : SEARCH_KEY"""
-    p[0] = ParseTreeNode('WORD', raw=p[1])
+    p[0] = ParseTreeNode(p[1].upper())
 
 def p_field_host(p):
     """field : HOST"""
