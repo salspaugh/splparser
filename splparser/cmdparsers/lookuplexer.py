@@ -10,7 +10,9 @@ from splparser.exceptions import SPLSyntaxError
 tokens = [
     'EQ',
     'IPV4ADDR', 'IPV6ADDR',
-    'WORD',
+    'WORD', 'ID',
+    'PLUS', 'MINUS',
+    'COLON',
 ]
 
 reserved = {
@@ -37,6 +39,26 @@ def type_if_reserved(t, default):
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
     return t
+
+@TOKEN(id)
+def t_ID(t):
+    t.type = type_if_reserved(t, 'ID')
+    return t
+
+@TOKEN(plus)
+def t_PLUS(t):
+    return t
+
+def t_COLON(t):
+    r':'
+    return t
+
+
+@TOKEN(minus)
+def t_MINUS(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
 
 def t_error(t):
     badchar = t.value[0]
