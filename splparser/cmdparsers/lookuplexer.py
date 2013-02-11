@@ -13,6 +13,10 @@ tokens = [
     'WORD', 'ID',
     'PLUS', 'MINUS',
     'COLON',
+    'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
+    'LITERAL',
+    'EMAIL',
+    'NBSTR'
 ]
 
 reserved = {
@@ -45,20 +49,51 @@ def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
     return t
 
+@TOKEN(int)
+def t_INT(t):
+    return t
+
+@TOKEN(bin)
+def t_BIN(t):
+    return t
+
+@TOKEN(oct)
+def t_OCT(t):
+    return t
+
+@TOKEN(hex)
+def t_HEX(t):
+    return t
+
+@TOKEN(float)
+def t_FLOAT(t):
+    return t
+
 @TOKEN(plus)
 def t_PLUS(t):
+    return t
+
+@TOKEN(minus)
+def t_MINUS(t):
     return t
 
 def t_COLON(t):
     r':'
     return t
 
+def t_LITERAL(t):
+    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
 
-@TOKEN(minus)
-def t_MINUS(t):
-    t.lexer.begin('ipunchecked')
+@TOKEN(email)
+def t_EMAIL(t):
+    t.type = type_if_reserved(t, 'EMAIL')
     return t
 
+@TOKEN(nbstr)
+def t_NBSTR(t): # non-breaking string
+    t.type = type_if_reserved(t, 'NBSTR')
+    return t
 
 def t_error(t):
     badchar = t.value[0]

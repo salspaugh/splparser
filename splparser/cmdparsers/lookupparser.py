@@ -6,8 +6,9 @@ import logging
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.cmdparsers.common.keyrules import *
+from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.idrules import *
+from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
 
@@ -33,50 +34,24 @@ def p_lookup_options_tablename(p):
     p[0].add_children([option] + p[5])
 
 def p_table_tablename(p):
-    """table : tablename"""
+    """table : field"""
     p[0] = [p[1]]
 
 def p_table_tablename_field(p):
-    """table : tablename field"""
+    """table : field field"""
     p[0] = [p[1], p[2]]
 
 def p_table_tablename_field_output(p):
-    """table : tablename field out"""
+    """table : field field out"""
     p[0] = [p[1], p[2], p[3]]
 
-def p_tablename(p):
-    """tablename : WORD"""
-    if '_' in p[1]:
-        token = 'ID'
-    else:
-        token = 'WORD'
-    p[0] = ParseTreeNode(token, raw=p[1])
-
-def p_field(p):
-    """field : WORD"""
-    if '_' in p[1]:
-        token = 'ID'
-    else:
-        token = 'WORD'
-    p[0] = ParseTreeNode(token, raw=p[1])
-
 def p_field_as(p):
-    """field : WORD ASLC WORD
-             | WORD ASUC WORD"""
-
-    if '_' in p[1]:
-        p[0] = ParseTreeNode('ID', raw=p[1])
-    else:
-        p[0] = ParseTreeNode('WORD', raw=p[1])
-
+    """field : field ASLC field
+             | field ASUC field"""
     _as = ParseTreeNode('AS')
-
-    if '_' in p[3]:
-        _as.add_child(ParseTreeNode('ID', raw=p[3]))
-    else:
-        _as.add_child(ParseTreeNode('WORD', raw=p[3]))
-
-    p[0].add_child(_as)
+    _as.add_child(p[3])
+    p[1].add_child(_as)
+    p[0] = p[1]
 
 def p_out(p):
     """out : OUTPUT field
