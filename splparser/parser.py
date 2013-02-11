@@ -31,12 +31,21 @@ def p_stage_cmdexpr(p):
     p[0] = ParseTreeNode('STAGE')
     p[0].add_child(p[1])
 
+def p_stage_macro(p):
+    """stage : MACRO"""
+    p[0] = ParseTreeNode('STAGE')
+    p[0].add_child(ParseTreeNode('MACRO', raw=p[1]))
+
 def p_arglist(p):
     """arglist : ARGS """
     p[0] = p[1]
 
 def p_arglist_arg(p):
     """arglist : arglist ARGS"""
+    p[0] = ' '.join(p[1:])
+
+def p_arglist_macro(p):
+    """arglist : MACRO"""
     p[0] = ' '.join(p[1:])
 
 def p_error(p):

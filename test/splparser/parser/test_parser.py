@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+
+import doctest
+doctest.testfile('test_parser.txt')
