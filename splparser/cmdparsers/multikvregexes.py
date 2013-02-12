@@ -28,7 +28,7 @@ common_fn = r'(?:max|min)' + end_of_token
 search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
 
 common_opt = r'(?:limit)' + end_of_token
-list_opt = r'(?:filter|FIELDS|fields)' +end_of_token
+multikv_list_opt = r'(?:filter|FIELDS|fields)' +end_of_token
 
 head_opt = r'(?:null|keeplast)' + end_of_token
 
@@ -36,7 +36,7 @@ top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useothe
 
 stats_opt = r'(?:allnum|delim)' + end_of_token
 
-multikv_opt = r'(?:copyattrs|fields|filter|maxnewresults|forceheader|multitable|noheader|rmorig)' +end_of_token
+multikv_single_opt = r'(?:copyattrs|fields|filter|maxnewresults|forceheader|multitable|noheader|rmorig)' +end_of_token
 
 port = r'\d{1,5}'
 slash = r'/\d\d?\d?'

@@ -3,7 +3,6 @@
 import ply.lex
 from ply.lex import TOKEN
 import re
-
 from splparser.cmdparsers.multikvregexes import *
 
 tokens = [
@@ -19,17 +18,12 @@ tokens = [
           'EMAIL',
           'NBSTR', # non-breaking string
           'LITERAL', # in quotes
-          'MULTIKV_OPT',
-          'LIST_OPT',
-          
-          
+          'MULTIKV_LIST_OPT',
+          'MULTIKV_SINGLE_OPT',
           ]
 
 reserved = {
-
     'conf' : 'CONF',
-
-    
     'multikv' : 'MULTIKV',
 }
 
@@ -84,11 +78,11 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    if re.match(list_opt, t.value):
-        return 'LIST_OPT'
+    if re.match(multikv_list_opt, t.value):
+        return 'MULTIKV_LIST_OPT'
 
-    elif re.match(multikv_opt, t.value):
-        return 'MULTIKV_OPT'
+    elif re.match(multikv_single_opt, t.value):
+        return 'MULTIKV_SINGLE_OPT'
     else:
         return reserved.get(t.value, default)
 
@@ -107,7 +101,6 @@ def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-
 @TOKEN(plus)
 def t_PLUS(t):
     t.lexer.begin('ipunchecked')
@@ -118,14 +111,13 @@ def t_MINUS(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(list_opt)
-def t_LIST_OPT(t):
+@TOKEN(multikv_list_opt)
+def t_MULTIKV_LIST_OPT(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
-
-@TOKEN(multikv_opt)
-def t_MULTIKV_OPT(t):
+@TOKEN(multikv_single_opt)
+def t_MULTIKV_SINGLE_OPT(t):
     t.lexer.begin('ipunchecked')
     return(t)
 

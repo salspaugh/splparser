@@ -262,7 +262,8 @@ def p_cmdexpr_metasearch(p):
 
 @splcommandrule
 def p_cmdexpr_multikv(p):
-    """cmdexpr : MULTIKV arglist"""
+    """cmdexpr : MULTIKV 
+               | MULTIKV arglist"""
 
 @notimplemented
 def p_cmdexpr_multisearch(p):

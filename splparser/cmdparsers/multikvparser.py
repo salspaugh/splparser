@@ -13,10 +13,7 @@ from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
 from splparser.cmdparsers.common.wildcardrules import *
 
-
 from splparser.cmdparsers.fieldslexer import lexer, precedence , tokens
-
-
 from splparser.cmdparsers.multikvlexer import lexer, tokens
 
 start = 'cmdexpr'
@@ -35,7 +32,6 @@ def p_multikv_multikvopt_fieldlist(p):
     p[0] = ParseTreeNode('MULTIKV')
     p[0].add_children(p[2].children)
 
-
 def p_conf_multikvoptlist(p):
     """multikvcmd : MULTIKV conf multikvoptlist"""
     p[0] = ParseTreeNode('MULTIKV')
@@ -44,7 +40,6 @@ def p_conf_multikvoptlist(p):
     
 def p_conf(p):
     """conf : CONF EQ value"""
-
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
@@ -53,36 +48,29 @@ def p_multikvoptlist(p):
     p[0] = ParseTreeNode('_MULTIKV_OPT_LIST')
     p[0].add_child(p[1])
 
-
-
 def p_multikvoptlist_multikvopt(p):
     """multikvoptlist : multikvopt multikvoptlist"""
     p[0] = ParseTreeNode('_MULTIKV_OPT_LIST')
     p[0].add_child(p[1])
     p[0].add_children(p[2].children) 
 
-
 def p_multikvopt(p):
-    """multikvopt : MULTIKV_OPT EQ value"""
+    """multikvopt : MULTIKV_SINGLE_OPT EQ value"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
 def p_multipkopt_listopt(p):
-    """multikvopt : LIST_OPT fieldlist"""
+    """multikvopt : MULTIKV_LIST_OPT fieldlist"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
 
 def p_multikvopt_equal(p):
-    """multikvopt : LIST_OPT EQ value"""
+    """multikvopt : MULTIKV_LIST_OPT EQ value"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
-    
-
-
-
 def p_error(p):
-    raise SPLSyntaxError("Syntax error in command parser input!") 
+    raise SPLSyntaxError("Syntax error in multikv parser input!") 
 
 logging.basicConfig(
     level = logging.DEBUG,
