@@ -48,7 +48,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('MAXNEWRESULTS')
                 ('INT': '50000')
 
->>> parsed = splparser.parser.parse("multikv FIELDS Filesystem Type Size Used Avail UsePct")
+>>> parsed = splparser.parser.parse("multikv FIELDS FileSystem Type Size Used Avail UsePct")
 >>> parsed.print_tree()
 ('ROOT')
     ('STAGE')
