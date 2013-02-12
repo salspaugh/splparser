@@ -37,7 +37,15 @@ def p_stage_macro(p):
     p[0].add_child(ParseTreeNode('MACRO', raw=p[1]))
 
 def p_arglist(p):
-    """arglist : ARGS """
+    """arglist : args """
+    p[0] = p[1]
+
+def p_args(p):
+    """args : ARGS"""
+    p[0] = p[1]
+
+def p_args_FIELDS(p):
+    """args : FIELDS"""
     p[0] = p[1]
 
 def p_arglist_arg(p):

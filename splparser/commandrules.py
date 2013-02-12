@@ -260,9 +260,10 @@ def p_cmdexpr_metadata(p):
 def p_cmdexpr_metasearch(p):
     """cmdexpr : METASEARCH arglist"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_multikv(p):
-    """cmdexpr : MULTIKV arglist"""
+    """cmdexpr : MULTIKV 
+               | MULTIKV arglist"""
 
 @notimplemented
 def p_cmdexpr_multisearch(p):
