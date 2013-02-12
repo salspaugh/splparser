@@ -1,9 +1,17 @@
 
 end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|$)'
 
-wildcard = r'\*' + end_of_token
+# ---------------- Command specific options: ----------------
+
+common_opt = r'(?:limit)' + end_of_token
+
+top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
 
 search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
+
+# ---------------- General argument types: ------------------
+
+wildcard = r'\*' + end_of_token
 
 port = r'\d{1,5}'
 slash = r'/\d\d?\d?'
