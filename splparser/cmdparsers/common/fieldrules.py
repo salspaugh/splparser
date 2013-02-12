@@ -13,28 +13,9 @@ def p_field_literal(p):
     """field : LITERAL"""
     p[0] = ParseTreeNode('LITERAL', raw=p[1])
 
-#def p_field_timestamp(p):
-#    """field : timestamp"""
-#    p[0] = p[1]
-
-#def p_field_word(p):
-#    """field : wordid"""
-#    p[0] = p[1]
-
-def p_field_email(p):
-    """field : EMAIL"""
-    p[0] = ParseTreeNode('EMAIL', raw=p[1])
-
-# TODO: Make sure keys can actually be nbstr or if they must be IDs.
 def p_field_nbstr(p):
     """field : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
-
-# TODO: Think about if other key values can be field names too ...
-# TODO: EVAL_FN can probably be field names too.
-#def p_field_stats_fn(p):
-#    """field : STATS_FN""" # HACK 
-#    p[0] = ParseTreeNode('WORD', raw=p[1])
 
 def p_field_num(p):
     """field : num"""
