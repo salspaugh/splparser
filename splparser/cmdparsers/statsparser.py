@@ -8,17 +8,10 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.asrules import *
 from splparser.cmdparsers.common.byrules import *
-from splparser.cmdparsers.common.delimiterrules import *
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.hostnamerules import *
-from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.statsfnrules import *
-from splparser.cmdparsers.common.typerules import *
-from splparser.cmdparsers.common.uminusrules import *
-from splparser.cmdparsers.common.valuerules import *
-from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.statslexer import lexer, precedence, tokens
 
@@ -30,6 +23,9 @@ start = 'cmdexpr'
 #           field : STATS_FN
 #       since nothing prevents fields from having the same name as command
 #       functions.
+# NOTE: Now that the parser has been refactored from the monolith model to
+#       a confederation of decentralized parsers model, the above is 
+#       probably no longer true.
 
 def p_cmdexpr_stats(p):
     """cmdexpr : statscmd"""
@@ -76,9 +72,10 @@ def p_statsopt_field(p):
     p[0].add_child(p[3])
 
 def p_statsopt_delimiter(p):
-    """statsopt : STATS_OPT EQ delimiter"""
+    """statsopt : STATS_OPT EQ COMMA"""
     p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_child(p[3])
+    comma_node = ParseTreeNode('COMMA')
+    p[0].add_child(comma_node)
 
 def p_statscmdstart_asbylist(p):
     """statscmdstart : STATS STATS_FN asbylist

@@ -1,6 +1,8 @@
 
 from splparser.parsetree import *
 
+from splparser.cmdparsers.common.uminusrules import *
+
 def p_simplevalue_times(p):
     """simplevalue : field"""
     p[0] = p[1]

@@ -1,6 +1,9 @@
 
 from splparser.parsetree import *
 
+from splparser.cmdparsers.common.evalfnexprrules import *
+from splparser.cmdparsers.common.simplevaluerules import *
+
 def p_statsfnexpr_field(p):
     """statsfnexpr : STATS_FN field
                    | COMMON_FN field
@@ -20,9 +23,9 @@ def p_statsfnexpr_parenfield(p):
     p[0].add_child(fn_node)
 
 def p_statsfnexpr_keqv(p):
-    """statsfnexpr : STATS_FN LPAREN key EQ value RPAREN
-                   | COMMON_FN LPAREN key EQ value RPAREN
-                   | EVAL LPAREN key EQ value RPAREN"""
+    """statsfnexpr : STATS_FN LPAREN key EQ simplevalue RPAREN
+                   | COMMON_FN LPAREN key EQ simplevalue RPAREN
+                   | EVAL LPAREN key EQ simplevalue RPAREN"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn_node = ParseTreeNode(p[1].upper())
     eq_node = ParseTreeNode('EQ')
@@ -48,9 +51,9 @@ def p_statsfnexpr_statsfnexpr(p):
     fn_node.add_children(p[2].children)
     p[0].add_child(fn_node)
 
-#def p_statsfnexpr_evalfnexpr(p):
-#    """statsfnexpr : evalfnexpr"""
-#    p[0] = p[1]
+def p_statsfnexpr_evalfnexpr(p):
+    """statsfnexpr : evalfnexpr"""
+    p[0] = p[1]
 
 def p_statsfnexpr_sparkline(p):
     """statsfnexpr : SPARKLINE statsfnexpr"""

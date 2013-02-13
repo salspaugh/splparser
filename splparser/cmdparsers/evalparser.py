@@ -8,7 +8,6 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.evalfnexprrules import *
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.uminusrules import *
 from splparser.cmdparsers.common.simplevaluerules import *
 
 from splparser.cmdparsers.evallexer import lexer, precedence, tokens
