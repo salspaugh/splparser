@@ -112,6 +112,8 @@ def type_if_reserved(t, default):
         return 'EVAL_FN'
     elif re.match(common_fn, t.value):
         return 'COMMON_FN'
+    elif re.match(stats_opt, t.value):
+        return 'STATS_OPT'
     else:
         return reserved.get(t.value, default)
 
