@@ -6,13 +6,10 @@ import logging
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
+from splparser.cmdparsers.common.evalfnexprrules import *
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.hostnamerules import *
-from splparser.cmdparsers.common.idrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.uminusrules import *
-from splparser.cmdparsers.common.valuerules import *
-from splparser.cmdparsers.common.wildcardrules import *
+from splparser.cmdparsers.common.simplevaluerules import *
 
 from splparser.cmdparsers.headlexer import lexer, precedence, tokens
 
@@ -31,10 +28,10 @@ def p_headcmd_head_int(p):
     p[0] = ParseTreeNode('HEAD')
     p[0].add_child(p[2])
 
-#def p_headcmd_head_eval(p):
-#    """headcmd : HEAD evalfnexpr"""
-#    p[0] = ParseTreeNode('HEAD')
-#    p[0].add_child(p[2])
+def p_headcmd_head_eval(p):
+    """headcmd : HEAD evalfnexpr"""
+    p[0] = ParseTreeNode('HEAD')
+    p[0].add_child(p[2])
 
 def p_headcmd_head_headopt(p):
     """headcmd : HEAD headoptlist"""
@@ -47,11 +44,11 @@ def p_headcmd_head_int_headopt(p):
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)
 
-#def p_headcmd_head_eval_headopt(p):
-#    """headcmd : HEAD evalfnexpr headoptlist"""
-#    p[0] = ParseTreeNode('HEAD')
-#    p[0].add_child(p[2])
-#    p[0].add_children(p[3].children)
+def p_headcmd_head_eval_headopt(p):
+    """headcmd : HEAD evalfnexpr headoptlist"""
+    p[0] = ParseTreeNode('HEAD')
+    p[0].add_child(p[2])
+    p[0].add_children(p[3].children)
 
 def p_headoptlist(p):
     """headoptlist : headopt"""
@@ -65,12 +62,12 @@ def p_headoptlist_headopt(p):
     p[0].add_children(p[2].children) 
 
 def p_headopt(p):
-    """headopt : HEAD_OPT EQ value"""
+    """headopt : HEAD_OPT EQ simplevalue"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
 def p_headopt_commonopt(p):
-    """headopt : COMMON_OPT EQ value"""
+    """headopt : COMMON_OPT EQ simplevalue"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
