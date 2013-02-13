@@ -1,37 +1,27 @@
 
 end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=:)|(?=/)|(?=\.)|(?=-)|(?=\*)|$)'
 
-#wildcard = r'\*' + end_of_token
-
-#plus = r'\+' + end_of_token
 plus = r'\+'
 
-#minus = r'-' + end_of_token
 minus = r'-'
 
-#times = r'\*' + end_of_token
 times = r'\*'
 
-#divides = r'\/' + end_of_token
 divides = r'\/'
 
 modulus = r'\%' + end_of_token
 
 stats_fn = r'(?:avg|c|count|dc|distinct_count|earliest|estdc|estdc_error|first|last|latest|list|mean|median|mode|per_day|per_hour|per_minute|per_second|range|stdev|stdevp|sumsq|values|var|varp)' + end_of_token 
 
+stats_opt = r'(?:allnum|delim)' + end_of_token
+
 eval_fn = r'(?:abs|case|ceil|ceiling|cidrmatch|coalesce|commands|exact|exp|floor|if|ifnull|isbool|isint|isnotnull|isnull|isnum|isstr|len|like|ln|log|lower|ltrim|match|md5|mvappend|mvcount|mvindex|mvfilter|mvjoin|mvrange|mvzip|now|null|nullif|pi|pow|random|relative_time|replace|round|rtrim|searchmatch|sigfig|spath|split|sqrt|strftime|strptime|substr|time|tonumber|tostring|trim|typeof|upper|urldecode|validate)' + end_of_token
 
 common_fn = r'(?:max|min|sum)' + end_of_token
 
-search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
-
 common_opt = r'(?:limit)' + end_of_token
 
 head_opt = r'(?:null|keeplast)' + end_of_token
-
-top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
-
-stats_opt = r'(?:allnum|delim)' + end_of_token
 
 port = r'\d{1,5}'
 slash = r'/\d\d?\d?'
@@ -71,15 +61,6 @@ oct = r'(?:' + oct_no_end + int_end_of_token + r')|(?:"\s*' + oct_no_end + r'\s*
 hex_no_end = r'-?0(?:x|X)[0-9a-fA-F*]+(?:\.[0-9a-fA-F*]+)?'
 hex = r'(?:' + hex_no_end + int_end_of_token + r')|(?:"\s*' + hex_no_end + r'\s*"' + int_end_of_token + r')' 
 
-#id = r'([a-zA-Z0-9_"*:-]+)+' + end_of_token
 id = r'([a-zA-Z0-9_:]+)+' + end_of_token
 
-#nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s]+' + end_of_token
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
-
-nbstr_sans_at = r'[^,|@()=!<>\[\]\s]+'
-email = nbstr_sans_at + r'@' + nbstr_sans_at + end_of_token
-
-
-# TODO: Add parser for money?
-# TODO: Add test cases for percents and longs.

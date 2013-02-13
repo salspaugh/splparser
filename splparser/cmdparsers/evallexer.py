@@ -9,7 +9,6 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
-    # TODO: considering eliminating some rules with 'COMPARISON',
     'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDES', 'MODULUS',
     'LPAREN', 'RPAREN',
@@ -17,7 +16,6 @@ tokens = [
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
     'ID',
-    'EMAIL',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'EVAL_FN',
@@ -206,12 +204,6 @@ def t_INT(t):
 @TOKEN(id)
 def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
-    t.lexer.begin('ipunchecked')
-    return t
-
-@TOKEN(email)
-def t_EMAIL(t):
-    t.type = type_if_reserved(t, 'EMAIL')
     t.lexer.begin('ipunchecked')
     return t
 

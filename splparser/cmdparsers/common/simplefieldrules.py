@@ -1,32 +1,24 @@
 
 from splparser.parsetree import *
 
-def p_field_word(p):
-    """field : WORD"""
+def p_simplefield_word(p):
+    """simplefield : WORD"""
     p[0] = ParseTreeNode('WORD', raw=p[1])
 
-def p_field_id(p):
-    """field : ID"""
+def p_simplefield_id(p):
+    """simplefield : ID"""
     p[0] = ParseTreeNode('ID', raw=p[1])
 
-def p_field_literal(p):
-    """field : LITERAL"""
+def p_simplefield_literal(p):
+    """simplefield : LITERAL"""
     p[0] = ParseTreeNode('LITERAL', raw=p[1])
 
-def p_field_hostname(p):
-    """field : HOSTNAME"""
-    p[0] = ParseTreeNode('HOSTNAME', raw=p[1])
-
-def p_field_nbstr(p):
-    """field : NBSTR"""
+def p_simplefield_nbstr(p):
+    """simplefield : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
 
-def p_field_wildcard(p):
-    """field : WILDCARD"""
-    p[0] = ParseTreeNode('WILDCARD', raw=p[1])
-
-def p_field_num(p):
-    """field : num"""
+def p_simplefield_num(p):
+    """simplefield : num"""
     p[0] = p[1]
 
 def p_num_bin(p):

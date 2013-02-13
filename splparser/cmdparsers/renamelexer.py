@@ -4,25 +4,23 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.cmdparsers.searchregexes import *
+from splparser.cmdparsers.evalregexes import *
+from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
-    'WILDCARD',
-    'EQ',
-    # TODO: considering eliminating some rules with 'COMPARISON',
-    'PLUS', 'MINUS', 
-    'COLON',
+    'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ',
+    'PLUS', 'MINUS', 'TIMES', 'DIVIDES', 'MODULUS',
     'LPAREN', 'RPAREN',
     'IPV4ADDR', 'IPV6ADDR',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
     'ID',
-    'EMAIL',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'EVAL_FN',
+    'COMMON_FN',
     'STATS_FN',
-    'COMMON_FN'
 ]
 
 reserved = {
@@ -30,6 +28,11 @@ reserved = {
     'sparkline' : 'SPARKLINE',
     'as' : 'ASLC',
     'AS' : 'ASUC',
+    'AND' : 'AND',
+    'OR' : 'OR',
+    'NOT' : 'NOT',
+    'XOR' : 'XOR',
+    'LIKE' : 'LIKE',
     'eval' : 'EVAL', 
 }
 
@@ -39,12 +42,19 @@ precedence = (
     ('left', 'COMMA'),
     ('right', 'EQ'),
     ('left', 'PLUS', 'MINUS'), 
+    ('left', 'TIMES', 'DIVIDES'), 
     ('right', 'UMINUS'),
 )
 
 t_ignore = ' '
 
 t_EQ = r'='
+t_LT = r'<'
+t_LE = r'<='
+t_GE = r'>='
+t_GT = r'>'
+t_NE = r'!='
+t_DEQ = r'=='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
@@ -95,6 +105,8 @@ def is_ipv6addr(addr):
 def type_if_reserved(t, default):
     if re.match(stats_fn, t.value):
         return 'STATS_FN'
+    elif re.match(eval_fn, t.value):
+        return 'EVAL_FN'
     elif re.match(common_fn, t.value):
         return 'COMMON_FN'
     else:
@@ -110,12 +122,6 @@ def t_PERIOD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(wildcard)
-def t_WILDCARD(t):
-    t.lexer.begin('ipunchecked')
-    return t
-
-
 @TOKEN(plus)
 def t_PLUS(t):
     t.lexer.begin('ipunchecked')
@@ -126,13 +132,28 @@ def t_MINUS(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(stats_fn)
-def t_STATS_FN(t):
+@TOKEN(times)
+def t_TIMES(t):
     t.lexer.begin('ipunchecked')
-    return(t)
+    return t
+
+@TOKEN(divides)
+def t_DIVIDES(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(modulus)
+def t_MODULUS(t):
+    t.lexer.begin('ipunchecked')
+    return t
 
 @TOKEN(common_fn)
 def t_COMMON_FN(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(eval_fn)
+def t_EVAL_FN(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
@@ -193,12 +214,6 @@ def t_ID(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(email)
-def t_EMAIL(t):
-    t.type = type_if_reserved(t, 'EMAIL')
-    t.lexer.begin('ipunchecked')
-    return t
-
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
     t.type = type_if_reserved(t, 'NBSTR')
@@ -210,15 +225,11 @@ def t_COLON(t):
     t.lexer.begin('ipunchecked')
     return t
 
-# TODO: FIXME: Doesn't print out incorrect token
 def t_error(t):
-    #print "Illegal character '%s'" % t.value[0]
-    #t.lexer.skip(1)
-    #t.lexer.begin('ipunchecked')
     badchar = t.value[0]
     t.lexer.skip(1)
     t.lexer.begin('ipunchecked')
-    raise SPLSyntaxError("Illegal character '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in eval lexer '%s'" % badchar)
 
 lexer = ply.lex.lex()
 

@@ -4,7 +4,7 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.cmdparsers.fieldsregexes import *
+from splparser.cmdparsers.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
@@ -13,8 +13,8 @@ tokens = [
     'PLUS', 'MINUS',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
+    'HOSTNAME', 
     'ID',
-    'EMAIL',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
 ]
@@ -56,6 +56,11 @@ def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
     return(t)
 
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
+    return(t)
+
 @TOKEN(bin)
 def t_BIN(t):
     return t
@@ -84,11 +89,6 @@ def t_INT(t):
 @TOKEN(id)
 def t_ID(t):
     t.type = reserved.get(t.value, 'ID')
-    return t
-
-@TOKEN(email)
-def t_EMAIL(t):
-    t.type = reserved.get(t.value, 'EMAIL')
     return t
 
 @TOKEN(nbstr)

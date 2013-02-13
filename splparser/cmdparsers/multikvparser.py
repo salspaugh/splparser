@@ -5,15 +5,11 @@ import logging
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.hostnamerules import *
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.idrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
 from splparser.cmdparsers.common.wildcardrules import *
 
-from splparser.cmdparsers.fieldslexer import lexer, precedence , tokens
 from splparser.cmdparsers.multikvlexer import lexer, tokens
 
 start = 'cmdexpr'

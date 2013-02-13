@@ -4,7 +4,7 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.cmdparsers.fieldsregexes import *
+from splparser.cmdparsers.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
@@ -12,8 +12,8 @@ tokens = [
     'WILDCARD',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
+    'HOSTNAME', 
     'ID',
-    'EMAIL',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
 ]
@@ -40,6 +40,11 @@ def t_WILDCARD(t):
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
+
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
     return(t)
 
 @TOKEN(bin)
@@ -72,11 +77,6 @@ def t_ID(t):
     t.type = reserved.get(t.value, 'ID')
     return t
 
-@TOKEN(email)
-def t_EMAIL(t):
-    t.type = reserved.get(t.value, 'EMAIL')
-    return t
-
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
     t.type = reserved.get(t.value, 'NBSTR')
@@ -85,7 +85,7 @@ def t_NBSTR(t): # non-breaking string
 def t_error(t):
     badchar = t.value[0]
     t.lexer.skip(1)
-    raise SPLSyntaxError("Illegal character in search lexer '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in table lexer '%s'" % badchar)
 
 lexer = ply.lex.lex()
 

@@ -1,28 +1,31 @@
 
 from splparser.parsetree import *
 
-def p_statsfnexpr_field(p):
-    """statsfnexpr : STATS_FN field
-                   | COMMON_FN field
-                   | EVAL field"""
+from splparser.cmdparsers.common.evalfnexprrules import *
+from splparser.cmdparsers.common.simplevaluerules import *
+
+def p_statsfnexpr_simplefield(p):
+    """statsfnexpr : STATS_FN simplefield
+                   | COMMON_FN simplefield
+                   | EVAL simplefield"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn_node = ParseTreeNode(p[1].upper())
     fn_node.add_child(p[2])
     p[0].add_child(fn_node)
 
-def p_statsfnexpr_parenfield(p):
-    """statsfnexpr : STATS_FN LPAREN field RPAREN
-                   | COMMON_FN LPAREN field RPAREN
-                   | EVAL LPAREN field RPAREN"""
+def p_statsfnexpr_parensimplefield(p):
+    """statsfnexpr : STATS_FN LPAREN simplefield RPAREN
+                   | COMMON_FN LPAREN simplefield RPAREN
+                   | EVAL LPAREN simplefield RPAREN"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn_node = ParseTreeNode(p[1].upper())
     fn_node.add_child(p[3])
     p[0].add_child(fn_node)
 
 def p_statsfnexpr_keqv(p):
-    """statsfnexpr : STATS_FN LPAREN key EQ value RPAREN
-                   | COMMON_FN LPAREN key EQ value RPAREN
-                   | EVAL LPAREN key EQ value RPAREN"""
+    """statsfnexpr : STATS_FN LPAREN simplefield EQ simplevalue RPAREN
+                   | COMMON_FN LPAREN simplefield EQ simplevalue RPAREN
+                   | EVAL LPAREN simplefield EQ simplevalue RPAREN"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn_node = ParseTreeNode(p[1].upper())
     eq_node = ParseTreeNode('EQ')
@@ -48,9 +51,9 @@ def p_statsfnexpr_statsfnexpr(p):
     fn_node.add_children(p[2].children)
     p[0].add_child(fn_node)
 
-#def p_statsfnexpr_evalfnexpr(p):
-#    """statsfnexpr : evalfnexpr"""
-#    p[0] = p[1]
+def p_statsfnexpr_evalfnexpr(p):
+    """statsfnexpr : evalfnexpr"""
+    p[0] = p[1]
 
 def p_statsfnexpr_sparkline(p):
     """statsfnexpr : SPARKLINE statsfnexpr"""
@@ -61,16 +64,16 @@ def p_statsfnexpr_sparkline(p):
 
 # NOTE: The documentation is ambiguous / wrong about the grammar of this command.
 def p_statsfnexpr_sparkline_paren(p):
-    """statsfnexpr : SPARKLINE LPAREN statsfnexpr COMMA field RPAREN"""
+    """statsfnexpr : SPARKLINE LPAREN statsfnexpr COMMA simplefield RPAREN"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     sp_node = ParseTreeNode('SPARKLINE')
     sp_node.add_children(p[3].children)
     sp_node.add_child(p[5])
     p[0].add_child(sp_node)
 
-# TODO: EVAL_FN can probably be field names too.
-def p_field_stats_fn(p):
-    """field : STATS_FN
+# TODO: EVAL_FN can probably be simplefield names too.
+def p_simplefield_stats_fn(p):
+    """simplefield : STATS_FN
              | COMMON_FN""" # HACK
     p[0] = ParseTreeNode('WORD', raw=p[1])
 

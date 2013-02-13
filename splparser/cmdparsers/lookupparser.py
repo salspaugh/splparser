@@ -8,10 +8,8 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.idrules import *
-from splparser.cmdparsers.common.keyrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
+from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.lookuplexer import lexer, tokens
 
@@ -27,7 +25,7 @@ def p_lookup_tablename(p):
     p[0].add_children(p[2])
 
 def p_lookup_options_tablename(p):
-    """lookupcmd :  LOOKUP key EQ value table"""
+    """lookupcmd :  LOOKUP field EQ value table"""
     p[0] = ParseTreeNode('LOOKUP')
     option = ParseTreeNode(p[2].raw.upper())
     boolean = p[4]

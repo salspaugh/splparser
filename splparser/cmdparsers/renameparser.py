@@ -7,16 +7,12 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.asrules import *
-from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.hostnamerules import *
-from splparser.cmdparsers.common.idrules import *
-from splparser.cmdparsers.common.keyrules import *
+from splparser.cmdparsers.common.simplefieldrules import *
+from splparser.cmdparsers.common.simplevaluerules import *
 from splparser.cmdparsers.common.statsfnrules import *
-from splparser.cmdparsers.common.typerules import *
-from splparser.cmdparsers.common.valuerules import *
-from splparser.cmdparsers.common.wildcardrules import *
+from splparser.cmdparsers.common.uminusrules import *
     
-from splparser.cmdparsers.renamelexer import lexer, tokens
+from splparser.cmdparsers.renamelexer import lexer, precedence, tokens
 
 start = 'cmdexpr'
 
@@ -41,14 +37,14 @@ def p_renameexprlist_renameexprlist(p):
     p[0].add_child(p[1])
     p[0].add_children(p[3].children)
 
-def p_renameexpr_field(p):
-    """renameexpr : field as value"""
+def p_renameexpr_simplefield(p):
+    """renameexpr : simplefield as simplevalue"""
     as_node = ParseTreeNode('AS')
     as_node.add_children([p[1], p[3]])
     p[0] = as_node
 
 def p_renameexpr_statsfnexpr(p):
-    """renameexpr : statsfnexpr as value"""
+    """renameexpr : statsfnexpr as simplevalue"""
     as_node = ParseTreeNode('AS')
     as_node.add_children(p[1].children)
     as_node.add_child(p[3])

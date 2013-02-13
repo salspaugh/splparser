@@ -1,39 +1,25 @@
 
-#end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=:)|(?=/)|$)'
-#end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|$)'
-end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=-)|$)'
+end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|$)'
 
-wildcard = r'\*' + end_of_token
-
-#plus = r'\+' + end_of_token
-plus = r'\+'
-
-#minus = r'-' + end_of_token
-minus = r'-'
-
-#times = r'\*' + end_of_token
-times = r'\*'
-
-#divides = r'\/' + end_of_token
-divides = r'\/'
-
-modulus = r'\%' + end_of_token
-
-stats_fn = r'(?:avg|c|count|dc|distinct_count|earliest|estdc|estdc_error|first|last|latest|list|mean|median|mode|per_day|per_hour|per_minute|per_second|range|stdev|stdevp|sum|sumsq|values|var|varp)' + end_of_token 
-
-eval_fn = r'(?:abs|case|ceil|ceiling|cidrmatch|coalesce|commands|exact|exp|floor|if|ifnull|isbool|isint|isnotnull|isnull|isnum|isstr|len|like|ln|log|lower|ltrim|match|md5|mvappend|mvcount|mvindex|mvfilter|mvjoin|mvrange|mvzip|now|null|nullif|pi|pow|random|relative_time|replace|round|rtrim|searchmatch|sigfig|spath|split|sqrt|strftime|strptime|substr|time|tonumber|tostring|trim|typeof|upper|urldecode|validate)' + end_of_token
-
-common_fn = r'(?:max|min)' + end_of_token
-
-search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
+# ---------------- Command specific options: ----------------
 
 common_opt = r'(?:limit)' + end_of_token
 
-head_opt = r'(?:null|keeplast)' + end_of_token
-
 top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
 
-stats_opt = r'(?:allnum|delim)' + end_of_token
+search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
+
+multikv_list_opt = r'(?:filter|FIELDS|fields)' + end_of_token
+
+multikv_single_opt = r'(?:copyattrs|fields|filter|maxnewresults|forceheader|multitable|noheader|rmorig)' + end_of_token
+
+plus = r'\+' + end_of_token
+
+minus = r'-' + end_of_token
+
+# ---------------- General argument types: ------------------
+
+wildcard = r'\*' + end_of_token
 
 port = r'\d{1,5}'
 slash = r'/\d\d?\d?'
@@ -49,7 +35,46 @@ ipv6_addr = r'(?:' + ipv6_addr_no_end + end_of_token + r')|(?:"\s*' + ipv6_addr_
 ipaddr_no_end = r'(?:(?:' + ipv4_addr_no_end + r')|(?:' + ipv6_addr_no_end + r'))'
 ipaddr = r'(?:' + ipv4_addr + r')|(?:' + ipv6_addr + r')'
 
-word_no_end = r'(?:[*]*[a-zA-Z_]+[*]*)'
+tld = r'[a-zA-Z]{1,255}'
+hostname_no_end = r'(?:(?:[a-zA-Z0-9\-*]+(?:\.[a-zA-Z0-9\-*]+)+)+\.?){1,255}(?::' + port + r')?'
+hostname = r'(?:' + hostname_no_end + end_of_token + r')|(?:"\s*' + hostname_no_end + r'\s*"' + end_of_token + r')' 
+
+valid_email_char = r"[a-zA-Z0-9!$%&*+\-/?^_`{|}~#']"
+email_local_simple = r'(?:(?:' + valid_email_char + r'\.' + valid_email_char + r')|' + valid_email_char + r'){1,64}'
+email_local_quoted = r'''"(?:[a-zA-Z0-9!#$%&\'*+\-/=?^_`{|}~. (),:;<>@\\\[\]]|\"){0,64}"'''
+email_domain_simple = r'(?:' + hostname_no_end + r'|' + tld + r')'
+email_domain_ip = r'(?:\[' + ipv4_addr_no_end + r'\]|\[' + ipv6_addr_no_end + '\])' 
+email_no_end = r'(?:(?:' + email_local_simple + r'@' + email_domain_simple + r')|' + \
+               r'(?:' + email_local_simple + r'@' + email_domain_ip + r')|' + \
+               r'(?:' + email_local_quoted + r'@' + email_domain_simple + r')|' + \
+               r'(?:' + email_local_quoted + r'@' + email_domain_ip + r'))'
+email = r'(?:' + email_no_end + end_of_token + r')|(?:"\s*' + email_no_end + r'\s*"' + end_of_token + r')' 
+
+us_phone_no_end = r'(?:(?:(?:1-)?\d{3}-\d{3}-\d{4})|(?:\(\d{3}\)\s*\d{3}-\d{4}))'
+us_phone = r'(?:' + us_phone_no_end + end_of_token + r')|(?:"\s*' + us_phone_no_end + r'\s*"' + end_of_token + r')' 
+
+# TODO: Enforce path restrictions. Had to remove length  restrictions because
+#       path was being matched instead of query string ...
+path_char_set = r"[a-zA-Z0-9_\-~!*'();:@&+$,?%#\[\].]"
+unix_abs_path = r'/' + path_char_set + r'*(?:/' + path_char_set + r'+)*/?'
+unix_rel_path = r'/?' + path_char_set + r'+(?:/' + path_char_set + r'+)+/?'
+windows_abs_path = r'[a-zA-Z]:\\' + path_char_set + r'*(?:\\' + path_char_set + r'+)*\\?'
+windows_rel_path = r'(?:(?:[a-zA-Z]:)?\\)?' + path_char_set + r'*(?:\\' + path_char_set + r'+)+\\?'
+path_no_end = r'(?:(?:' + unix_abs_path + r')|' + \
+              r'(?:' + unix_rel_path + r')|' + \
+              r'(?:' + windows_rel_path + r')|' + \
+              r'(?:' + windows_rel_path + r'))'
+path = r'(?:' + path_no_end + end_of_token + r')|(?:"\s*' + path_no_end + r'\s*"' + end_of_token + r')' 
+
+# TODO: Enforce query string and fragment ID restrictions.
+query_string = r'\?[a-zA-Z0-9_=&]+'
+fragment_id = r'\#[a-zA-Z0-9_]+'
+url_opt_scheme = r'(?:[a-zA-Z]+://)?(?:(?:' + hostname_no_end + r')|(?:' + ipaddr_no_end + r'))(?:' + path + r')?(?:' + query_string + r')?(?:' + fragment_id + r')?'
+url_req_scheme = r'[a-zA-Z]+://(?:(?:' + hostname_no_end + r')|[a-zA-Z0-9\-*]+|(?:' + ipaddr_no_end + r'))(?:' + path_no_end + r')?(?:' + query_string + r')?(?:' + fragment_id + r')?'
+url_no_end = r'(?:(?:' + url_opt_scheme + r')|(?:' + url_req_scheme + r'))'
+url = r'(?:' + url_no_end + end_of_token + r')|(?:"\s*' + url_no_end + r'\s*"' + end_of_token + r')' 
+
+word_no_end = r'(?:[*]*[a-zA-Z]+[*]*)'
 word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')' 
 
 int_end_of_token = r'(?:' + end_of_token + r'|%|L|l)' 
@@ -73,15 +98,9 @@ oct = r'(?:' + oct_no_end + int_end_of_token + r')|(?:"\s*' + oct_no_end + r'\s*
 hex_no_end = r'-?0(?:x|X)[0-9a-fA-F*]+(?:\.[0-9a-fA-F*]+)?'
 hex = r'(?:' + hex_no_end + int_end_of_token + r')|(?:"\s*' + hex_no_end + r'\s*"' + int_end_of_token + r')' 
 
-#id = r'([a-zA-Z0-9_"*:-]+)+' + end_of_token
-id = r'([a-zA-Z0-9_"*:]+)+' + end_of_token
+id = r'([a-zA-Z0-9_"*:-]+)+' + end_of_token
 
-#nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s]+' + end_of_token
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
 
 nbstr_sans_at = r'[^,|@()=!<>\[\]\s]+'
 email = nbstr_sans_at + r'@' + nbstr_sans_at + end_of_token
-
-
-# TODO: Add parser for money?
-# TODO: Add test cases for percents and longs.
