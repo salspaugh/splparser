@@ -8,10 +8,9 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.idrules import *
 from splparser.cmdparsers.common.keyrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
+from splparser.cmdparsers.common.wildcardrules import *
 
 from splparser.cmdparsers.lookuplexer import lexer, tokens
 

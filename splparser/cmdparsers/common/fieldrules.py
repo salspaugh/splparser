@@ -13,6 +13,10 @@ def p_field_literal(p):
     """field : LITERAL"""
     p[0] = ParseTreeNode('LITERAL', raw=p[1])
 
+def p_field_hostname(p):
+    """field : HOSTNAME"""
+    p[0] = ParseTreeNode('HOSTNAME', raw=p[1])
+
 def p_field_nbstr(p):
     """field : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
