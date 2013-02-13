@@ -6,11 +6,8 @@ import logging
 from splparser.parsetree import *
 
 from splparser.cmdparsers.common.byrules import *
-from splparser.cmdparsers.common.hostnamerules import *
 from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.idrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.valuerules import *
 from splparser.cmdparsers.common.wildcardrules import *
 
@@ -72,11 +69,11 @@ def p_topopt_commonopt(p):
     p[0].add_child(p[3])
 
 def p_error(p):
-    raise SPLSyntaxError("Syntax error in command parser input!") 
+    raise SPLSyntaxError("Syntax error in top parser input!") 
 
 logging.basicConfig(
     level = logging.DEBUG,
-    filename = "commandparser.log",
+    filename = "topparser.log",
     filemode = "w",
     format = "%(filename)10s:%(lineno)4d:%(message)s"
 )
