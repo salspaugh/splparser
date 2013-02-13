@@ -1,6 +1,8 @@
 
 from splparser.parsetree import *
 
+from splparser.cmdparsers.common.simplevaluerules import *
+
 def p_evalfnexpr_evalfn(p):
     """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
                   | COMMON_FN LPAREN oplist RPAREN"""
