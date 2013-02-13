@@ -9,6 +9,10 @@ top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useothe
 
 search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
 
+plus = r'\+' + end_of_token
+
+minus = r'-' + end_of_token
+
 # ---------------- General argument types: ------------------
 
 wildcard = r'\*' + end_of_token
