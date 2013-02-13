@@ -21,6 +21,10 @@ def p_field_nbstr(p):
     """field : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
 
+def p_field_wildcard(p):
+    """field : WILDCARD"""
+    p[0] = ParseTreeNode('WILDCARD', raw=p[1])
+
 def p_field_num(p):
     """field : num"""
     p[0] = p[1]

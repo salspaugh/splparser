@@ -7,7 +7,6 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.keyrules import *
 from splparser.cmdparsers.common.valuerules import *
 from splparser.cmdparsers.common.wildcardrules import *
 
@@ -71,43 +70,43 @@ def p_searchexpr_tag(p):
 #       the second '=' is included as a part of the value.
 
 def p_searchexpr_eq(p):
-    """searchexpr : key EQ value
-                  | key DCOLON value"""
+    """searchexpr : field EQ value
+                  | field DCOLON value"""
     p[0] = ParseTreeNode('EQ')
     p[0].add_children([p[1], p[3]])
 
 # TODO: eliminate numerical comparison rules with the following rule
 #def p_searchexpr_comparison(p):
-#    """searchexpr : key COMPARISON value"""
+#    """searchexpr : field COMPARISON value"""
 #    p[0] = ParseTreeNode(p[2].upper())
 #    p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_ne(p):
-    """searchexpr : key NE value"""
+    """searchexpr : field NE value"""
     p[0] = ParseTreeNode('NE')
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_lt(p):
-    """searchexpr : key LT value"""
+    """searchexpr : field LT value"""
     p[0] = ParseTreeNode('LT')
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_le(p):
-    """searchexpr : key LE value"""
+    """searchexpr : field LE value"""
     p[0] = ParseTreeNode('LE')
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_ge(p):
-    """searchexpr : key GE value"""
+    """searchexpr : field GE value"""
     p[0] = ParseTreeNode('GE')
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_gt(p):
-    """searchexpr : key GT value"""
+    """searchexpr : field GT value"""
     p[0] = ParseTreeNode('GT')
     p[0].add_children([p[1], p[3]])    
 
-def p_field_searchkey(p):
+def p_field_searchfield(p):
     """field : SEARCH_KEY"""
     p[0] = ParseTreeNode(p[1].upper())
 
