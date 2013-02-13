@@ -8,9 +8,8 @@ from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.asrules import *
 from splparser.cmdparsers.common.byrules import *
-from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.keyrules import *
+from splparser.cmdparsers.common.simplefieldrules import *
+from splparser.cmdparsers.common.simplefieldlistrules import *
 from splparser.cmdparsers.common.statsfnrules import *
 
 from splparser.cmdparsers.statslexer import lexer, precedence, tokens
@@ -20,8 +19,8 @@ start = 'cmdexpr'
 # NOTE: The strange structure of these rules is because we need to always
 #       associate STATS_FN with another token on the RHS of rules because
 #       otherwise we get a reduce/reduce conflict from the rule
-#           field : STATS_FN
-#       since nothing prevents fields from having the same name as command
+#           simplefield : STATS_FN
+#       since nothing prevents simplefields from having the same name as command
 #       functions.
 # NOTE: Now that the parser has been refactored from the monolith model to
 #       a confederation of decentralized parsers model, the above is 
@@ -66,8 +65,8 @@ def p_statsoptlist_statsopt(p):
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)
 
-def p_statsopt_field(p):
-    """statsopt : STATS_OPT EQ field"""
+def p_statsopt_simplefield(p):
+    """statsopt : STATS_OPT EQ simplefield"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
@@ -152,21 +151,21 @@ def p_statscmdcont_statsfnexpr_asbylist(p):
     p[0].children[0].add_children(p[3].children)
 
 def p_asbylist_as(p):
-    """asbylist : as field"""
+    """asbylist : as simplefield"""
     p[0] = ParseTreeNode('_ASBYLIST')
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[2])
 
 def p_asbylist_by(p):
-    """asbylist : by fieldlist"""
+    """asbylist : by simplefieldlist"""
     p[0] = ParseTreeNode('_ASBYLIST')
     by_node = ParseTreeNode('BY')
     p[0].add_child(by_node)
     by_node.add_children(p[2].children)
 
 def p_asbylist(p):
-    """asbylist : as field by fieldlist"""
+    """asbylist : as simplefield by simplefieldlist"""
     p[0] = ParseTreeNode('_ASBYLIST')
     as_node = ParseTreeNode('AS')
     by_node = ParseTreeNode('BY')

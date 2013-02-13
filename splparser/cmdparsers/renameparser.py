@@ -7,8 +7,7 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.asrules import *
-from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.keyrules import *
+from splparser.cmdparsers.common.simplefieldrules import *
 from splparser.cmdparsers.common.simplevaluerules import *
 from splparser.cmdparsers.common.statsfnrules import *
 from splparser.cmdparsers.common.uminusrules import *
@@ -38,8 +37,8 @@ def p_renameexprlist_renameexprlist(p):
     p[0].add_child(p[1])
     p[0].add_children(p[3].children)
 
-def p_renameexpr_field(p):
-    """renameexpr : field as simplevalue"""
+def p_renameexpr_simplefield(p):
+    """renameexpr : simplefield as simplevalue"""
     as_node = ParseTreeNode('AS')
     as_node.add_children([p[1], p[3]])
     p[0] = as_node

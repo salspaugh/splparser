@@ -3,24 +3,24 @@
 import ply.lex
 from ply.lex import TOKEN
 import re
-from splparser.cmdparsers.multikvregexes import *
+
+from splparser.cmdparsers.searchregexes import *
+from splparser.exceptions import SPLSyntaxError
 
 tokens = [
-          'COMMA', 'PERIOD',
-          'WILDCARD',
-          'EQ',
-          'PLUS', 'MINUS',
-          'COLON',
-          'IPV4ADDR', 'IPV6ADDR',
-          'WORD',
-          'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
-          'ID',
-          'EMAIL',
-          'NBSTR', # non-breaking string
-          'LITERAL', # in quotes
-          'MULTIKV_LIST_OPT',
-          'MULTIKV_SINGLE_OPT',
-          ]
+    'COMMA',
+    'WILDCARD',
+    'EQ',
+    'IPV4ADDR', 'IPV6ADDR',
+    'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
+    'WORD',
+    'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
+    'ID',
+    'NBSTR', # non-breaking string
+    'LITERAL', # in quotes
+    'MULTIKV_LIST_OPT',
+    'MULTIKV_SINGLE_OPT',
+]
 
 reserved = {
     'conf' : 'CONF',
@@ -33,12 +33,12 @@ t_ignore = ' '
 
 t_EQ = r'='
 
-# !!!   The order in which these functions are defined determine matchine. The
+# !!!   The order in which these functions are defined determine matchine. The 
 #       first to match is used. Take CARE when reordering.
 
 states = (
-          ('ipunchecked', 'inclusive'),
-          )
+    ('ipunchecked', 'inclusive'),
+)
 
 def is_ipv4addr(addr):
     addr = addr.replace('*', '0')
@@ -80,19 +80,33 @@ def is_ipv6addr(addr):
 def type_if_reserved(t, default):
     if re.match(multikv_list_opt, t.value):
         return 'MULTIKV_LIST_OPT'
-
     elif re.match(multikv_single_opt, t.value):
         return 'MULTIKV_SINGLE_OPT'
     else:
         return reserved.get(t.value, default)
 
-def t_COMMA(t):
-    r'''(?:\,)|(?:"\,")|(?:'\,')'''
-    t.lexer.begin('ipunchecked')
+def t_MACRO(t):
+    r"""(`[^`]*`)"""
     return t
 
-def t_PERIOD(t):
-    r'\.'
+@TOKEN(ipv4_addr)
+def t_ipunchecked_IPV4ADDR(t):
+    if is_ipv4addr(t.value):
+        return t
+    t.lexer.lexpos -= len(t.value)
+    t.lexer.begin('INITIAL')
+    return
+
+@TOKEN(ipv6_addr)
+def t_ipunchecked_IPV6ADDR(t):
+    if is_ipv6addr(t.value):
+        return t
+    t.lexer.lexpos -= len(t.value)
+    t.lexer.begin('INITIAL')
+    return
+
+def t_COMMA(t):
+    r'''(?:\,)|(?:"\,")|(?:'\,')'''
     t.lexer.begin('ipunchecked')
     return t
 
@@ -101,23 +115,8 @@ def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(plus)
-def t_PLUS(t):
-    t.lexer.begin('ipunchecked')
-    return t
-
-@TOKEN(minus)
-def t_MINUS(t):
-    t.lexer.begin('ipunchecked')
-    return t
-
-@TOKEN(multikv_list_opt)
-def t_MULTIKV_LIST_OPT(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
-
-@TOKEN(multikv_single_opt)
-def t_MULTIKV_SINGLE_OPT(t):
+@TOKEN(search_key)
+def t_SEARCH_KEY(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
@@ -145,22 +144,6 @@ def t_FLOAT(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(ipv4_addr)
-def t_ipunchecked_IPV4ADDR(t):
-    if is_ipv4addr(t.value):
-        return t
-    t.lexer.lexpos -= len(t.value)
-    t.lexer.begin('INITIAL')
-    return
-
-@TOKEN(ipv6_addr)
-def t_ipunchecked_IPV6ADDR(t):
-    if is_ipv6addr(t.value):
-        return t
-    t.lexer.lexpos -= len(t.value)
-    t.lexer.begin('INITIAL')
-    return
-
 @TOKEN(word)
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
@@ -184,26 +167,40 @@ def t_EMAIL(t):
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(path)
+def t_PATH(t):
+    t.type = type_if_reserved(t, 'PATH')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(url)
+def t_URL(t):
+    t.type = type_if_reserved(t, 'URL')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(us_phone)
+def t_US_PHONE(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
     t.type = type_if_reserved(t, 'NBSTR')
     t.lexer.begin('ipunchecked')
     return t
 
-def t_COLON(t):
-    r':'
-    t.lexer.begin('ipunchecked')
-    return t
-
-# TODO: FIXME: Doesn't print out incorrect token
 def t_error(t):
-    #print "Illegal character '%s'" % t.value[0]
-    #t.lexer.skip(1)
-    #t.lexer.begin('ipunchecked')
     badchar = t.value[0]
     t.lexer.skip(1)
     t.lexer.begin('ipunchecked')
-    raise SPLSyntaxError("Illegal character '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in search lexer '%s'" % badchar)
 
 lexer = ply.lex.lex()
 

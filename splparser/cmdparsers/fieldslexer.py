@@ -13,6 +13,7 @@ tokens = [
     'PLUS', 'MINUS',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
+    'HOSTNAME', 
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
@@ -53,6 +54,11 @@ def t_MINUS(t):
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
+
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
     return(t)
 
 @TOKEN(bin)

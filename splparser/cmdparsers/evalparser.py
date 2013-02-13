@@ -7,7 +7,7 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.evalfnexprrules import *
-from splparser.cmdparsers.common.fieldrules import *
+from splparser.cmdparsers.common.simplefieldrules import *
 from splparser.cmdparsers.common.simplevaluerules import *
 
 from splparser.cmdparsers.evallexer import lexer, precedence, tokens
@@ -24,7 +24,7 @@ def p_eval_evalexpr(p):
     p[0].add_child(p[2])
 
 def p_evalexpr(p):
-    """evalexpr : field eqevalfnexpr"""
+    """evalexpr : simplefield eqevalfnexpr"""
     p[0] = ParseTreeNode('EVALEXPR')
     p[0].add_child(p[1])
     p[0].add_child(p[2])
@@ -38,8 +38,8 @@ def p_eqevalfnexpr(p):
     """eqevalfnexpr : EQ evalfnexpr"""
     p[0] = p[2]
 
-def p_eqevalfnexpr_field(p):
-    """eqevalfnexpr : EQ field"""
+def p_eqevalfnexpr_simplefield(p):
+    """eqevalfnexpr : EQ simplefield"""
     p[0] = p[2]
 
 def p_eqevalfnexpr_opexpr(p):
