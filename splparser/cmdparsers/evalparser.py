@@ -7,9 +7,8 @@ from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.typerules import *
 from splparser.cmdparsers.common.uminusrules import *
-from splparser.cmdparsers.common.valuerules import *
+from splparser.cmdparsers.common.simplevaluerules import *
 
 from splparser.cmdparsers.evallexer import lexer, precedence, tokens
 
@@ -66,8 +65,8 @@ def p_opexpr_evalfnexpr(p):
     """opexpr : evalfnexpr"""
     p[0] = p[1]
 
-def p_opexpr_value(p):
-    """opexpr : value"""
+def p_opexpr_simplevalue(p):
+    """opexpr : simplevalue"""
     p[0] = p[1]
 
 def p_oplist_op(p):
@@ -91,7 +90,7 @@ def p_opexpr_nonassociative_op(p):
     p[0].add_children([p[1], p[3]])
 
 def p_opexpr_minus(p):
-    """opexpr : value MINUS value"""
+    """opexpr : simplevalue MINUS simplevalue"""
     p[0] = ParseTreeNode('MINUS')
     p[0].add_children([p[1], p[3]])
 
