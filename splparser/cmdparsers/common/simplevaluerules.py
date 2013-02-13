@@ -4,7 +4,7 @@ from splparser.parsetree import *
 from splparser.cmdparsers.common.uminusrules import *
 
 def p_simplevalue_times(p):
-    """simplevalue : field"""
+    """simplevalue : simplefield"""
     p[0] = p[1]
 
 def p_simplevalue_ipv6addr(p):
