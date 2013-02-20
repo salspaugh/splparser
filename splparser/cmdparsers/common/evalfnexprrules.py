@@ -3,6 +3,11 @@ from splparser.parsetree import *
 
 from splparser.cmdparsers.common.simplevaluerules import *
 
+def p_evalfnexpr_empty(p):
+    """evalfnexpr : EVAL_FN LPAREN RPAREN 
+                  | COMMON_FN LPAREN RPAREN"""
+    p[0] = ParseTreeNode(p[1].upper())
+
 def p_evalfnexpr_evalfn(p):
     """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
                   | COMMON_FN LPAREN oplist RPAREN"""
@@ -16,7 +21,10 @@ def p_oplist_parens(p):
 def p_oplist(p):
     """oplist : opexpr"""
     p[0] = ParseTreeNode('_OPERATORLSIT')
-    p[0].add_child(p[1])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
 
 def p_opexpr_evalfnexpr(p):
     """opexpr : evalfnexpr"""
@@ -29,7 +37,10 @@ def p_opexpr_simplevalue(p):
 def p_oplist_op(p):
     """oplist : opexpr COMMA oplist"""
     p[0] = ParseTreeNode('_OPERATORLIST')
-    p[0].add_child(p[1])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
     p[0].add_children(p[3].children)
 
 def p_opexpr_binary_parens(p):
@@ -44,7 +55,14 @@ def p_opexpr_not(p):
 def p_opexpr_nonassociative_op(p):
     """opexpr : opexpr nonassociative_op opexpr"""
     p[0] = p[2]
-    p[0].add_children([p[1], p[3]])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
 
 def p_opexpr_minus(p):
     """opexpr : simplevalue MINUS simplevalue"""
@@ -108,17 +126,38 @@ def p_nonassociative_op_deq(p):
 def p_opexpr_concat(p):
     """opexpr : opexpr PERIOD opexpr"""
     p[0] = ParseTreeNode('CONCAT', associative=True)
-    p[0].add_children([p[1], p[3]])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
 
 def p_opexpr_associative_op(p):
     """opexpr : opexpr associative_op opexpr"""
     p[0] = p[2]
-    p[0].add_children([p[1], p[3]])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
 
 def p_opexpr_plus(p):
     """opexpr : opexpr PLUS opexpr"""
     p[0] = ParseTreeNode('PLUS', associative=True)
-    p[0].add_children([p[1], p[3]])
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
 
 #def p_associative_op_plus(p):
 #    """associative_op : PLUS"""

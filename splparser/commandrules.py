@@ -3,343 +3,428 @@ from splparser.decorators import *
 
 @notimplemented
 def p_cmdexpr_abstract(p):
-    """cmdexpr : ABSTRACT arglist"""
+    """cmdexpr : ABSTRACT arglist
+               | ABSTRACT MACRO"""
 
 @notimplemented
 def p_cmdexpr_accum(p):
-    """cmdexpr : ACCUM arglist"""
+    """cmdexpr : ACCUM arglist
+               | ACCUM MACRO"""
 
 @notimplemented
 def p_cmdexpr_addcoltotals(p):
-    """cmdexpr : ADDCOLTOTALS arglist"""
+    """cmdexpr : ADDCOLTOTALS arglist
+               | ADDCOLTOTALS MACRO"""
 
 @notimplemented
 def p_cmdexpr_addinfo(p):
-    """cmdexpr : ADDINFO arglist"""
+    """cmdexpr : ADDINFO arglist
+               | ADDINFO MACRO"""
 
 @notimplemented
 def p_cmdexpr_addtotals(p):
-    """cmdexpr : ADDTOTALS arglist"""
+    """cmdexpr : ADDTOTALS arglist
+               | ADDTOTALS MACRO"""
 
 @notimplemented
 def p_cmdexpr_analyzefields(p):
-    """cmdexpr : ANALYZEFIELDS arglist"""
+    """cmdexpr : ANALYZEFIELDS arglist
+               | ANALYZEFIELDS MACRO"""
 
 @notimplemented
 def p_cmdexpr_anomalies(p):
-    """cmdexpr : ANOMALIES arglist"""
+    """cmdexpr : ANOMALIES arglist
+               | ANOMALIES MACRO"""
 
 @notimplemented
 def p_cmdexpr_anomalousvalue(p):
-    """cmdexpr : ANOMALOUSVALUE arglist"""
+    """cmdexpr : ANOMALOUSVALUE arglist
+               | ANOMALOUSVALUE MACRO"""
 
 @notimplemented
 def p_cmdexpr_append(p):
-    """cmdexpr : APPEND arglist"""
+    """cmdexpr : APPEND arglist
+               | APPEND MACRO"""
 
 @notimplemented
 def p_cmdexpr_appendcols(p):
-    """cmdexpr : APPENDCOLS arglist"""
+    """cmdexpr : APPENDCOLS arglist
+               | APPENDCOLS MACRO"""
 
 @notimplemented
 def p_cmdexpr_appendpipe(p):
-    """cmdexpr : APPENDPIPE arglist"""
+    """cmdexpr : APPENDPIPE arglist
+               | APPENDPIPE MACRO"""
 
 @notimplemented
 def p_cmdexpr_associate(p):
-    """cmdexpr : ASSOCIATE arglist"""
+    """cmdexpr : ASSOCIATE arglist
+               | ASSOCIATE MACRO"""
 
 @notimplemented
 def p_cmdexpr_audit(p):
-    """cmdexpr : AUDIT arglist"""
+    """cmdexpr : AUDIT arglist
+               | AUDIT MACRO"""
 
 @notimplemented
 def p_cmdexpr_autoregress(p):
-    """cmdexpr : AUTOREGRESS arglist"""
+    """cmdexpr : AUTOREGRESS arglist
+               | AUTOREGRESS MACRO"""
 
 @notimplemented
 def p_cmdexpr_bucket(p):
-    """cmdexpr : BUCKET arglist"""
+    """cmdexpr : BUCKET arglist
+               | BUCKET MACRO"""
 
 @notimplemented
 def p_cmdexpr_bucketdir(p):
-    """cmdexpr : BUCKETDIR arglist"""
+    """cmdexpr : BUCKETDIR arglist
+               | BUCKETDIR MACRO"""
 
 @notimplemented
 def p_cmdexpr_chart(p):
-    """cmdexpr : CHART arglist"""
+    """cmdexpr : CHART arglist
+               | CHART MACRO"""
 
 @notimplemented
 def p_cmdexpr_cluster(p):
-    """cmdexpr : CLUSTER arglist"""
+    """cmdexpr : CLUSTER arglist
+               | CLUSTER MACRO"""
 
 @notimplemented
 def p_cmdexpr_collect(p):
-    """cmdexpr : COLLECT arglist"""
+    """cmdexpr : COLLECT arglist
+               | COLLECT MACRO"""
 
 @notimplemented
 def p_cmdexpr_concurrency(p):
-    """cmdexpr : CONCURRENCY arglist"""
+    """cmdexpr : CONCURRENCY arglist
+               | CONCURRENCY MACRO"""
 
 @notimplemented
 def p_cmdexpr_contingency(p):
-    """cmdexpr : CONTINGENCY arglist"""
+    """cmdexpr : CONTINGENCY arglist
+               | CONTINGENCY MACRO"""
 
 @notimplemented
 def p_cmdexpr_convert(p):
-    """cmdexpr : CONVERT arglist"""
+    """cmdexpr : CONVERT arglist
+               | CONVERT MACRO"""
 
 @notimplemented
 def p_cmdexpr_correlate(p):
-    """cmdexpr : CORRELATE arglist"""
+    """cmdexpr : CORRELATE arglist
+               | CORRELATE MACRO"""
 
 @notimplemented
 def p_cmdexpr_crawl(p):
-    """cmdexpr : CRAWL arglist"""
+    """cmdexpr : CRAWL arglist
+               | CRAWL MACRO"""
 
 @notimplemented
 def p_cmdexpr_dbinspect(p):
-    """cmdexpr : DBINSPECT arglist"""
+    """cmdexpr : DBINSPECT arglist
+               | DBINSPECT MACRO"""
 
 @notimplemented
 def p_cmdexpr_dedup(p):
-    """cmdexpr : DEDUP arglist"""
+    """cmdexpr : DEDUP arglist
+               | DEDUP MACRO"""
 
 @notimplemented
 def p_cmdexpr_delete(p):
-    """cmdexpr : DELETE arglist"""
+    """cmdexpr : DELETE arglist
+               | DELETE MACRO"""
 
 @notimplemented
 def p_cmdexpr_delta(p):
-    """cmdexpr : DELTA arglist"""
+    """cmdexpr : DELTA arglist
+               | DELTA MACRO"""
 
 @notimplemented
 def p_cmdexpr_diff(p):
-    """cmdexpr : DIFF arglist"""
+    """cmdexpr : DIFF arglist
+               | DIFF MACRO"""
 
 @notimplemented
 def p_cmdexpr_erex(p):
-    """cmdexpr : EREX arglist"""
+    """cmdexpr : EREX arglist
+               | EREX MACRO"""
 
 @splcommandrule
 def p_cmdexpr_eval(p):
-    """cmdexpr : EVAL arglist"""
+    """cmdexpr : EVAL arglist
+               | EVAL MACRO"""
 
 @notimplemented
 def p_cmdexpr_eventcount(p):
-    """cmdexpr : EVENTCOUNT arglist"""
+    """cmdexpr : EVENTCOUNT arglist
+               | EVENTCOUNT MACRO"""
 
 @notimplemented
 def p_cmdexpr_eventstats(p):
-    """cmdexpr : EVENTSTATS arglist"""
+    """cmdexpr : EVENTSTATS arglist
+               | EVENTSTATS MACRO"""
 
 @notimplemented
 def p_cmdexpr_extractkv(p):
     """cmdexpr : EXTRACT arglist
-               | KV arglist"""
+               | KV arglist
+               | EXTRACT MACRO
+               | KV MACRO"""
 
 @notimplemented
 def p_cmdexpr_fieldformat(p):
-    """cmdexpr : FIELDFORMAT arglist"""
+    """cmdexpr : FIELDFORMAT arglist
+               | FIELDFORMAT MACRO"""
 
 @splcommandrule
 def p_cmdexpr_fields(p):
     """cmdexpr : FIELDS
-               | FIELDS arglist"""
+               | FIELDS arglist
+               | FIELDS MACRO"""
 
 @notimplemented
 def p_cmdexpr_fieldsummary(p):
-    """cmdexpr : FIELDSUMMARY arglist"""
+    """cmdexpr : FIELDSUMMARY arglist
+               | FIELDSUMMARY MACRO"""
 
 @notimplemented
 def p_cmdexpr_filldown(p):
-    """cmdexpr : FILLDOWN arglist"""
+    """cmdexpr : FILLDOWN arglist
+               | FILLDOWN MACRO"""
 
 @notimplemented
 def p_cmdexpr_fillnull(p):
-    """cmdexpr : FILLNULL arglist"""
+    """cmdexpr : FILLNULL arglist
+               | FILLNULL MACRO"""
 
 @notimplemented
 def p_cmdexpr_findtypes(p):
-    """cmdexpr : FINDTYPES arglist"""
+    """cmdexpr : FINDTYPES arglist
+               | FINDTYPES MACRO"""
 
 @notimplemented
 def p_cmdexpr_folderize(p):
-    """cmdexpr : FOLDERIZE arglist"""
+    """cmdexpr : FOLDERIZE arglist
+               | FOLDERIZE MACRO"""
 
 @notimplemented
 def p_cmdexpr_format(p):
-    """cmdexpr : FORMAT arglist"""
+    """cmdexpr : FORMAT arglist
+               | FORMAT MACRO"""
 
 @notimplemented
 def p_cmdexpr_gauge(p):
-    """cmdexpr : GAUGE arglist"""
+    """cmdexpr : GAUGE arglist
+               | GAUGE MACRO"""
 
 @notimplemented
 def p_cmdexpr_gentimes(p):
-    """cmdexpr : GENTIMES arglist"""
+    """cmdexpr : GENTIMES arglist
+               | GENTIMES MACRO"""
 
 @splcommandrule
 def p_cmdexpr_head(p):
-    """cmdexpr : HEAD arglist"""
+    """cmdexpr : HEAD arglist
+               | HEAD MACRO"""
 
 @notimplemented
 def p_cmdexpr_highlight(p):
-    """cmdexpr : HIGHLIGHT arglist"""
+    """cmdexpr : HIGHLIGHT arglist
+               | HIGHLIGHT MACRO"""
 
 @notimplemented
 def p_cmdexpr_history(p):
-    """cmdexpr : HISTORY arglist"""
+    """cmdexpr : HISTORY arglist
+               | HISTORY MACRO"""
 
 @notimplemented
 def p_cmdexpr_iconify(p):
-    """cmdexpr : ICONIFY arglist"""
+    """cmdexpr : ICONIFY arglist
+               | ICONIFY MACRO"""
 
 @notimplemented
 def p_cmdexpr_input(p):
-    """cmdexpr : INPUT arglist"""
+    """cmdexpr : INPUT arglist
+               | INPUT MACRO"""
 
 @notimplemented
 def p_cmdexpr_inputcsv(p):
-    """cmdexpr : INPUTCSV arglist"""
+    """cmdexpr : INPUTCSV arglist
+               | INPUTCSV MACRO"""
 
 @notimplemented
 def p_cmdexpr_inputlookup(p):
-    """cmdexpr : INPUTLOOKUP arglist"""
+    """cmdexpr : INPUTLOOKUP arglist
+               | INPUTLOOKUP MACRO"""
 
 @notimplemented
 def p_cmdexpr_iplocation(p):
-    """cmdexpr : IPLOCATION arglist"""
+    """cmdexpr : IPLOCATION arglist
+               | IPLOCATION MACRO"""
 
 @notimplemented
 def p_cmdexpr_join(p):
-    """cmdexpr : JOIN arglist"""
+    """cmdexpr : JOIN arglist
+               | JOIN MACRO"""
 
 @notimplemented
 def p_cmdexpr_kmeans(p):
-    """cmdexpr : KMEANS arglist"""
+    """cmdexpr : KMEANS arglist
+               | KMEANS MACRO"""
 
 @notimplemented
 def p_cmdexpr_kvform(p):
-    """cmdexpr : KVFORM arglist"""
+    """cmdexpr : KVFORM arglist
+               | KVFORM MACRO"""
 
 @notimplemented
 def p_cmdexpr_loadjob(p):
-    """cmdexpr : LOADJOB arglist"""
+    """cmdexpr : LOADJOB arglist
+               | LOADJOB MACRO"""
 
 @notimplemented
 def p_cmdexpr_localize(p):
-    """cmdexpr : LOCALIZE arglist"""
+    """cmdexpr : LOCALIZE arglist
+               | LOCALIZE MACRO"""
 
 @notimplemented
 def p_cmdexpr_localop(p):
-    """cmdexpr : LOCALOP arglist"""
+    """cmdexpr : LOCALOP arglist
+               | LOCALOP MACRO"""
 
 @splcommandrule
 def p_cmdexpr_lookup(p):
     """cmdexpr : LOOKUP
-               | LOOKUP arglist"""
+               | LOOKUP arglist
+               | LOOKUP MACRO"""
 
 @notimplemented
 def p_cmdexpr_makecontinuous(p):
-    """cmdexpr : MAKECONTINUOUS arglist"""
+    """cmdexpr : MAKECONTINUOUS arglist
+               | MAKECONTINUOUS MACRO"""
 
 @notimplemented
 def p_cmdexpr_makemv(p):
-    """cmdexpr : MAKEMV arglist"""
+    """cmdexpr : MAKEMV arglist
+               | MAKEMV MACRO"""
 
 @notimplemented
 def p_cmdexpr_map(p):
-    """cmdexpr : MAP arglist"""
+    """cmdexpr : MAP arglist
+               | MAP MACRO"""
 
 @notimplemented
 def p_cmdexpr_metadata(p):
-    """cmdexpr : METADATA arglist"""
+    """cmdexpr : METADATA arglist
+               | METADATA MACRO"""
 
 @notimplemented
 def p_cmdexpr_metasearch(p):
-    """cmdexpr : METASEARCH arglist"""
+    """cmdexpr : METASEARCH arglist
+               | METASEARCH MACRO"""
 
 @splcommandrule
 def p_cmdexpr_multikv(p):
     """cmdexpr : MULTIKV 
-               | MULTIKV arglist"""
+               | MULTIKV arglist
+               | MULTIKV MACRO"""
 
 @notimplemented
 def p_cmdexpr_multisearch(p):
-    """cmdexpr : MULTISEARCH arglist"""
+    """cmdexpr : MULTISEARCH arglist
+               | MULTISEARCH MACRO"""
 
 @notimplemented
 def p_cmdexpr_mvcombine(p):
-    """cmdexpr : MVCOMBINE arglist"""
+    """cmdexpr : MVCOMBINE arglist
+               | MVCOMBINE MACRO"""
 
 @notimplemented
 def p_cmdexpr_mvexpand(p):
-    """cmdexpr : MVEXPAND arglist"""
+    """cmdexpr : MVEXPAND arglist
+               | MVEXPAND MACRO"""
 
 @notimplemented
 def p_cmdexpr_nomv(p):
-    """cmdexpr : NOMV arglist"""
+    """cmdexpr : NOMV arglist
+               | NOMV MACRO"""
 
 @notimplemented
 def p_cmdexpr_outlier(p):
-    """cmdexpr : OUTLIER arglist"""
+    """cmdexpr : OUTLIER arglist
+               | OUTLIER MACRO"""
 
 @notimplemented
 def p_cmdexpr_outputcsv(p):
-    """cmdexpr : OUTPUTCSV arglist"""
+    """cmdexpr : OUTPUTCSV arglist
+               | OUTPUTCSV MACRO"""
 
 @notimplemented
 def p_cmdexpr_outputlookup(p):
-    """cmdexpr : OUTPUTLOOKUP arglist"""
+    """cmdexpr : OUTPUTLOOKUP arglist
+               | OUTPUTLOOKUP MACRO"""
 
 @notimplemented
 def p_cmdexpr_outputtext(p):
-    """cmdexpr : OUTPUTTEXT arglist"""
+    """cmdexpr : OUTPUTTEXT arglist
+               | OUTPUTTEXT MACRO"""
 
 @notimplemented
 def p_cmdexpr_overlap(p):
-    """cmdexpr : OVERLAP arglist"""
+    """cmdexpr : OVERLAP arglist
+               | OVERLAP MACRO"""
 
 @notimplemented
 def p_cmdexpr_predict(p):
-    """cmdexpr : PREDICT arglist"""
+    """cmdexpr : PREDICT arglist
+               | PREDICT MACRO"""
 
 @notimplemented
 def p_cmdexpr_rangemap(p):
-    """cmdexpr : RANGEMAP arglist"""
+    """cmdexpr : RANGEMAP arglist
+               | RANGEMAP MACRO"""
 
 @notimplemented
 def p_cmdexpr_rare(p):
-    """cmdexpr : RARE arglist"""
+    """cmdexpr : RARE arglist
+               | RARE MACRO"""
 
 @notimplemented
 def p_cmdexpr_regex(p):
-    """cmdexpr : REGEX arglist"""
+    """cmdexpr : REGEX arglist
+               | REGEX MACRO"""
 
 @notimplemented
 def p_cmdexpr_relevancy(p):
-    """cmdexpr : RELEVANCY arglist"""
+    """cmdexpr : RELEVANCY arglist
+               | RELEVANCY MACRO"""
 
 @notimplemented
 def p_cmdexpr_reltime(p):
-    """cmdexpr : RELTIME arglist"""
+    """cmdexpr : RELTIME arglist
+               | RELTIME MACRO"""
 
 @splcommandrule
 def p_cmdexpr_rename(p):
-    """cmdexpr : RENAME arglist"""
+    """cmdexpr : RENAME arglist
+               | RENAME MACRO"""
 
 @notimplemented
 def p_cmdexpr_replace(p):
-    """cmdexpr : REPLACE arglist"""
+    """cmdexpr : REPLACE arglist
+               | REPLACE MACRO"""
 
 @notimplemented
 def p_cmdexpr_rest(p):
-    """cmdexpr : REST arglist"""
+    """cmdexpr : REST arglist
+               | REST MACRO"""
 
 @notimplemented
 def p_cmdexpr_return(p):
-    """cmdexpr : RETURN arglist"""
+    """cmdexpr : RETURN arglist
+               | RETURN MACRO"""
 
 @splcommandrule
 def p_cmdexpr_reverse(p):
@@ -347,164 +432,205 @@ def p_cmdexpr_reverse(p):
 
 @notimplemented
 def p_cmdexpr_rex(p):
-    """cmdexpr : REX arglist"""
+    """cmdexpr : REX arglist
+               | REX MACRO"""
 
 @notimplemented
 def p_cmdexpr_rtorder(p):
-    """cmdexpr : RTORDER arglist"""
+    """cmdexpr : RTORDER arglist
+               | RTORDER MACRO"""
 
 @notimplemented
 def p_cmdexpr_run(p):
-    """cmdexpr : RUN arglist"""
+    """cmdexpr : RUN arglist
+               | RUN MACRO"""
 
 @notimplemented
 def p_cmdexpr_savedsearch(p):
-    """cmdexpr : SAVEDSEARCH arglist"""
+    """cmdexpr : SAVEDSEARCH arglist
+               | SAVEDSEARCH MACRO"""
 
 @notimplemented
 def p_cmdexpr_script(p):
-    """cmdexpr : SCRIPT arglist"""
+    """cmdexpr : SCRIPT arglist
+               | SCRIPT MACRO"""
 
 @notimplemented
 def p_cmdexpr_scrub(p):
-    """cmdexpr : SCRUB arglist"""
+    """cmdexpr : SCRUB arglist
+               | SCRUB MACRO"""
 
 @splcommandrule
 def p_cmdexpr_search(p):
-    """cmdexpr : SEARCH arglist"""
+    """cmdexpr : SEARCH arglist
+               | SEARCH MACRO"""
 
 @notimplemented
 def p_cmdexpr_searchtxn(p):
-    """cmdexpr : SEARCHTXN arglist"""
+    """cmdexpr : SEARCHTXN arglist
+               | SEARCHTXN MACRO"""
 
 @notimplemented
 def p_cmdexpr_selfjoin(p):
-    """cmdexpr : SELFJOIN arglist"""
+    """cmdexpr : SELFJOIN arglist
+               | SELFJOIN MACRO"""
 
 @notimplemented
 def p_cmdexpr_set(p):
-    """cmdexpr : SET arglist"""
+    """cmdexpr : SET arglist
+               | SET MACRO"""
 
 @notimplemented
 def p_cmdexpr_setfields(p):
-    """cmdexpr : SETFIELDS arglist"""
+    """cmdexpr : SETFIELDS arglist
+               | SETFIELDS MACRO"""
 
 @notimplemented
 def p_cmdexpr_sendemail(p):
-    """cmdexpr : SENDEMAIL arglist"""
+    """cmdexpr : SENDEMAIL arglist
+               | SENDEMAIL MACRO"""
 
 @notimplemented
 def p_cmdexpr_sichart(p):
-    """cmdexpr : SICHART arglist"""
+    """cmdexpr : SICHART arglist
+               | SICHART MACRO"""
 
 @notimplemented
 def p_cmdexpr_sirare(p):
-    """cmdexpr : SIRARE arglist"""
+    """cmdexpr : SIRARE arglist
+               | SIRARE MACRO"""
 
 @notimplemented
 def p_cmdexpr_sistats(p):
-    """cmdexpr : SISTATS arglist"""
+    """cmdexpr : SISTATS arglist
+               | SISTATS MACRO"""
 
 @notimplemented
 def p_cmdexpr_sitimechart(p):
-    """cmdexpr : SITIMECHART arglist"""
+    """cmdexpr : SITIMECHART arglist
+               | SITIMECHART MACRO"""
 
 @notimplemented
 def p_cmdexpr_sitop(p):
-    """cmdexpr : SITOP arglist"""
+    """cmdexpr : SITOP arglist
+               | SITOP MACRO"""
 
 @notimplemented
 def p_cmdexpr_sort(p):
-    """cmdexpr : SORT arglist"""
+    """cmdexpr : SORT arglist
+               | SORT MACRO"""
 
 @notimplemented
 def p_cmdexpr_spath(p):
-    """cmdexpr : SPATH arglist"""
+    """cmdexpr : SPATH arglist
+               | SPATH MACRO"""
 
 @splcommandrule
 def p_cmdexpr_stats(p):
-    """cmdexpr : STATS arglist"""
+    """cmdexpr : STATS arglist
+               | STATS MACRO"""
 
 @notimplemented
 def p_cmdexpr_strcat(p):
-    """cmdexpr : STRCAT arglist"""
+    """cmdexpr : STRCAT arglist
+               | STRCAT MACRO"""
 
 @notimplemented
 def p_cmdexpr_streamstats(p):
-    """cmdexpr : STREAMSTATS arglist"""
+    """cmdexpr : STREAMSTATS arglist
+               | STREAMSTATS MACRO"""
 
 @splcommandrule
 def p_cmdexpr_table(p):
-    """cmdexpr : TABLE arglist"""
+    """cmdexpr : TABLE arglist
+               | TABLE MACRO"""
 
 @notimplemented
 def p_cmdexpr_tags(p):
-    """cmdexpr : TAGS arglist"""
+    """cmdexpr : TAGS arglist
+               | TAGS MACRO"""
 
 @splcommandrule
 def p_cmdexpr_tail(p):
-    """cmdexpr : TAIL arglist"""
+    """cmdexpr : TAIL arglist
+               | TAIL MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_timechart(p):
-    """cmdexpr : TIMECHART arglist"""
+    """cmdexpr : TIMECHART arglist
+               | TIMECHART MACRO"""
 
 @splcommandrule
 def p_cmdexpr_top(p):
-    """cmdexpr : TOP arglist"""
+    """cmdexpr : TOP arglist
+               | TOP MACRO"""
 
 @notimplemented
 def p_cmdexpr_transaction(p):
-    """cmdexpr : TRANSACTION arglist"""
+    """cmdexpr : TRANSACTION arglist
+               | TRANSACTION MACRO"""
 
 @notimplemented
 def p_cmdexpr_transpose(p):
-    """cmdexpr : TRANSPOSE arglist"""
+    """cmdexpr : TRANSPOSE arglist
+               | TRANSPOSE MACRO"""
 
 @notimplemented
 def p_cmdexpr_trendline(p):
-    """cmdexpr : TRENDLINE arglist"""
+    """cmdexpr : TRENDLINE arglist
+               | TRENDLINE MACRO"""
 
 @notimplemented
 def p_cmdexpr_typeahead(p):
-    """cmdexpr : TYPEAHEAD arglist"""
+    """cmdexpr : TYPEAHEAD arglist
+               | TYPEAHEAD MACRO"""
 
 @notimplemented
 def p_cmdexpr_typelearner(p):
-    """cmdexpr : TYPELEARNER arglist"""
+    """cmdexpr : TYPELEARNER arglist
+               | TYPELEARNER MACRO"""
 
 @notimplemented
 def p_cmdexpr_typer(p):
-    """cmdexpr : TYPER arglist"""
+    """cmdexpr : TYPER arglist
+               | TYPER MACRO"""
 
 @notimplemented
 def p_cmdexpr_uniq(p):
-    """cmdexpr : UNIQ arglist"""
+    """cmdexpr : UNIQ arglist
+               | UNIQ MACRO"""
 
 @notimplemented
 def p_cmdexpr_untable(p):
-    """cmdexpr : UNTABLE arglist"""
+    """cmdexpr : UNTABLE arglist
+               | UNTABLE MACRO"""
 
 @notimplemented
 def p_cmdexpr_where(p):
-    """cmdexpr : WHERE arglist"""
+    """cmdexpr : WHERE arglist
+               | WHERE MACRO"""
 
 @notimplemented
 def p_cmdexpr_x11(p):
-    """cmdexpr : X11 arglist"""
+    """cmdexpr : X11 arglist
+               | X11 MACRO"""
 
 @notimplemented
 def p_cmdexpr_xmlkv(p):
-    """cmdexpr : XMLKV arglist"""
+    """cmdexpr : XMLKV arglist
+               | XMLKV MACRO"""
 
 @notimplemented
 def p_cmdexpr_xmlunescape(p):
-    """cmdexpr : XMLUNESCAPE arglist"""
+    """cmdexpr : XMLUNESCAPE arglist
+               | XMLUNESCAPE MACRO"""
 
 @notimplemented
 def p_cmdexpr_xpath(p):
-    """cmdexpr : XPATH arglist"""
+    """cmdexpr : XPATH arglist
+               | XPATH MACRO"""
 
 @notimplemented
 def p_cmdexpr_xyseries(p):
-    """cmdexpr : XYSERIES arglist"""
+    """cmdexpr : XYSERIES arglist
+               | XYSERIES MACRO"""

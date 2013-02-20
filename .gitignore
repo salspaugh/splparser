@@ -3,6 +3,10 @@
 *.log
 parse.py
 
+# Editor temp files 
+*.swp
+*.swo
+
 # Python cached files
 *.py[cod]
 

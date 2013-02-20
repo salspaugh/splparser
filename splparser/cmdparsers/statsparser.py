@@ -130,25 +130,24 @@ def p_statscmdcont(p):
     fn_node = ParseTreeNode(p[2].upper())
     p[0].add_child(fn_node)
 
-def p_statscmdcont_asbylist(p):
-    """statscmdcont : COMMA STATS_FN asbylist
-                    | COMMA COMMON_FN asbylist
-                    | COMMA EVAL asbylist"""
-    p[0] = ParseTreeNode('_STATSCMDCONT')
-    fn_node = ParseTreeNode(p[2].upper())
-    p[0].add_child(fn_node)
-    p[0].children[0].add_children(p[3].children)
-
 def p_statscmdcont_statsfnexpr(p):
     """statscmdcont : COMMA statsfnexpr"""
     p[0] = ParseTreeNode('_STATSCMDCONT')
     p[0].add_children(p[2].children)
 
-def p_statscmdcont_statsfnexpr_asbylist(p):
-    """statscmdcont : COMMA statsfnexpr asbylist"""
-    p[0] = ParseTreeNode('_STATSCMDCONT')
-    p[0].add_children(p[2].children)
-    p[0].children[0].add_children(p[3].children)
+def p_statsfnexpr_stats_fn(p):
+    """statsfnexpr : STATS_FN asbylist
+                   | COMMON_FN asbylist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    fn_node = ParseTreeNode(p[1].upper())
+    p[0].add_child(fn_node)
+    p[0].children[0].add_children(p[2].children)
+
+def p_statsfnexpr_asbylist(p):
+    """statsfnexpr : statsfnexpr asbylist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    p[0].add_children(p[1].children)
+    p[0].children[0].add_children(p[2].children)
 
 def p_asbylist_as(p):
     """asbylist : as simplefield"""
@@ -173,7 +172,6 @@ def p_asbylist(p):
     as_node.add_child(p[2])
     p[0].add_child(by_node)
     by_node.add_children(p[4].children)
-    
 def p_error(p):
     raise SPLSyntaxError("Syntax error in stats parser input!") 
 
