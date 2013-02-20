@@ -3,8 +3,7 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("fields + category action http_user_agent filter_result src_ip dest_host uri uri_path http_method http_content_type uri_query _time")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields + category action http_user_agent filter_result src_ip dest_host uri uri_path http_method http_content_type uri_query _time").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')
@@ -22,8 +21,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': 'uri_query')
                 ('ID': '_time')
 
->>> parsed = splparser.parser.parse("fields IPAddress,action,HostName,user,FullFilePath,ThreatName")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields IPAddress,action,HostName,user,FullFilePath,ThreatName").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')
@@ -35,8 +33,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'FullFilePath')
                 ('WORD': 'ThreatName')
 
->>> parsed = splparser.parser.parse("fields SSO dest_host IPaddress signature action severity cdi_city cdi_country FullFilePath")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields SSO dest_host IPaddress signature action severity cdi_city cdi_country FullFilePath").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')
@@ -51,16 +48,14 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': 'cdi_country')
                 ('WORD': 'FullFilePath')
 
->>> parsed = splparser.parser.parse("fields - sum")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields - sum").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')
             ('MINUS')
                 ('WORD': 'sum')
 
->>> parsed = splparser.parser.parse("fields - _raw,_cd,_indextime,_serial,_si,_sourcetype")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields - _raw,_cd,_indextime,_serial,_si,_sourcetype").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')
@@ -72,8 +67,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': '_si')
                 ('ID': '_sourcetype')
 
->>> parsed = splparser.parser.parse("fields - countHost-_span countHost-_time lag-_span")
->>> parsed.print_tree()
+>>> splparser.parser.parse("fields - countHost-_span countHost-_time lag-_span").print_tree()
 ('ROOT')
     ('STAGE')
         ('FIELDS')

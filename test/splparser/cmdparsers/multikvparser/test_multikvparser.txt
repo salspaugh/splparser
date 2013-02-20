@@ -3,14 +3,12 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("multikv")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
 
->>> parsed = splparser.parser.parse("multikv fields FileSystem, UsePct")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv fields FileSystem, UsePct").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -18,8 +16,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'FileSystem')
                 ('WORD': 'UsePct')
 
->>> parsed = splparser.parser.parse("multikv fields COMMAND filter ETransProdDomain")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv fields COMMAND filter ETransProdDomain").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -28,8 +25,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('FILTER')
                 ('WORD': 'ETransProdDomain')
 
->>> parsed = splparser.parser.parse("multikv fields COMMAND filter c server ejb")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv fields COMMAND filter c server ejb").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -40,16 +36,14 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'server')
                 ('WORD': 'ejb')
 
->>> parsed = splparser.parser.parse("multikv maxnewresults=50000")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv maxnewresults=50000").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
             ('MAXNEWRESULTS')
                 ('INT': '50000')
 
->>> parsed = splparser.parser.parse("multikv FIELDS FileSystem Type Size Used Avail UsePct")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv FIELDS FileSystem Type Size Used Avail UsePct").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -61,8 +55,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'Avail')
                 ('WORD': 'UsePct')
 
->>> parsed = splparser.parser.parse("multikv FIELDS Proto, Port")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv FIELDS Proto, Port").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -70,8 +63,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'Proto')
                 ('WORD': 'Port')
 
->>> parsed = splparser.parser.parse("multikv conf=df rmorig=t")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv conf=df rmorig=t").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
@@ -80,16 +72,14 @@ Below are clips from an interactive session in which I test various aspects of t
             ('RMORIG')
                 ('WORD': 't')
 
->>> parsed = splparser.parser.parse("multikv fields=loadAvg1mi")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv fields=loadAvg1mi").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')
             ('FIELDS')
                 ('ID': 'loadAvg1mi')
 
->>> parsed = splparser.parser.parse("multikv fields  PercentUserTime, PercentPrivilegedTime,pctIowait,pctIdle")
->>> parsed.print_tree()
+>>> splparser.parser.parse("multikv fields  PercentUserTime, PercentPrivilegedTime,pctIowait,pctIdle").print_tree()
 ('ROOT')
     ('STAGE')
         ('MULTIKV')

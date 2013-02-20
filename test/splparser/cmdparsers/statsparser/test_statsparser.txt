@@ -3,8 +3,7 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("search foo | search bat | search blah | stats count")
->>> parsed.print_tree()
+>>> splparser.parser.parse("search foo | search bat | search blah | stats count").print_tree()
 ('ROOT')
     ('STAGE')
         ('SEARCH')
@@ -19,24 +18,21 @@ Below are clips from an interactive session in which I test various aspects of t
         ('STATS')
             ('COUNT')
 
->>> parsed = splparser.parser.parse("stats count, count")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count, count").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
             ('COUNT')
             ('COUNT')
 
->>> parsed = splparser.parser.parse("stats count a")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count a").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
             ('COUNT')
                 ('WORD': 'a')
 
->>> parsed = splparser.parser.parse("stats count a, count b")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count a, count b").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
@@ -45,16 +41,14 @@ Below are clips from an interactive session in which I test various aspects of t
             ('COUNT')
                 ('WORD': 'b')
 
->>> parsed = splparser.parser.parse("stats count(f)")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count(f)").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
             ('COUNT')
                 ('WORD': 'f')
 
->>> parsed = splparser.parser.parse("stats count(f) as cf")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count(f) as cf").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
@@ -63,8 +57,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('WORD': 'cf')
 
->>> parsed = splparser.parser.parse("stats count(f) by b")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count(f) by b").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
@@ -73,8 +66,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('WORD': 'b')
 
->>> parsed = splparser.parser.parse("stats count(f) by b, d")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count(f) by b, d").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
@@ -84,8 +76,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('WORD': 'b')
                     ('WORD': 'd')
 
->>> parsed = splparser.parser.parse("stats count(f) as a by b, d")
->>> parsed.print_tree()
+>>> splparser.parser.parse("stats count(f) as a by b, d").print_tree()
 ('ROOT')
     ('STAGE')
         ('STATS')
@@ -97,8 +88,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('WORD': 'b')
                     ('WORD': 'd')
 
->>> parsed = splparser.parser.parse('search sourcetype=access_* | stats eval(method="GET") AS GET')
->>> parsed.print_tree()
+>>> splparser.parser.parse('search sourcetype=access_* | stats eval(method="GET") AS GET').print_tree()
 ('ROOT')
     ('STAGE')
         ('SEARCH')
@@ -114,8 +104,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('WORD': 'GET')
 
->>> parsed = splparser.parser.parse('search sourcetype=access_* | stats count(eval(method="GET")) AS GET')
->>> parsed.print_tree()
+>>> splparser.parser.parse('search sourcetype=access_* | stats count(eval(method="GET")) AS GET').print_tree()
 ('ROOT')
     ('STAGE')
         ('SEARCH')
@@ -132,8 +121,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('WORD': 'GET')
 
->>> parsed = splparser.parser.parse('search sourcetype=access_* | stats count(eval(method="GET")) AS GET, count(eval(method="POST")) AS POST by host')
->>> parsed.print_tree()
+>>> splparser.parser.parse('search sourcetype=access_* | stats count(eval(method="GET")) AS GET, count(eval(method="POST")) AS POST by host').print_tree()
 ('ROOT')
     ('STAGE')
         ('SEARCH')
