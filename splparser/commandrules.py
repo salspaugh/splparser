@@ -445,7 +445,7 @@ def p_cmdexpr_tags(p):
 def p_cmdexpr_tail(p):
     """cmdexpr : TAIL arglist"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_timechart(p):
     """cmdexpr : TIMECHART arglist"""
 
