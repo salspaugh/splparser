@@ -1,15 +1,9 @@
 
 end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=:)|(?=/)|(?=\.)|(?=-)|(?=\*)|$)'
 
-plus = r'\+'
+# ---------------- Command specific options: ----------------
 
-minus = r'-'
-
-times = r'\*'
-
-divides = r'\/'
-
-modulus = r'\%' + end_of_token
+timechart_opt = r'(?:sep|partial|cont|agg|bins|minspan|span|start|end|fixedrange|usenull|useother|nullstr|otherstr)' + end_of_token
 
 stats_fn = r'(?:avg|c|count|dc|distinct_count|earliest|estdc|estdc_error|first|last|latest|list|mean|median|mode|per_day|per_hour|per_minute|per_second|range|stdev|stdevp|sumsq|values|var|varp)' + end_of_token 
 
@@ -22,6 +16,24 @@ common_fn = r'(?:max|min|sum)' + end_of_token
 common_opt = r'(?:limit)' + end_of_token
 
 head_opt = r'(?:null|keeplast)' + end_of_token
+
+inn = r'(?:in)' + end_of_token
+notin = r'(?:notin)' + end_of_token
+top = r'(?:top)' + end_of_token
+bottom = r'(?:bottom)' + end_of_token
+
+
+# ---------------- General argument types: ------------------
+
+plus = r'\+'
+
+minus = r'-'
+
+times = r'\*'
+
+divides = r'\/'
+
+modulus = r'\%' + end_of_token
 
 port = r'\d{1,5}'
 slash = r'/\d\d?\d?'
@@ -37,7 +49,7 @@ ipv6_addr = r'(?:' + ipv6_addr_no_end + end_of_token + r')|(?:"\s*' + ipv6_addr_
 ipaddr_no_end = r'(?:(?:' + ipv4_addr_no_end + r')|(?:' + ipv6_addr_no_end + r'))'
 ipaddr = r'(?:' + ipv4_addr + r')|(?:' + ipv6_addr + r')'
 
-word_no_end = r'(?:[a-zA-Z_]+)'
+word_no_end = r'(?:[a-zA-Z]+)'
 word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')' 
 
 int_end_of_token = r'(?:' + end_of_token + r'|%|L|l)' 
