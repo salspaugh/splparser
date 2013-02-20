@@ -9,6 +9,7 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'COMMA', 'PERIOD',
+    'MACRO',
     'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDES', 'MODULUS',
     'LPAREN', 'RPAREN',
@@ -21,11 +22,14 @@ tokens = [
     'EVAL_FN',
     'COMMON_FN',
     'STATS_FN',
-    'STATS_OPT',
+    'TIMECHART_OPT',
+    'COMMON_OPT',
+    'IN', 'NOTIN',
+    'TOP', 'BOTTOM',
 ]
 
 reserved = {
-    'stats' : 'STATS', 
+    'timechart' : 'TIMECHART', 
     'sparkline' : 'SPARKLINE',
     'as' : 'ASLC',
     'by' : 'BYLC',
@@ -112,10 +116,32 @@ def type_if_reserved(t, default):
         return 'EVAL_FN'
     elif re.match(common_fn, t.value):
         return 'COMMON_FN'
-    elif re.match(stats_opt, t.value):
-        return 'STATS_OPT'
+    elif re.match(timechart_opt, t.value):
+        return 'TIMECHART_OPT'
+    elif re.match(common_opt, t.value):
+        return 'COMMON_OPT'
     else:
         return reserved.get(t.value, default)
+
+@TOKEN(inn)
+def t_IN(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(notin)
+def t_NOTIN(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(top)
+def t_TOP(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(bottom)
+def t_BOTTOM(t):
+    t.lexer.begin('ipunchecked')
+    return t
 
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''
@@ -184,6 +210,10 @@ def t_HEX(t):
 @TOKEN(float)
 def t_FLOAT(t):
     t.lexer.begin('ipunchecked')
+    return t
+
+def t_MACRO(t):
+    r"""(`[^`]*`)"""
     return t
 
 @TOKEN(ipv4_addr)
