@@ -73,7 +73,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('WORD': 'b')
 
->>> parsed = splparser.parser.parse("stats count(f) by b, c")
+>>> parsed = splparser.parser.parse("stats count(f) by b, d")
 >>> parsed.print_tree()
 ('ROOT')
     ('STAGE')
@@ -82,9 +82,9 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('WORD': 'f')
                 ('BY')
                     ('WORD': 'b')
-                    ('WORD': 'c')
+                    ('WORD': 'd')
 
->>> parsed = splparser.parser.parse("stats count(f) as a by b, c")
+>>> parsed = splparser.parser.parse("stats count(f) as a by b, d")
 >>> parsed.print_tree()
 ('ROOT')
     ('STAGE')
@@ -95,7 +95,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('WORD': 'a')
                 ('BY')
                     ('WORD': 'b')
-                    ('WORD': 'c')
+                    ('WORD': 'd')
 
 >>> parsed = splparser.parser.parse('search sourcetype=access_* | stats eval(method="GET") AS GET')
 >>> parsed.print_tree()
