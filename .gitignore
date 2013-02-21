@@ -6,6 +6,7 @@ parse.py
 # Editor temp files 
 *.swp
 *.swo
+*.un~
 
 # Python cached files
 *.py[cod]
