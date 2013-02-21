@@ -3,8 +3,7 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("tail 5")
->>> parsed.print_tree()
+>>> splparser.parser.parse("tail 5").print_tree()
 ('ROOT')
     ('STAGE')
         ('TAIL')

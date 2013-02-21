@@ -3,8 +3,7 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("rename ip_address as dest_host")
->>> parsed.print_tree()
+>>> splparser.parser.parse("rename ip_address as dest_host").print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -12,8 +11,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': 'ip_address')
                 ('ID': 'dest_host')
 
->>> parsed = splparser.parser.parse("rename cdi_city as city, cdi_country as country, cdi_business as user_business, dest_ip as ip, dest_host as hostname, cdi_subbusiness as user_businessunit")
->>> parsed.print_tree()
+>>> splparser.parser.parse("rename cdi_city as city, cdi_country as country, cdi_business as user_business, dest_ip as ip, dest_host as hostname, cdi_subbusiness as user_businessunit").print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -36,8 +34,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': 'cdi_subbusiness')
                 ('ID': 'user_businessunit')
 
->>> parsed = splparser.parser.parse("rename count(Type) as Failures")
->>> parsed.print_tree()
+>>> splparser.parser.parse("rename count(Type) as Failures").print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -46,8 +43,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('WORD': 'Type')
                 ('WORD': 'Failures')
 
->>> parsed = splparser.parser.parse('rename _time as "Time Logged In"')
->>> parsed.print_tree()
+>>> splparser.parser.parse('rename _time as "Time Logged In"').print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -55,8 +51,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': '_time')
                 ('LITERAL': '"Time Logged In"')
 
->>> parsed = splparser.parser.parse('rename atLeast25 as "25%-50% of Video Viewed", atLeast50 as "50%-100% of Video Viewed", full as "Full Video Viewed", starts as "0%-25% of Video Viewed", all as "Total Video Views", completionRate as "Completion Rate", start_time as "Start Time", end_time as "End Time"')
->>> parsed.print_tree()
+>>> splparser.parser.parse('rename atLeast25 as "25%-50% of Video Viewed", atLeast50 as "50%-100% of Video Viewed", full as "Full Video Viewed", starts as "0%-25% of Video Viewed", all as "Total Video Views", completionRate as "Completion Rate", start_time as "Start Time", end_time as "End Time"').print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -85,8 +80,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': 'end_time')
                 ('LITERAL': '"End Time"')
 
->>> parsed = splparser.parser.parse('rename avg(memUsedPct) as "Used Mem", avg(memFreePct) as Free_Mem')
->>> parsed.print_tree()
+>>> splparser.parser.parse('rename avg(memUsedPct) as "Used Mem", avg(memFreePct) as Free_Mem').print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')
@@ -99,8 +93,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('WORD': 'memFreePct')
                 ('ID': 'Free_Mem')
 
->>> parsed = splparser.parser.parse('rename sum(CounterValue) as "PE Total"')
->>> parsed.print_tree()
+>>> splparser.parser.parse('rename sum(CounterValue) as "PE Total"').print_tree()
 ('ROOT')
     ('STAGE')
         ('RENAME')

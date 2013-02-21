@@ -3,15 +3,13 @@ Below are clips from an interactive session in which I test various aspects of t
 
 >>> import splparser.parser
 
->>> parsed = splparser.parser.parse("timechart count")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart count").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
             ('COUNT')
 
->>> parsed = splparser.parser.parse("timechart count by IPAddress")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart count by IPAddress").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -19,8 +17,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('WORD': 'IPAddress')
 
->>> parsed = splparser.parser.parse("timechart count(connection_id) by connection_id")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart count(connection_id) by connection_id").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -29,8 +26,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('ID': 'connection_id')
 
->>> parsed = splparser.parser.parse("timechart span=1hr count by host")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart span=1hr count by host").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -41,8 +37,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('WORD': 'host')
 
->>> parsed = splparser.parser.parse("timechart span=1d count by cdi_businessunit limit=20")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart span=1d count by cdi_businessunit limit=20").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -56,8 +51,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('LIMIT')
                 ('INT': '20')
 
->>> parsed = splparser.parser.parse("timechart limit=5 span=1w usenull=f useother=f dc(dest_host) by Vendor")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart limit=5 span=1w usenull=f useother=f dc(dest_host) by Vendor").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -78,8 +72,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('BY')
                     ('WORD': 'Vendor')
 
->>> parsed = splparser.parser.parse('timechart span=1w dc(dest_host) as PCs, count(eval(match(VulnTracked,"1"))) AS Vulns')
->>> parsed.print_tree()
+>>> splparser.parser.parse('timechart span=1w dc(dest_host) as PCs, count(eval(match(VulnTracked,"1"))) AS Vulns').print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -98,8 +91,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('WORD': 'Vulns')
 
->>> parsed = splparser.parser.parse("timechart limit=5 span=1w dc(dest_host) as Global_Tracked_Vuln_Count usenull=f useother=f")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart limit=5 span=1w dc(dest_host) as Global_Tracked_Vuln_Count usenull=f useother=f").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -120,8 +112,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('USEOTHER')
                 ('WORD': 'f')
 
->>> parsed = splparser.parser.parse('timechart span=24h eval(count(eval(cache="hit")) / (count(eval(cache="hit")) + count(eval(cache="miss")))) as percent, count as totalRequests, p50(responseTime) as p50, p95(responseTime) as p95, p99(responseTime) as p99')
->>> parsed.print_tree()
+>>> splparser.parser.parse('timechart span=24h eval(count(eval(cache="hit")) / (count(eval(cache="hit")) + count(eval(cache="miss")))) as percent, count as totalRequests, p50(responseTime) as p50, p95(responseTime) as p95, p99(responseTime) as p99').print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -164,8 +155,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('WORD': 'p99')
 
->>> parsed = splparser.parser.parse("timechart span=1d first(eval(if(google_videos>=0,google_videos,null()))) as google_videos, first(eval(if(bing_videos>=0,bing_videos,null()))) as bing_videos, first(eval(if(yahoo_videos>=0,yahoo_videos,null()))) as yahoo_videos")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart span=1d first(eval(if(google_videos>=0,google_videos,null()))) as google_videos, first(eval(if(bing_videos>=0,bing_videos,null()))) as bing_videos, first(eval(if(yahoo_videos>=0,yahoo_videos,null()))) as yahoo_videos").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
@@ -203,8 +193,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('AS')
                     ('ID': 'yahoo_videos')
 
->>> parsed = splparser.parser.parse("timechart span=1w `summary_unattributed_counts`")
->>> parsed.print_tree()
+>>> splparser.parser.parse("timechart span=1w `summary_unattributed_counts`").print_tree()
 ('ROOT')
     ('STAGE')
         ('TIMECHART')
