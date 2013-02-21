@@ -4,7 +4,7 @@ import ply.yacc
 import logging
 
 from splparser.parsetree import *
-from splparser.startlexer import *
+from splparser.lexer import *
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.commandrules import *
 
@@ -73,7 +73,7 @@ logging.basicConfig(
 log = logging.getLogger()
 
 def parse(data, ldebug=False, ldebuglog=log, pdebug=False, pdebuglog=log):
-    lexer = ply.lex.lex(debug=ldebug, debuglog=ldebuglog)
+    lexer = lex()
     yp = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog, tabmodule="toplevel_parsetab")
     parsetree = None
     try:
