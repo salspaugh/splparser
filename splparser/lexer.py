@@ -189,7 +189,6 @@ class SPLLexer(object):
         if len(self.data) == 0: return
         
         while self.data[0] in whitespace:
-            #print "whitespace"
             self.data = self.data[1:]
             if len(self.data) == 0: return
             self.lexpos += 1 
@@ -201,7 +200,6 @@ class SPLLexer(object):
         
         for k in reserved.iterkeys():
             if self.data.find(k + ' ') == 0 or self.data == k:
-                #print "k", k
                 self.data = self.data[len(k)+1:]
                 self.lexpos += len(k) + 1 
                 return SPLToken(reserved[k], k)
@@ -209,7 +207,6 @@ class SPLLexer(object):
         if self.data[0] == '`':
             end = self.data[1:].find('`') + 1
             macro = self.data[:end+1]
-            #print "macro", macro
             self.data = self.data[len(macro):]
             self.lexpos += len(macro)
             return SPLToken('MACRO', macro)
@@ -221,7 +218,6 @@ class SPLLexer(object):
             if len(self.data) == 0: break
             self.lexpos += 1 
         if args:
-            #print "args", args
             return SPLToken('ARGS', args)
         if len(self.data) == 0: return
         
