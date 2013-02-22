@@ -199,14 +199,14 @@ class SPLLexer(object):
             return SPLToken('PIPE', '|')
         
         for k in reserved.iterkeys():
-            if self.data.find(k) == 0:
-                self.data = self.data[len(k):]
-                self.lexpos += len(k) 
+            if self.data.find(k + ' ') == 0 or self.data == k:
+                self.data = self.data[len(k)+1:]
+                self.lexpos += len(k) + 1 
                 return SPLToken(reserved[k], k)
         
         if self.data[0] == '`':
-            end = self.data.find('`')
-            macro = self.data[:end]
+            end = self.data[1:].find('`') + 1
+            macro = self.data[:end+1]
             self.data = self.data[len(macro):]
             self.lexpos += len(macro)
             return SPLToken('MACRO', macro)
