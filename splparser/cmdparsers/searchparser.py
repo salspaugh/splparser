@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import ply.yacc
+import imp
 import logging
+import os
+import ply.yacc
 
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
@@ -10,6 +12,9 @@ from splparser.cmdparsers.common.fieldrules import *
 from splparser.cmdparsers.common.valuerules import *
 
 from splparser.cmdparsers.searchlexer import lexer, precedence, tokens
+
+PARSETAB_DIR = 'parsetabs'
+PARSETAB = 'search_parsetab'
 
 start = 'cmdexpr'
 
@@ -126,7 +131,24 @@ logging.basicConfig(
 log = logging.getLogger()
 
 def parse(data, ldebug=False, ldebuglog=log, pdebug=False, pdebuglog=log):
-    parser = ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog, tabmodule="search_parsetab")
+    here = os.path.dirname(__file__)
+    path_to_parsetab = os.path.join(here, PARSETAB_DIR, PARSETAB + '.py')
+    
+    try:
+        parsetab = imp.load_source(PARSETAB, path_to_parsetab)
+    except IOError: # parsetab files don't exist in our installation
+        parsetab = PARSETAB
+
+    try:
+        os.stat(PARSETAB_DIR)
+    except:
+        try:
+            os.makedirs(PARSETAB_DIR)
+        except OSError:
+            sys.stderr.write("ERROR: Need permission to write to ./" + PARSETAB_DIR + "\n")
+            raise
+
+    parser= ply.yacc.yacc(debug=pdebug, debuglog=pdebuglog, tabmodule=parsetab, outputdir=PARSETAB_DIR)
     return parser.parse(data, debug=pdebuglog, lexer=lexer)
 
 if __name__ == "__main__":
