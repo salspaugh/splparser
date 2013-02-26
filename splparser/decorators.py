@@ -2,17 +2,7 @@
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.parser import SPLParser
 
-#def splcommandrule(f):
-#    cmd = f.__doc__.split(':')[1].split()[0].strip().lower()
-#    cmdparser = 'splparser.cmdparsers.' + cmd + 'parser'
-#    def helper(p):
-#        cmdparse = __import__(cmdparser, fromlist=['__import__ is dumb']).parse
-#        try:
-#            p[0]  = cmdparse(' '.join(p[1:]))
-#        except Exception as e:
-#            raise TerminatingSPLSyntaxError(e.message) 
-#    helper.__doc__ = f.__doc__
-#    return helper
+OPTIMIZE = False
 
 def splcommandrule(f):
     cmd = f.__doc__.split(':')[1].split()[0].strip().lower()
@@ -22,7 +12,7 @@ def splcommandrule(f):
     cmdparsetab_dir = 'parsetabs'
     cmdrules = 'splparser.rules.' + cmd + 'rules'
     cmdrules = __import__(cmdrules, fromlist=['fromlist does nothing'])
-    parser = SPLParser(cmdlexer, cmdparsetab, cmdparsetab_dir, cmdrules)
+    parser = SPLParser(cmdlexer, cmdparsetab, cmdparsetab_dir, cmdrules, optimize=OPTIMIZE)
     def helper(p):
         try:
             p[0]  = parser.parse(' '.join(p[1:]))
