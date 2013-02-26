@@ -7,10 +7,7 @@ from splparser.cmdparsers.common.evalfnexprrules import *
 from splparser.cmdparsers.common.simplefieldrules import *
 from splparser.cmdparsers.common.simplevaluerules import *
 
-from splparser.cmdparsers.headlexer import lexer, precedence, tokens
-
-PARSETAB_DIR = 'parsetabs'
-PARSETAB = 'head_parsetab'
+from splparser.lexers.headlexer import precedence, tokens
 
 start = 'cmdexpr'
 

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-from splparser.lexer import tokens
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
-from splparser.commandrules import *
+
+from splparser.rules.commandrules import *
+
+from splparser.lexers.toplevellexer import tokens
 
 start = 'start'
 
@@ -58,5 +60,5 @@ def p_macro_arglist(p):
     p[0] = ' '.join(p[1:])
 
 def p_error(p):
-    msg = "Syntax error in top-level parser input: " + p
+    msg = "Syntax error in top-level parser input: " + str(p)
     raise TerminatingSPLSyntaxError(msg)

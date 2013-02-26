@@ -9,10 +9,7 @@ from splparser.cmdparsers.common.simplefieldrules import *
 from splparser.cmdparsers.common.simplefieldlistrules import *
 from splparser.cmdparsers.common.statsfnrules import *
 
-from splparser.cmdparsers.statslexer import precedence, tokens
-
-PARSETAB_DIR = 'parsetabs'
-PARSETAB = 'stats_parsetab'
+from splparser.lexers.statslexer import precedence, tokens
 
 start = 'cmdexpr'
 
