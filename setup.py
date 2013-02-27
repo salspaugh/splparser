@@ -23,9 +23,10 @@ setuptools.setup(
     keywords = "Splunk Processing Language SPL parser",
     
     packages=['splparser', 
-        'splparser.cmdparsers', 
-        'splparser.cmdparsers.common', 
-        'splparser.cmdparsers.parsetabs',
+        'splparser.lexers', 
+        'splparser.parsetabs',
+        'splparser.rules',
+        'splparser.rules.common', 
         'test'],
     requires=["ply"],
 )
