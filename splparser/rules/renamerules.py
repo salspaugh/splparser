@@ -3,11 +3,11 @@
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.cmdparsers.common.asrules import *
-from splparser.cmdparsers.common.simplefieldrules import *
-from splparser.cmdparsers.common.simplevaluerules import *
-from splparser.cmdparsers.common.statsfnrules import *
-from splparser.cmdparsers.common.uminusrules import *
+from splparser.rules.common.asrules import *
+from splparser.rules.common.simplefieldrules import *
+from splparser.rules.common.simplevaluerules import *
+from splparser.rules.common.statsfnrules import *
+from splparser.rules.common.uminusrules import *
     
 from splparser.lexers.renamelexer import precedence, tokens
 

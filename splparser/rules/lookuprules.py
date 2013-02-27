@@ -3,9 +3,9 @@
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.cmdparsers.common.fieldrules import *
-from splparser.cmdparsers.common.fieldlistrules import *
-from splparser.cmdparsers.common.valuerules import *
+from splparser.rules.common.fieldrules import *
+from splparser.rules.common.fieldlistrules import *
+from splparser.rules.common.valuerules import *
 
 from splparser.lexers.lookuplexer import tokens
 

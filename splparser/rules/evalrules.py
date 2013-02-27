@@ -3,8 +3,8 @@
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.cmdparsers.common.evalfnexprrules import *
-from splparser.cmdparsers.common.simplefieldrules import *
+from splparser.rules.common.evalfnexprrules import *
+from splparser.rules.common.simplefieldrules import *
 
 from splparser.lexers.evallexer import precedence, tokens
 
