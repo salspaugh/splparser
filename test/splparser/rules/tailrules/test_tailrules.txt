@@ -1,0 +1,10 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse("tail 5").print_tree()
+('ROOT')
+    ('STAGE')
+        ('TAIL')
+            ('INT': '5')
