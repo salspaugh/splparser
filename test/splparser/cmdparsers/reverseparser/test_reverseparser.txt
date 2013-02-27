@@ -1,9 +1,0 @@
-
-Below are clips from an interactive session in which I test various aspects of the parser.
-
->>> import splparser.parser
-
->>> splparser.parser.parse("reverse").print_tree()
-('ROOT')
-    ('STAGE')
-        ('REVERSE')
