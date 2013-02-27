@@ -17,10 +17,6 @@ def p_value_email(p):
     """value : EMAIL"""
     p[0] = ParseTreeNode('EMAIL', raw=p[1])
 
-def p_value_hostname(p):
-    """value : HOSTNAME"""
-    p[0] = ParseTreeNode('HOSTNAME', raw=p[1])
-
 def p_value_url(p):
     """value : URL"""
     p[0] = ParseTreeNode('URL', raw=p[1])
