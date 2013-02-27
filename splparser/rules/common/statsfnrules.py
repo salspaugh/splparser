@@ -68,12 +68,12 @@ def p_simplefield_stats_fn(p):
                    | COMMON_FN""" # HACK
     p[0] = ParseTreeNode('WORD', raw=p[1])
 
-def p_statsfnexpr_eval_parens(p):
-    """statsfnexpr : EVAL LPAREN oplist RPAREN"""
-    p[0] = ParseTreeNode('_STATSFNEXPR')
-    eval_node = ParseTreeNode('EVAL')
-    eval_node.add_children(p[3].children)
-    p[0].add_child(eval_node)
+#def p_statsfnexpr_eval_parens(p):
+#    """statsfnexpr : EVAL LPAREN oplist RPAREN"""
+#    p[0] = ParseTreeNode('_STATSFNEXPR')
+#    eval_node = ParseTreeNode('EVAL')
+#    eval_node.add_children(p[3].children)
+#    p[0].add_child(eval_node)
 
 def p_statsfnexpr_eval(p):
     """statsfnexpr : EVAL oplist"""
