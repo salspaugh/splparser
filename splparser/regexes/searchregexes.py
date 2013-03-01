@@ -13,6 +13,8 @@ multikv_list_opt = r'(?:filter|FIELDS|fields)' + end_of_token
 
 multikv_single_opt = r'(?:copyattrs|fields|filter|maxnewresults|forceheader|multitable|noheader|rmorig)' + end_of_token
 
+rex_opt = r'(?:field|mode)' + end_of_token
+
 plus = r'\+' + end_of_token
 
 minus = r'-' + end_of_token
@@ -104,3 +106,8 @@ nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
 
 nbstr_sans_at = r'[^,|@()=!<>\[\]\s]+'
 email = nbstr_sans_at + r'@' + nbstr_sans_at + end_of_token
+
+<<<<<<< HEAD:splparser/regexes/searchregexes.py
+regular_expression = r'".*"' + end_of_token
+=======
+>>>>>>> 339fcee2f6bd75bada226c9050a1908a6519ab28:splparser/cmdparsers/searchregexes.py
