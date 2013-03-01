@@ -160,13 +160,14 @@ class SPLToken(object):
         return self.__repr__()
 
 def extract_quote(data):
-    escaped_slash_holder = "~#888$*$333#~"
-    escaped_quote_holder = "~#777$*$222#~"
+    escaped_slash_holder = "~#$slash$#~"
+    escaped_quote_holder = "~#$quote$#~"
     quote_char = data[0]
+    data.encode('string-escape')
     escaped_quote = r'\"'
     if quote_char == "'":
         escaped_quote = r"\'"
-    tmp_data = data.replace('\\', escaped_slash_holder)
+    tmp_data = data.replace(r'\\', escaped_slash_holder)
     tmp_data = tmp_data.replace(escaped_quote, escaped_quote_holder)
     next_quote_pos = tmp_data[1:].find(quote_char) + 1
     if next_quote_pos == -1:
