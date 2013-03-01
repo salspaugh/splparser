@@ -25,6 +25,7 @@ setuptools.setup(
     packages=['splparser', 
         'splparser.lexers', 
         'splparser.parsetabs',
+        'splparser.regexes',
         'splparser.rules',
         'splparser.rules.common', 
         'test'],
