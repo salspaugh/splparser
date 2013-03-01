@@ -1,7 +1,7 @@
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.fieldrules import *
+from splparser.rules.common.fieldrules import *
 
 # WARNING: The order of the next two rules is important.
 def p_fieldlist_field(p):

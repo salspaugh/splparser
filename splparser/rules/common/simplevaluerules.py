@@ -1,7 +1,7 @@
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.uminusrules import *
+from splparser.rules.common.uminusrules import *
 
 def p_simplevalue_times(p):
     """simplevalue : simplefield"""

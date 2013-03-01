@@ -1,8 +1,8 @@
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.evalfnexprrules import *
-from splparser.cmdparsers.common.simplevaluerules import *
+from splparser.rules.common.evalfnexprrules import *
+from splparser.rules.common.simplevaluerules import *
 
 def p_statsfnexpr_simplefield(p):
     """statsfnexpr : STATS_FN simplefield

@@ -1,7 +1,7 @@
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.simplevaluerules import *
+from splparser.rules.common.simplevaluerules import *
 
 def p_evalfnexpr_empty(p):
     """evalfnexpr : EVAL_FN LPAREN RPAREN 

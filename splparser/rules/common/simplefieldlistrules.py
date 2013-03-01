@@ -1,7 +1,7 @@
 
 from splparser.parsetree import *
 
-from splparser.cmdparsers.common.simplefieldrules import *
+from splparser.rules.common.simplefieldrules import *
 
 # WARNING: The order of the next two rules is important.
 def p_simplefieldlist_simplefield(p):
