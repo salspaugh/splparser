@@ -3,6 +3,9 @@
 *.log
 parse.py
 
+# OS specific files
+.DS_Store
+
 # Editor temp files 
 *.swp
 *.swo
