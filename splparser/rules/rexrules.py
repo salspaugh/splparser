@@ -26,7 +26,7 @@ def p_rexcmd_rex(p):
 
 def p_rexcmd_some_rex(p):
     """rexcmd : REX rex_req regex
-              |  REX regex max_match"""
+              | REX regex max_match"""
     p[0] = ParseTreeNode('REX')
     p[0].add_children([p[2],p[3]])
 
