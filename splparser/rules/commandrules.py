@@ -494,26 +494,6 @@ def p_cmdexpr_sendemail(p):
     """cmdexpr : SENDEMAIL arglist
                | SENDEMAIL MACRO"""
 
-@notimplemented
-def p_cmdexpr_sichart(p):
-    """cmdexpr : SICHART arglist
-               | SICHART MACRO"""
-
-@notimplemented
-def p_cmdexpr_sirare(p):
-    """cmdexpr : SIRARE arglist
-               | SIRARE MACRO"""
-
-@notimplemented
-def p_cmdexpr_sistats(p):
-    """cmdexpr : SISTATS arglist
-               | SISTATS MACRO"""
-
-@notimplemented
-def p_cmdexpr_sitop(p):
-    """cmdexpr : SITOP arglist
-               | SITOP MACRO"""
-
 @splcommandrule
 def p_cmdexpr_sort(p):
     """cmdexpr : SORT arglist
