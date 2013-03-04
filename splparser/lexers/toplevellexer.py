@@ -234,7 +234,7 @@ class SPLLexer(object):
 def lex():
     return SPLLexer()
 
-def tokenize(data, debug = False, debuglog = None):
+def tokenize(data, debug=False, debuglog=None):
     lexer = SPLLexer()
     lexer.input(data)
     tokens = []
