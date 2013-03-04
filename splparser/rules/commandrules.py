@@ -84,7 +84,9 @@ def p_cmdexpr_bucketdir(p):
 @notimplemented
 def p_cmdexpr_chart(p):
     """cmdexpr : CHART arglist
-               | CHART MACRO"""
+               | CHART MACRO
+               | SICHART arglist
+               | SICHART MACRO"""
 
 @notimplemented
 def p_cmdexpr_cluster(p):
@@ -389,7 +391,9 @@ def p_cmdexpr_rangemap(p):
 @notimplemented
 def p_cmdexpr_rare(p):
     """cmdexpr : RARE arglist
-               | RARE MACRO"""
+               | RARE MACRO
+               | SIRARE arglist
+               | SIRARE MACRO"""
 
 @notimplemented
 def p_cmdexpr_regex(p):
@@ -491,6 +495,7 @@ def p_cmdexpr_sendemail(p):
                | SENDEMAIL MACRO"""
 
 @notimplemented
+<<<<<<< HEAD
 def p_cmdexpr_sichart(p):
     """cmdexpr : SICHART arglist
                | SICHART MACRO"""
@@ -523,7 +528,9 @@ def p_cmdexpr_spath(p):
 @splcommandrule
 def p_cmdexpr_stats(p):
     """cmdexpr : STATS arglist
-               | STATS MACRO"""
+               | STATS MACRO
+               | SISTATS arglist
+               | SISTATS MACRO"""
 
 @notimplemented
 def p_cmdexpr_strcat(p):
@@ -560,7 +567,9 @@ def p_cmdexpr_timechart(p):
 @splcommandrule
 def p_cmdexpr_top(p):
     """cmdexpr : TOP arglist
-               | TOP MACRO"""
+               | TOP MACRO
+               | SITOP arglist
+               | SITOP MACRO"""
 
 @notimplemented
 def p_cmdexpr_transaction(p):
