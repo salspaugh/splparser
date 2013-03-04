@@ -506,11 +506,6 @@ def p_cmdexpr_sistats(p):
                | SISTATS MACRO"""
 
 @notimplemented
-def p_cmdexpr_sitimechart(p):
-    """cmdexpr : SITIMECHART arglist
-               | SITIMECHART MACRO"""
-
-@notimplemented
 def p_cmdexpr_sitop(p):
     """cmdexpr : SITOP arglist
                | SITOP MACRO"""
@@ -558,7 +553,9 @@ def p_cmdexpr_tail(p):
 @splcommandrule
 def p_cmdexpr_timechart(p):
     """cmdexpr : TIMECHART arglist
-               | TIMECHART MACRO"""
+               | TIMECHART MACRO
+               | SITIMECHART arglist
+               | SITIMECHART MACRO"""
 
 @splcommandrule
 def p_cmdexpr_top(p):

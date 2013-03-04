@@ -17,8 +17,9 @@ def p_cmdexpr_timechart(p):
     p[0] = p[1]
 
 def p_timechartcmd(p):
-    """timechartcmd : TIMECHART tcarglist"""
-    p[0] = ParseTreeNode('TIMECHART')
+    """timechartcmd : TIMECHART tcarglist
+                    | SITIMECHART tcarglist"""
+    p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
    
 def p_tctarglist_tcarg(p):

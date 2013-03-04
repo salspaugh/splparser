@@ -30,6 +30,7 @@ tokens = [
 
 reserved = {
     'timechart' : 'TIMECHART', 
+    'sitimechart' : 'SITIMECHART', 
     'sparkline' : 'SPARKLINE',
     'as' : 'ASLC',
     'by' : 'BYLC',
