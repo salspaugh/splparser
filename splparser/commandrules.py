@@ -515,7 +515,7 @@ def p_cmdexpr_sitop(p):
     """cmdexpr : SITOP arglist
                | SITOP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_sort(p):
     """cmdexpr : SORT arglist
                | SORT MACRO"""
