@@ -81,7 +81,9 @@ def p_statsopt_delimiter(p):
 
 def p_statscmdstart_statsfnexpr(p):
     """statscmdstart : STATS statsfnexpr
-                     | STATS statsoptlist statsfnexpr"""
+                     | STATS statsoptlist statsfnexpr
+                     | SISTATS statsfnexpr
+                     | SISTATS statsoptlist statsfnexpr"""
     p[0] = ParseTreeNode('STATS')
     fn_idx = 2
     if len(p) > 3:
