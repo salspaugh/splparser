@@ -495,7 +495,6 @@ def p_cmdexpr_sendemail(p):
                | SENDEMAIL MACRO"""
 
 @notimplemented
-<<<<<<< HEAD
 def p_cmdexpr_sichart(p):
     """cmdexpr : SICHART arglist
                | SICHART MACRO"""
