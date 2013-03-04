@@ -5,16 +5,20 @@ import logging
 import os
 import ply.yacc
 
+LOGDIR = 'logs'
+logging.getLogger().setLevel(logging.DEBUG)
+
 class SPLParser(object):
 
-    def __init__(self, lexermod, parsetab_name, parsetab_dir, rulesmod, optimize=False):
+    def __init__(self, lexermod, parsetab_name, parsetab_dir, logname, rulesmod, optimize=False):
         self.lexer = lexermod.lex()
         self.parsetab_name = parsetab_name
         self.parsetab_dir = parsetab_dir
         self.parsetab = self.setup_parsetab()
-        self.log = self.setup_log()
+        self.log = self.setup_log(logname)
         self.rules = rulesmod
         self.parser = ply.yacc.yacc(module=self.rules, 
+                                    debug=True,
                                     debuglog=self.log, 
                                     tabmodule=self.parsetab_name, 
                                     outputdir=self.parsetab_dir,
@@ -51,19 +55,26 @@ class SPLParser(object):
 
         return parsetab
     
-    def setup_log(self):
-        logging.basicConfig(
-            level = logging.DEBUG,
-            filename = "splparser.log",
-            filemode = "w",
-            format = "%(filename)10s:%(lineno)4d:%(message)s"
-        )
-        return logging.getLogger()
+    def setup_log(self, name):
+        try:
+            os.stat(LOGDIR)
+        except:
+            try:
+                os.makedirs(LOGDIR)
+            except OSError:
+                sys.stderr.write("WARNING: Can't write logs to ./" + LOGDIR + "\n")
+        
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.DEBUG)
+        filehandler = logging.FileHandler(LOGDIR + "/" + str(name) + ".log")
+        filehandler.setLevel(logging.DEBUG)
+        logger.addHandler(filehandler)
+        return logger
     
     def parse(self, data):
         parsetree = None
         try:
-            parsetree = self.parser.parse(data, lexer=self.lexer)
+            parsetree = self.parser.parse(data, lexer=self.lexer, debug=self.log)
         except NotImplementedError:
             raise
         except Exception:
