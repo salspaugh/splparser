@@ -42,8 +42,14 @@ def p_statscmdstart(p):
                      | STATS EVAL
                      | STATS statsoptlist STATS_FN
                      | STATS statsoptlist COMMON_FN
-                     | STATS statsoptlist EVAL"""
-    p[0] = ParseTreeNode('STATS')
+                     | STATS statsoptlist EVAL
+                     | SISTATS STATS_FN
+                     | SISTATS COMMON_FN  
+                     | SISTATS EVAL
+                     | SISTATS statsoptlist STATS_FN
+                     | SISTATS statsoptlist COMMON_FN
+                     | SISTATS statsoptlist EVAL"""
+    p[0] = ParseTreeNode(p[1].upper())
     fn_idx = 2
     if len(p) > 3:
         fn_idx = 3
@@ -73,23 +79,6 @@ def p_statsopt_delimiter(p):
     comma_node = ParseTreeNode('COMMA')
     p[0].add_child(comma_node)
 
-#def p_statscmdstart_asbylist(p):
-#    """statscmdstart : STATS STATS_FN asbylist
-#                     | STATS COMMON_FN asbylist
-#                     | STATS EVAL asbylist"""
-#                    # | STATS statsoptlist STATS_FN asbylist
-#                    # | STATS statsoptlist COMMON_FN asbylist
-#                    # | STATS statsoptlist EVAL asbylist"""
-#    p[0] = ParseTreeNode('STATS')
-#    fn_idx = 2
-#    if len(p) > 4:
-#        fn_idx = 3
-#        p[0].add_children(p[2].children)
-#    asby_idx = fn_idx + 1
-#    fn_node = ParseTreeNode(p[fn_idx].upper())
-#    fn_node.add_children(p[asby_idx].children)
-#    p[0].add_child(fn_node)
-
 def p_statscmdstart_statsfnexpr(p):
     """statscmdstart : STATS statsfnexpr
                      | STATS statsoptlist statsfnexpr"""
@@ -99,19 +88,6 @@ def p_statscmdstart_statsfnexpr(p):
         fn_idx = 3
         p[0].add_children(p[2].children)
     p[0].add_children(p[fn_idx].children)
-
-#def p_statscmdstart_statsfnexpr_asbylist(p):
-#    """statscmdstart : STATS statsfnexpr asbylist
-#                     | STATS statsoptlist statsfnexpr asbylist"""
-#    p[0] = ParseTreeNode('STATS')
-#    fn_idx = 2
-#    if len(p) > 4:
-#        fn_idx = 3
-#        p[0].add_children(p[2].children)
-#    asby_idx = fn_idx + 1
-#    p[fn_idx].children[0].add_children(p[asby_idx].children)
-#    p[0].add_children(p[fn_idx].children)
-#    #p[0].children[0].add_children(p[asby_idx].children)
 
 def p_statscmdcont_statscmdcont(p):
     """statscmdcont : statscmdcont statscmdcont"""

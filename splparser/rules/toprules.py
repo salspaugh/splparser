@@ -16,29 +16,33 @@ def p_cmdexpr_top(p):
     p[0] = p[1]
 
 def p_top_fieldlist(p):
-    """topcmd : TOP fieldlist"""
-    p[0] = ParseTreeNode('TOP')
+    """topcmd : TOP fieldlist
+              | SITOP fieldlist"""
+    p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
 
 def p_top_fieldlist_by(p):
-    """topcmd : TOP fieldlist by fieldlist"""
+    """topcmd : TOP fieldlist by fieldlist
+              | SITOP fieldlist by fieldlist"""
     by_node = ParseTreeNode('BY')
     by_node.add_children(p[4].children)
-    p[0] = ParseTreeNode('TOP')
+    p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
     p[0].add_child(by_node)
 
 def p_top_topopt_fieldlist(p):
-    """topcmd : TOP topoptlist fieldlist"""
-    p[0] = ParseTreeNode('TOP')
+    """topcmd : TOP topoptlist fieldlist
+              | SITOP topoptlist fieldlist"""
+    p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
 def p_top_topopt_fieldlist_by(p):
-    """topcmd : TOP topoptlist fieldlist by fieldlist"""
+    """topcmd : TOP topoptlist fieldlist by fieldlist
+              | SITOP topoptlist fieldlist by fieldlist"""
     by_node = ParseTreeNode('BY')
     by_node.add_children(p[5].children)
-    p[0] = ParseTreeNode('TOP')
+    p[0] = ParseTreeNode(p[1].upper())
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
     p[0].add_child(by_node)
