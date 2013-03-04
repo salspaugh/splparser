@@ -26,6 +26,7 @@ reserved = {
     'by' : 'BYLC',
     'BY' : 'BYUC',
     'top' : 'TOP', 
+    'sitop' : 'SITOP', 
 }
 
 tokens = tokens + list(reserved.values())

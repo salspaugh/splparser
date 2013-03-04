@@ -26,6 +26,7 @@ tokens = [
 
 reserved = {
     'stats' : 'STATS', 
+    'sistats' : 'SISTATS', 
     'sparkline' : 'SPARKLINE',
     'as' : 'ASLC',
     'by' : 'BYLC',
