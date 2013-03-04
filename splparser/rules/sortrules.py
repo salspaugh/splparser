@@ -30,11 +30,9 @@ def p_sort_num_sortfields(p):
     p[0].add_children([num] + p[3])
 
 def p_sort_num_limit_sortfields(p):
-    """sortcmd : SORT WORD EQ value sortfields"""
-    print p[4]
-    print p[5]
+    """sortcmd : SORT field EQ value sortfields"""
     p[0] = ParseTreeNode('SORT')
-    p[0].add_children(p[5])
+    p[0].add_children([p[4]] + p[5])
 
 def p_sortfields_list(p):
     """sortfields : sortfield COMMA sortfields"""

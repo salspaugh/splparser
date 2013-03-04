@@ -1,4 +1,4 @@
->>> import splparser.parser
+>>> import splparser
 
 >>> splparser.parse("sort num(ip), -str(url)").print_tree()
 ('ROOT')
@@ -50,9 +50,7 @@
 ('ROOT')
     ('STAGE')
         ('SORT')
-            ('EQ')
-                ('WORD': 'limit')
-                ('INT': '9001')
+            ('INT': '9001')
             ('ASCENDING')
                 ('POWER')
                     ('WORD': 'level')
