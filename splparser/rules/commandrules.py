@@ -430,7 +430,7 @@ def p_cmdexpr_return(p):
 def p_cmdexpr_reverse(p):
     """cmdexpr : REVERSE"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_rex(p):
     """cmdexpr : REX arglist
                | REX MACRO"""
