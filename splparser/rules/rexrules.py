@@ -48,7 +48,7 @@ def p_rexcmd_error_rex(p):
     p[0].add_child(p[2])
 
 def p_rex_req(p):
-    """rex_req : rex_opt_list EQ value"""
+    """rex_req : rex_opt EQ value"""
     p[0] = ParseTreeNode('EQ')
     p[0].add_children([p[1],p[3]])
 
@@ -57,9 +57,9 @@ def p_rex_max_match(p):
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
 
-def p_rex_opt_list(p):
-    """rex_opt_list : FIELD
-                    | MODE"""
+def p_rex_opt(p):
+    """rex_opt : FIELD
+               | MODE"""
     p[0] = ParseTreeNode(p[1].upper())
 
 def p_error(p):
