@@ -494,7 +494,7 @@ def p_cmdexpr_sendemail(p):
     """cmdexpr : SENDEMAIL arglist
                | SENDEMAIL MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_sort(p):
     """cmdexpr : SORT arglist
                | SORT MACRO"""
