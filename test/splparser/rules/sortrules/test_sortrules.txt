@@ -46,7 +46,7 @@
             ('ASCENDING')
                 ('LITERAL': '"Vegeta what does the scouter say about his power level"')
 
->>> splparser.parse("sort limit=9001 +power(level)")
+>>> splparser.parse('sort limit=9001 +power(level)').print_tree()
 ('ROOT')
     ('STAGE')
         ('SORT')
