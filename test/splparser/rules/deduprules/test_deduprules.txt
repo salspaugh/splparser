@@ -6,6 +6,13 @@
         ('DEDUP')
             ('WORD': 'host')
 
+>>> splparser.parser("dedup DMZ:192.168.11.44/2607").print_tree()
+('ROOT')
+    ('STAGE')
+        ('DEDUP')
+            ('NBSTR': 'DMZ:192.168.11.44/2607')
+
+
 >>> splparser.parse("dedup test me").print_tree()
 ('ROOT')
     ('STAGE')
@@ -28,6 +35,17 @@
             ('SORTBY')
                 ('ASCENDING')
                     ('ID': '_time')
+
+>>> splparser.parse("dedup HostName, signature, action sortby HostName").print_tree()
+('ROOT')
+    ('STAGE')
+        ('DEDUP')
+            ('WORD': 'HostName')
+            ('WORD': 'signature')
+            ('WORD': 'action')
+            ('SORTBY')
+                ('ASCENDING')
+                    ('WORD': 'HostName')
 
 >>> splparser.parse("dedup 1337 haxorz leet=true").print_tree()
 ('ROOT')
