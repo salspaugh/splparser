@@ -590,7 +590,7 @@ def p_cmdexpr_untable(p):
     """cmdexpr : UNTABLE arglist
                | UNTABLE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_where(p):
     """cmdexpr : WHERE arglist
                | WHERE MACRO"""

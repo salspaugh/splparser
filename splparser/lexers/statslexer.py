@@ -43,10 +43,11 @@ reserved = {
 tokens = tokens + list(reserved.values())
 
 precedence = (
-    ('left', 'COMMA'),
-    ('right', 'EQ'),
+    ('left', 'COMMA', 'AND', 'OR', 'XOR'), 
+    ('right', 'NOT', 'LIKE'),
+    ('left', 'EQ', 'LT', 'LE', 'GE', 'GT', 'NE', 'DEQ'),
     ('left', 'PLUS', 'MINUS'), 
-    ('left', 'TIMES', 'DIVIDES'), 
+    ('left', 'TIMES', 'DIVIDES', 'MODULUS', 'PERIOD'), 
     ('right', 'UMINUS'),
 )
 

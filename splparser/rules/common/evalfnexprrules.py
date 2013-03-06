@@ -3,17 +3,6 @@ from splparser.parsetree import *
 
 from splparser.rules.common.simplevaluerules import *
 
-def p_evalfnexpr_empty(p):
-    """evalfnexpr : EVAL_FN LPAREN RPAREN 
-                  | COMMON_FN LPAREN RPAREN"""
-    p[0] = ParseTreeNode(p[1].upper())
-
-def p_evalfnexpr_evalfn(p):
-    """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
-                  | COMMON_FN LPAREN oplist RPAREN"""
-    p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_children(p[3].children)
-
 def p_oplist_parens(p):
     """oplist : LPAREN oplist RPAREN"""
     p[0] = p[2]
@@ -29,6 +18,17 @@ def p_oplist(p):
 def p_opexpr_evalfnexpr(p):
     """opexpr : evalfnexpr"""
     p[0] = p[1]
+
+def p_evalfnexpr_empty(p):
+    """evalfnexpr : EVAL_FN LPAREN RPAREN 
+                  | COMMON_FN LPAREN RPAREN"""
+    p[0] = ParseTreeNode(p[1].upper())
+
+def p_evalfnexpr_evalfn(p):
+    """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
+                  | COMMON_FN LPAREN oplist RPAREN"""
+    p[0] = ParseTreeNode(p[1].upper())
+    p[0].add_children(p[3].children)
 
 def p_opexpr_simplevalue(p):
     """opexpr : simplevalue"""
@@ -52,8 +52,68 @@ def p_opexpr_not(p):
     p[0] = ParseTreeNode('NOT')
     p[0].add_child(p[2])
 
-def p_opexpr_nonassociative_op(p):
-    """opexpr : opexpr nonassociative_op opexpr"""
+def p_opexpr_minus(p):
+    """opexpr : opexpr MINUS opexpr"""
+    p[0] = ParseTreeNode('MINUS')
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_opexpr_divides(p):
+    """opexpr : opexpr DIVIDES opexpr"""
+    p[0] = ParseTreeNode('DIVIDES')
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_opexpr_modulus(p):
+    """opexpr : opexpr MODULUS opexpr"""
+    p[0] = ParseTreeNode('MODULUS')
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_opexpr_xor(p):
+    """opexpr : opexpr XOR opexpr"""
+    p[0] = ParseTreeNode('XOR')
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_opexpr_like(p):
+    """opexpr : opexpr LIKE opexpr"""
+    p[0] = ParseTreeNode('LIKE')
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_opexpr_comparator(p):
+    """opexpr : opexpr comparator opexpr %prec EQ"""
     p[0] = p[2]
     if p[1].type[0] == '_':
         p[0].add_children(p[1].children)
@@ -64,80 +124,37 @@ def p_opexpr_nonassociative_op(p):
     else:
         p[0].add_child(p[3])
 
-def p_opexpr_minus(p):
-    """opexpr : simplevalue MINUS simplevalue"""
-    p[0] = ParseTreeNode('MINUS')
-    p[0].add_children([p[1], p[3]])
-
-#def p_nonassociative_op_minus(p):
-#    """nonassociative_op : MINUS"""
-#    p[0] = ParseTreeNode(p[1].upper())
-
-def p_nonassociative_op_divides(p):
-    """nonassociative_op : DIVIDES"""
-    p[0] = ParseTreeNode('DIVIDE')
-
-def p_nonassociative_op_modulus(p):
-    """nonassociative_op : MODULUS"""
-    p[0] = ParseTreeNode(p[1].upper())
-
-def p_nonassociative_op_xor(p):
-    """nonassociative_op : XOR"""
-    p[0] = ParseTreeNode(p[1].upper())
-
-def p_nonassociative_op_like(p):
-    """nonassociative_op : LIKE"""
-    p[0] = ParseTreeNode(p[1].upper())
-
-# TODO: Maybe use this instead of the individual comparison rules or delete it.
-#def p_nonassociative_op_comparison(p):
-#    """nonassociative_op : COMPARISON"""
-#    p[0] = ParseTreeNode(p[1].upper())
-
-# TODO: Make these one rule for readability.
-def p_nonassociative_op_lt(p):
-    """nonassociative_op : LT"""
+def p_comparator_lt(p):
+    """comparator : LT"""
     p[0] = ParseTreeNode('LT')
 
-def p_nonassociative_op_gt(p):
-    """nonassociative_op : GT"""
+def p_comparator_gt(p):
+    """comparator : GT"""
     p[0] = ParseTreeNode('GT')
 
-def p_nonassociative_op_le(p):
-    """nonassociative_op : LE"""
+def p_comparator_le(p):
+    """comparator : LE"""
     p[0] = ParseTreeNode('LE')
 
-def p_nonassociative_op_ge(p):
-    """nonassociative_op : GE"""
+def p_comparator_ge(p):
+    """comparator : GE"""
     p[0] = ParseTreeNode('GE')
 
-def p_nonassociative_op_ne(p):
-    """nonassociative_op : NE"""
+def p_comparator_ne(p):
+    """comparator : NE"""
     p[0] = ParseTreeNode('NE')
 
-def p_nonassociative_op_eq(p):
-    """nonassociative_op : EQ"""
+def p_comparator_eq(p):
+    """comparator : EQ"""
     p[0] = ParseTreeNode('EQ')
 
-def p_nonassociative_op_deq(p):
-    """nonassociative_op : DEQ"""
+def p_comparator_deq(p):
+    """comparator : DEQ"""
     p[0] = ParseTreeNode('DEQ')
 
 def p_opexpr_concat(p):
     """opexpr : opexpr PERIOD opexpr"""
     p[0] = ParseTreeNode('CONCAT', associative=True)
-    if p[1].type[0] == '_':
-        p[0].add_children(p[1].children)
-    else:
-        p[0].add_child(p[1])
-    if p[3].type[0] == '_':
-        p[0].add_children(p[3].children)
-    else:
-        p[0].add_child(p[3])
-
-def p_opexpr_associative_op(p):
-    """opexpr : opexpr associative_op opexpr"""
-    p[0] = p[2]
     if p[1].type[0] == '_':
         p[0].add_children(p[1].children)
     else:
@@ -159,19 +176,35 @@ def p_opexpr_plus(p):
     else:
         p[0].add_child(p[3])
 
-#def p_associative_op_plus(p):
-#    """associative_op : PLUS"""
-#    p[0] = ParseTreeNode('PLUS', associative=True)
-
-def p_associative_op_times(p):
-    """associative_op : TIMES"""
+def p_opexpr_times(p):
+    """opexpr : opexpr TIMES opexpr"""
     p[0] = ParseTreeNode('TIMES', associative=True)
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
 
-def p_associative_op_and(p):
-    """associative_op : AND"""
+def p_opexpr_boolean_op(p):
+    """opexpr : opexpr boolean_op opexpr %prec COMMA"""
+    p[0] = p[2]
+    if p[1].type[0] == '_':
+        p[0].add_children(p[1].children)
+    else:
+        p[0].add_child(p[1])
+    if p[3].type[0] == '_':
+        p[0].add_children(p[3].children)
+    else:
+        p[0].add_child(p[3])
+
+def p_boolean_op_and(p):
+    """boolean_op : AND"""
     p[0] = ParseTreeNode('AND', associative=True)
 
-def p_associative_op_or(p):
-    """associative_op : OR"""
+def p_boolean_op_or(p):
+    """boolean_op : OR"""
     p[0] = ParseTreeNode('OR', associative=True)
 
