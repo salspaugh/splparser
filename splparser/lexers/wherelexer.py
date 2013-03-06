@@ -19,21 +19,16 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'EVAL_FN',
-    'COMMON_FN',
-    'STATS_FN',
+    'COMMON_FN'
 ]
 
 reserved = {
-    'rename' : 'RENAME', 
-    'sparkline' : 'SPARKLINE',
-    'as' : 'ASLC',
-    'AS' : 'ASUC',
     'AND' : 'AND',
     'OR' : 'OR',
     'NOT' : 'NOT',
     'XOR' : 'XOR',
     'LIKE' : 'LIKE',
-    'eval' : 'EVAL', 
+    'where' : 'WHERE',
 }
 
 tokens = tokens + list(reserved.values())
@@ -104,9 +99,7 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    if re.match(stats_fn, t.value):
-        return 'STATS_FN'
-    elif re.match(eval_fn, t.value):
+    if re.match(eval_fn, t.value):
         return 'EVAL_FN'
     elif re.match(common_fn, t.value):
         return 'COMMON_FN'

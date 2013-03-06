@@ -17,6 +17,10 @@ def p_simplefield_nbstr(p):
     """simplefield : NBSTR"""
     p[0] = ParseTreeNode('NBSTR', raw=p[1])
 
+def p_simplefield_eval_fn(p):
+    """simplefield : EVAL_FN"""
+    p[0] = ParseTreeNode('WORD', raw=p[1])
+
 def p_simplefield_num(p):
     """simplefield : num"""
     p[0] = p[1]
