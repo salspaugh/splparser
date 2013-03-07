@@ -29,8 +29,8 @@ def p_dedup_args(p):
     p[0] = p[1].children
 
 def p_dedup_args_field(p):
-    """args : field fieldlist"""
-    p[0] = [p[1]] + p[2].children
+    """args : INT fieldlist"""
+    p[0] = [ParseTreeNode('INT', raw=p[1])] + p[2].children
 
 def p_dedup_args_option(p):
     """args : fieldlist optionlist"""
@@ -41,31 +41,37 @@ def p_dedup_args_sort(p):
     p[0] = p[1].children + [p[2]]
 
 def p_dedup_args_field_option(p):
-    """args : field fieldlist optionlist"""
-    p[0] = [p[1]] + p[2].children + p[3]
+    """args : INT fieldlist optionlist"""
+    p[0] = [ParseTreeNode('INT', raw=p[1])] + p[2].children + p[3]
 
 def p_dedup_args_field_sort(p):
-    """args : field fieldlist sort"""
-    p[0] = [p[1]] + p[2].children + [p[3]]
+    """args : INT fieldlist sort"""
+    p[0] = [ParseTreeNode('INT', raw=p[1])] + p[2].children + [p[3]]
 
 def p_dedup_args_option_sort(p):
     """args : fieldlist optionlist sort"""
     p[0] = p[1].children + p[2] + [p[3]]
 
 def p_dedup_args_field_option_sort(p):
-    """args : field fieldlist optionlist sort"""
-    p[0] = [p[1]] + p[2].children + p[3] + [p[4]]
+    """args : INT fieldlist optionlist sort"""
+    p[0] = [ParseTreeNode('INT', raw=p[1])] + p[2].children + p[3] + [p[4]]
 
 def p_optionlist(p):
-    """optionlist : field EQ value optionlist"""
+    """optionlist : DEDUP_OPT EQ field optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([p[1], p[3]])
+    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
     p[0] = [option] + p[4]
 
-def p_optionlist_one(p):
-    """optionlist : field EQ value"""
+def p_optionlist_comma(p):
+    """optionlist : DEDUP_OPT EQ field COMMA optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([p[1], p[3]])
+    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    p[0] = [option] + p[5]
+
+def p_optionlist_one(p):
+    """optionlist : DEDUP_OPT EQ field"""
+    option = ParseTreeNode('EQ')
+    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
     p[0] = [option]
 
 def p_sort(p):

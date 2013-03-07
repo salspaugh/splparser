@@ -128,7 +128,7 @@ def p_cmdexpr_dbinspect(p):
     """cmdexpr : DBINSPECT arglist
                | DBINSPECT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_dedup(p):
     """cmdexpr : DEDUP arglist
                | DEDUP MACRO"""

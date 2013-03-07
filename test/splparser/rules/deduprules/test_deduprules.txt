@@ -6,11 +6,11 @@
         ('DEDUP')
             ('WORD': 'host')
 
->>> splparser.parser("dedup DMZ:192.168.11.44/2607").print_tree()
+>>> splparser.parse("dedup DMZ:192.168.11.44/2607").print_tree()
 ('ROOT')
     ('STAGE')
         ('DEDUP')
-            ('NBSTR': 'DMZ:192.168.11.44/2607')
+            ('ID': 'DMZ:192.168.11.44/2607')
 
 
 >>> splparser.parse("dedup test me").print_tree()
@@ -47,17 +47,17 @@
                 ('ASCENDING')
                     ('WORD': 'HostName')
 
->>> splparser.parse("dedup 1337 haxorz leet=true").print_tree()
+>>> splparser.parse("dedup 1337 haxorz consecutive=true").print_tree()
 ('ROOT')
     ('STAGE')
         ('DEDUP')
             ('INT': '1337')
             ('WORD': 'haxorz')
             ('EQ')
-                ('WORD': 'leet')
+                ('WORD': 'consecutive')
                 ('WORD': 'true')
 
->>> splparser.parse('dedup lol rofl lmao keepevents=true keepempty=true sortby -str(hilarity)").print_tree()
+>>> splparser.parse("dedup lol rofl lmao keepevents=true keepempty=true sortby -str(hilarity)").print_tree()
 ('ROOT')
     ('STAGE')
         ('DEDUP')
@@ -76,7 +76,7 @@
                         ('WORD': 'hilarity')
         
 
->>> splparser.parse('dedup 9000 lol rofl lmao keepevents=true keepempty=true sortby -str(hilarity)").print_tree()
+>>> splparser.parse("dedup 9000 lol rofl lmao keepevents=true keepempty=true sortby -str(hilarity)").print_tree()
 ('ROOT')
     ('STAGE')
         ('DEDUP')

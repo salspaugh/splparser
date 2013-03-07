@@ -7,6 +7,15 @@ import re
 from splparser.regexes.evalregexes import *
 from splparser.exceptions import SPLSyntaxError
 
+# overriding regexes
+
+end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=/)|(?=-)|(?=\*)|$)'
+
+word_no_end = r'(?:[a-zA-Z]+)'
+word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')'
+id = r'([\w:.\/]+)+' + end_of_token
+dedup_opt = r'(?:consecutive|keepempty|keepevents)' + end_of_token
+
 tokens = [
     'COMMA',
     'WILDCARD',
@@ -20,6 +29,7 @@ tokens = [
     'PLUS', 'MINUS',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'DEDUP_OPT',
 ]
 
 reserved = {
@@ -32,6 +42,12 @@ reserved = {
 }
 
 tokens = tokens + list(reserved.values())
+
+@TOKEN(dedup_opt)
+def t_DEDUP_OPT(t):
+    t.type = type_if_reserved(t, 'DEDUP_OPT')
+    t.lexer.begin('ipunchecked')
+    return t
 
 t_ignore = ' '
 
@@ -137,14 +153,14 @@ def t_FLOAT(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(word)
-def t_WORD(t):
-    t.type = type_if_reserved(t, 'WORD')
+@TOKEN(int)
+def t_INT(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(int)
-def t_INT(t):
+@TOKEN(word)
+def t_WORD(t):
+    t.type = type_if_reserved(t, 'WORD')
     t.lexer.begin('ipunchecked')
     return t
 
