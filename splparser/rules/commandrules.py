@@ -133,10 +133,9 @@ def p_cmdexpr_dedup(p):
     """cmdexpr : DEDUP arglist
                | DEDUP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_delete(p):
-    """cmdexpr : DELETE arglist
-               | DELETE MACRO"""
+    """cmdexpr : DELETE"""
 
 @notimplemented
 def p_cmdexpr_delta(p):
