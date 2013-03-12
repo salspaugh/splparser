@@ -81,7 +81,7 @@ def p_cmdexpr_bucketdir(p):
     """cmdexpr : BUCKETDIR arglist
                | BUCKETDIR MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_chart(p):
     """cmdexpr : CHART arglist
                | CHART MACRO
