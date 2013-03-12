@@ -20,6 +20,11 @@ def p_statsfnexpr_parensimplefield(p):
     fn_node.add_child(p[3])
     p[0].add_child(fn_node)
 
+def p_statsfnexpr_empty(p):
+    """statsfnexpr : STATS_FN LPAREN RPAREN"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    fn_node = ParseTreeNode(p[1].upper())
+
 def p_statsfnexpr_keqv(p):
     """statsfnexpr : STATS_FN LPAREN simplefield EQ simplevalue RPAREN
                    | COMMON_FN LPAREN simplefield EQ simplevalue RPAREN"""
