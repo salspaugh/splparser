@@ -108,7 +108,7 @@ def p_cmdexpr_contingency(p):
     """cmdexpr : CONTINGENCY arglist
                | CONTINGENCY MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_convert(p):
     """cmdexpr : CONVERT arglist
                | CONVERT MACRO"""
