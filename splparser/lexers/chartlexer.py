@@ -29,13 +29,14 @@ tokens = [
 ]
 
 reserved = {
-    'timechart' : 'TIMECHART', 
-    'sitimechart' : 'SITIMECHART', 
+    'chart' : 'CHART', 
+    'sichart' : 'SICHART', 
     'sparkline' : 'SPARKLINE',
     'as' : 'ASLC',
     'by' : 'BYLC',
     'AS' : 'ASUC',
     'BY' : 'BYUC',
+    'over' : 'OVER',
     'AND' : 'AND',
     'OR' : 'OR',
     'NOT' : 'NOT',
