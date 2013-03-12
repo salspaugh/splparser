@@ -15,6 +15,8 @@ multikv_single_opt = r'(?:copyattrs|fields|filter|maxnewresults|forceheader|mult
 
 rex_opt = r'(?:field|mode)' + end_of_token
 
+convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
+
 plus = r'\+' + end_of_token
 
 minus = r'-' + end_of_token
