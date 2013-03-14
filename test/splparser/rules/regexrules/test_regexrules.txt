@@ -1,4 +1,3 @@
-
 Below are clips from an interactive session in which I test various aspects of the parser.
 
 >>> import splparser
@@ -23,7 +22,9 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('REGEX')
-            ('REGULAR_EXPRESSION': '"Site Category" = "Online Storage"')
+            ('EQ')
+                ('LITERAL': '"Site Category"')
+                ('REGULAR_EXPRESSION': '"Online Storage"')
 
 >>> splparser.parse('regex exception!="^\["').print_tree()
 ('ROOT')
