@@ -394,9 +394,10 @@ def p_cmdexpr_rare(p):
                | SIRARE arglist
                | SIRARE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_regex(p):
-    """cmdexpr : REGEX arglist
+    """cmdexpr : REGEX
+               | REGEX arglist
                | REGEX MACRO"""
 
 @notimplemented
