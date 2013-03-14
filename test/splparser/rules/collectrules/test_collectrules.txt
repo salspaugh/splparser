@@ -19,7 +19,7 @@
                 ('WORD': 'addtime')
                 ('WORD': 'true')
 
->>> splparser.parse("collect index=downloadcount run-in-preview=false").print_tree()
+>>> splparser.parse("collect index=downloadcount, run-in-preview=false").print_tree()
 ('ROOT')
     ('STAGE')
         ('COLLECT')
@@ -27,7 +27,7 @@
                 ('WORD': 'index')
                 ('WORD': 'downloadcount')
             ('EQ')
-                ('ID': 'run-in-preview')
+                ('WORD': 'run-in-preview')
                 ('WORD': 'false')
 
 >>> splparser.parse("collect index=huzzah file=false spool=true").print_tree()
