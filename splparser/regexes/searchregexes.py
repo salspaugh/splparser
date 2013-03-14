@@ -77,7 +77,6 @@ url_req_scheme = r'[a-zA-Z]+://(?:(?:' + hostname_no_end + r')|[a-zA-Z0-9\-*]+|(
 url_no_end = r'(?:(?:' + url_opt_scheme + r')|(?:' + url_req_scheme + r'))'
 url = r'(?:' + url_no_end + end_of_token + r')|(?:"\s*' + url_no_end + r'\s*"' + end_of_token + r')' 
 
-#word_no_end = r'(?:[*]*[a-zA-Z]+[*]*)'
 word_no_end = r'(?:[a-zA-Z]+)'
 word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')'
 
