@@ -19,4 +19,28 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('ID': '_raw')
                 ('REGULAR_EXPRESSION': '"complicated|regex(?=expression)"')
 
+>>> splparser.parse('regex "Site Category"="Online Storage"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REGEX')
+            ('REGULAR_EXPRESSION': '"Site Category" = "Online Storage"')
+
+>>> splparser.parse('regex exception!="^\["').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REGEX')
+            ('NEQ')
+                ('WORD': 'exception')
+                ('REGULAR_EXPRESSION': '"^\["')
+
+>>> splparser.parse('regex _raw !="the object is in use by another process"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REGEX')
+            ('NEQ')
+                ('ID': '_raw')
+                ('REGULAR_EXPRESSION': '"the object is in use by another process"')
+
+
+
 
