@@ -1,0 +1,25 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser
+
+>>> splparser.parse('mvexpand foo').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVEXPAND')
+            ('WORD': 'foo')
+
+>>> splparser.parse('mvexpand foo limit=100').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVEXPAND')
+            ('WORD': 'foo')
+            ('EQ')
+                ('LIMIT')
+                ('INT': '100')
+
+>>> splparser.parse('mvexpand fields').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVEXPAND')
+            ('WORD': 'fields')
