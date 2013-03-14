@@ -4,15 +4,11 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.regexes.evalregexes import *
+from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 # overriding regexes
 
-end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=/)|(?=-)|(?=\*)|$)'
-
-word_no_end = r'(?:[a-zA-Z]+)'
-word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')'
 id = r'([\w:.\/]+)+' + end_of_token
 dedup_opt = r'(?:consecutive|keepempty|keepevents)' + end_of_token
 

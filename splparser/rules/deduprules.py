@@ -23,7 +23,6 @@ def p_dedup(p):
     p[0] = ParseTreeNode('DEDUP')
     p[0].add_children(p[2])
 
-
 def p_dedup_args(p):
     """args : fieldlist"""
     p[0] = p[1].children
