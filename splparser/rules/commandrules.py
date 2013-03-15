@@ -342,7 +342,7 @@ def p_cmdexpr_mvcombine(p):
     """cmdexpr : MVCOMBINE arglist
                | MVCOMBINE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_mvexpand(p):
     """cmdexpr : MVEXPAND arglist
                | MVEXPAND MACRO"""
