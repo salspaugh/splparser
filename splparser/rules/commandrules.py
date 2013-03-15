@@ -195,9 +195,10 @@ def p_cmdexpr_filldown(p):
     """cmdexpr : FILLDOWN arglist
                | FILLDOWN MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_fillnull(p):
-    """cmdexpr : FILLNULL arglist
+    """cmdexpr : FILLNULL
+	       | FILLNULL arglist
                | FILLNULL MACRO"""
 
 @notimplemented
