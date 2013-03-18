@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import ply.yacc
-import logging
 
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError

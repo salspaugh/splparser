@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
 import ply.yacc
-import logging
 
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.rules.common.fieldrules import *
 from splparser.rules.common.fieldlistrules import *
-from splparser.rules.common.valuerules import *
 
 from splparser.lexers.deduplexer import tokens
 
