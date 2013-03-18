@@ -93,7 +93,7 @@ def p_cmdexpr_cluster(p):
     """cmdexpr : CLUSTER arglist
                | CLUSTER MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_collect(p):
     """cmdexpr : COLLECT arglist
                | COLLECT MACRO"""
