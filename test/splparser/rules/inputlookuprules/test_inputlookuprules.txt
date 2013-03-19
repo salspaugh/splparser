@@ -1,12 +1,12 @@
 >>> import splparser
 
->>> splparser.parse("inputlookup tablename")
+>>> splparser.parse("inputlookup tablename").print_tree()
 ('ROOT')
     ('STAGE')
         ('INPUTLOOKUP')
-            ('WORD': 'filename')
+            ('WORD': 'tablename')
 
->>> splparser.parse("inputlookup append=true tablename")
+>>> splparser.parse("inputlookup append=true tablename").print_tree()
 ('ROOT')
     ('STAGE')
         ('INPUTLOOKUP')
@@ -15,7 +15,7 @@
                 ('WORD': 'true')
             ('WORD': 'tablename')
 
->>> splparser.parse("inputlookup append=t userlistbyclientip.csv")
+>>> splparser.parse("inputlookup append=t userlistbyclientip.csv").print_tree()
 ('ROOT')
     ('STAGE')
         ('INPUTLOOKUP')
@@ -24,7 +24,7 @@
                 ('WORD': 't')
             ('ID': 'userlistbyclientip.csv')
 
->>> splparser.parse("inputlookup append=t start=100 max=1337 userlistbyclientip.csv")
+>>> splparser.parse("inputlookup append=t start=100 max=1337 userlistbyclientip.csv").print_tree()
 ('ROOT')
     ('STAGE')
         ('INPUTLOOKUP')
