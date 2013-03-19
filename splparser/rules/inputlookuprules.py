@@ -18,6 +18,11 @@ def p_inputlookup_name(p):
     p[0] = ParseTreeNode('INPUTLOOKUP')
     p[0].add_child(p[2])
 
+def p_inputlookup_name_optionlist(p):
+    """inputlookupcmd : INPUTLOOKUP field optionlist"""
+    p[0] = ParseTreeNode('INPUTLOOKUP')
+    p[0].add_children([p[2]] + p[3])
+
 def p_inputlookup_optionlist_name(p):
     """inputlookupcmd : INPUTLOOKUP optionlist field"""
     p[0] = ParseTreeNode('INPUTLOOKUP')
