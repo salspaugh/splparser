@@ -1,0 +1,72 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('replace *localhost with localhost in host').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('ID': '*localhost')
+                ('WORD': 'localhost')
+            ('IN')
+                ('WORD': 'host')
+
+>>> splparser.parse('replace "* localhost" with "localhost *" in host').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('LITERAL': '"* localhost"')
+                ('LITERAL': '"localhost *"')
+            ('IN')
+                ('WORD': 'host')
+
+>>> splparser.parse('replace aug with August in start_month end_month').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('WORD': 'aug')
+                ('WORD': 'August')
+            ('IN')
+                ('ID': 'start_month')
+                ('ID': 'end_month')
+
+>>> splparser.parse('replace 127.0.0.1 with localhost in host').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('IPV4ADDR': '127.0.0.1')
+                ('WORD': 'localhost')
+            ('IN')
+                ('WORD': 'host')
+
+>>> splparser.parse('replace 0 with Critical, 1 with Error in msg_level').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('ID': '0')
+                ('WORD': 'Critical')
+            ('WITH')
+                ('ID': '1')
+                ('WORD': 'Error')
+            ('IN')
+                ('ID': 'msg_level')
+
+>>> splparser.parse('replace "" with " " in errmsg').print_tree()
+('ROOT')
+    ('STAGE')
+        ('REPLACE')
+            ('WITH')
+                ('ID': '""')
+                ('" "')
+            ('IN')
+                ('WORD': 'errmsg')
+
+
+
+

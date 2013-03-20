@@ -111,3 +111,5 @@ nbstr_sans_at = r'[^,|@()=!<>\[\]\s]+'
 email = nbstr_sans_at + r'@' + nbstr_sans_at + end_of_token
 
 regular_expression = r'".*"' + end_of_token
+empty = r'"\s"'+end_of_token
+

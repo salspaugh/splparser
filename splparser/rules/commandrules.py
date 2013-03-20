@@ -416,7 +416,7 @@ def p_cmdexpr_rename(p):
     """cmdexpr : RENAME arglist
                | RENAME MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_replace(p):
     """cmdexpr : REPLACE arglist
                | REPLACE MACRO"""
