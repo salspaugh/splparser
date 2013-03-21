@@ -88,7 +88,7 @@ wc_int_part = r'[\d*]'
 wc_int = r'[1-9*](?:' + wc_int_part + r')*'
 comma_int = r'[1-9*](?:' + wc_int_part + r'){0,2}(?:,(?:' + wc_int_part + r'){3})*'
 int_no_end = r'-?(?:(?:' + wc_int + r')|(?:' + comma_int + r'))'
-int = r'(?:' + int_no_end + int_end_of_token + r')|(?:"\s*' + int_no_end + r'\s*"' + int_end_of_token + r')' 
+int = r'(?:"\s*' + int_no_end + r'\s*"' + int_end_of_token + r')' 
 
 float_end_of_token = r'(?:' + end_of_token + r'|%)'
 float_no_end = r'-?(?:(?:' + wc_int + r')|(?:' + comma_int + r')|0)\.(?:\d)+'

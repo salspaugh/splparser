@@ -150,6 +150,11 @@ def t_WORD(t):
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(int)
+def t_INT(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
 @TOKEN(id)
 def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
@@ -188,11 +193,6 @@ def t_US_PHONE(t):
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
     t.type = type_if_reserved(t, 'NBSTR')
-    t.lexer.begin('ipunchecked')
-    return t
-
-@TOKEN(int)
-def t_INT(t):
     t.lexer.begin('ipunchecked')
     return t
 
