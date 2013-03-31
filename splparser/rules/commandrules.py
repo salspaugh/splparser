@@ -167,6 +167,11 @@ def p_cmdexpr_eventstats(p):
     """cmdexpr : EVENTSTATS arglist
                | EVENTSTATS MACRO"""
 
+@splcommandrule
+def p_cmdexpr_export(p):
+    """cmdexpr : EXPORT arglist
+               | EXPORT MACRO"""
+
 @notimplemented
 def p_cmdexpr_extractkv(p):
     """cmdexpr : EXTRACT arglist
