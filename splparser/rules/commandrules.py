@@ -71,7 +71,7 @@ def p_cmdexpr_autoregress(p):
     """cmdexpr : AUTOREGRESS arglist
                | AUTOREGRESS MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_bucket(p):
     """cmdexpr : BUCKET arglist
                | BUCKET MACRO"""
