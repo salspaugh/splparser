@@ -4,6 +4,8 @@ end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?
 
 # ---------------- Command specific options: ----------------
 
+bucket_opt = r'(?:bins|minspan|span|start|end)'
+
 common_opt = r'(?:limit)' + end_of_token
 
 top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
