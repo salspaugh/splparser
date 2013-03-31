@@ -61,10 +61,9 @@ def p_cmdexpr_associate(p):
     """cmdexpr : ASSOCIATE arglist
                | ASSOCIATE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_audit(p):
-    """cmdexpr : AUDIT arglist
-               | AUDIT MACRO"""
+    """cmdexpr : AUDIT"""
 
 @notimplemented
 def p_cmdexpr_autoregress(p):
@@ -378,10 +377,9 @@ def p_cmdexpr_outputtext(p):
     """cmdexpr : OUTPUTTEXT arglist
                | OUTPUTTEXT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_overlap(p):
-    """cmdexpr : OVERLAP arglist
-               | OVERLAP MACRO"""
+    """cmdexpr : OVERLAP"""
 
 @notimplemented
 def p_cmdexpr_predict(p):
@@ -406,10 +404,9 @@ def p_cmdexpr_regex(p):
                | REGEX arglist
                | REGEX MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_relevancy(p):
-    """cmdexpr : RELEVANCY arglist
-               | RELEVANCY MACRO"""
+    """cmdexpr : RELEVANCY"""
 
 @notimplemented
 def p_cmdexpr_reltime(p):
@@ -586,10 +583,9 @@ def p_cmdexpr_typer(p):
     """cmdexpr : TYPER arglist
                | TYPER MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_uniq(p):
-    """cmdexpr : UNIQ arglist
-               | UNIQ MACRO"""
+    """cmdexpr : UNIQ"""
 
 @notimplemented
 def p_cmdexpr_untable(p):
