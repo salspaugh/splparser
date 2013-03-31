@@ -44,6 +44,7 @@ reserved = {
     'eval': 'EVAL',
     'eventcount': 'EVENTCOUNT',
     'eventstats': 'EVENTSTATS',
+    'export' : 'EXPORT',
     'extract': 'EXTRACT',
     'kv': 'KV',
     'fieldformat': 'FIELDFORMAT',
