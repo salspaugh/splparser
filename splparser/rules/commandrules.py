@@ -295,10 +295,9 @@ def p_cmdexpr_localize(p):
     """cmdexpr : LOCALIZE arglist
                | LOCALIZE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_localop(p):
-    """cmdexpr : LOCALOP arglist
-               | LOCALOP MACRO"""
+    """cmdexpr : LOCALOP"""
 
 @splcommandrule
 def p_cmdexpr_lookup(p):
