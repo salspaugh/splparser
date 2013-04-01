@@ -179,7 +179,7 @@ def p_cmdexpr_extractkv(p):
                | EXTRACT MACRO
                | KV MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_fieldformat(p):
     """cmdexpr : FIELDFORMAT arglist
                | FIELDFORMAT MACRO"""
