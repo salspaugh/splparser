@@ -27,7 +27,7 @@ def p_bucketargs(p):
 def p_bucketargs_as(p):
     """bucketargs : field as field"""
     p[0] = p[1]
-    as_node = ParseTreeNode('as')
+    as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
 
