@@ -136,7 +136,7 @@ def p_cmdexpr_dedup(p):
 def p_cmdexpr_delete(p):
     """cmdexpr : DELETE"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_delta(p):
     """cmdexpr : DELTA arglist
                | DELTA MACRO"""
