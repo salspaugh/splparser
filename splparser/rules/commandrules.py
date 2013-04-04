@@ -311,7 +311,7 @@ def p_cmdexpr_makecontinuous(p):
     """cmdexpr : MAKECONTINUOUS arglist
                | MAKECONTINUOUS MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_makemv(p):
     """cmdexpr : MAKEMV arglist
                | MAKEMV MACRO"""

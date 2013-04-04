@@ -21,6 +21,8 @@ rex_opt = r'(?:field|mode)' + end_of_token
 
 addtotals_opt = r'(?:row|col|labelfield|label|fieldname)' + end_of_token
 
+makemv_opt = r'(?:delim|tokenizer|allowempty|setsv)' + end_of_token
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token
