@@ -1,0 +1,63 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('addtotals').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+
+>>> splparser.parse('addtotals fieldname=sum').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+            ('EQ')
+                ('FIELDNAME')
+                ('WORD': 'sum')
+
+>>> splparser.parse('addtotals fieldname=sum foobar* *baz*').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+            ('EQ')
+                ('FIELDNAME')
+                ('WORD': 'sum')
+            ('ID': 'foobar*')
+            ('ID': '*baz*')
+
+>>> splparser.parse('addtotals col=t labelfield=change_name label=ALL').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+            ('EQ')
+                ('COL')
+                ('WORD': 't')
+            ('EQ')
+                ('LABELFIELD')
+                ('ID': 'change_name')
+            ('EQ')
+                ('LABEL')
+                ('WORD': 'ALL')
+
+>>> splparser.parse('addtotals col=true row=false Sessions Login 1Min Sorry').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+            ('EQ')
+                ('COL')
+                ('WORD': 'true')
+            ('EQ')
+                ('ROW')
+                ('WORD': 'false')
+            ('WORD': 'Sessions')
+            ('WORD': 'Login')
+            ('ID': '1Min')
+            ('WORD': 'Sorry')
+
+>>> splparser.parse('addtotals Errors').print_tree()
+('ROOT')
+    ('STAGE')
+        ('ADDTOTALS')
+            ('WORD': 'Errors')
+
