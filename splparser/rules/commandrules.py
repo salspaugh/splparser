@@ -21,9 +21,10 @@ def p_cmdexpr_addinfo(p):
     """cmdexpr : ADDINFO arglist
                | ADDINFO MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_addtotals(p):
-    """cmdexpr : ADDTOTALS arglist
+    """cmdexpr : ADDTOTALS
+               | ADDTOTALS arglist
                | ADDTOTALS MACRO"""
 
 @notimplemented
