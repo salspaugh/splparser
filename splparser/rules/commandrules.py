@@ -558,9 +558,10 @@ def p_cmdexpr_transaction(p):
     """cmdexpr : TRANSACTION arglist
                | TRANSACTION MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_transpose(p):
-    """cmdexpr : TRANSPOSE arglist
+    """cmdexpr : TRANSPOSE
+               | TRANSPOSE arglist
                | TRANSPOSE MACRO"""
 
 @notimplemented
