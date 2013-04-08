@@ -6,7 +6,7 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, type, raw="", associative=False):
+    def __init__(self, type, raw="", associative=False, arg=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.type
@@ -29,6 +29,25 @@ class ParseTreeNode(object):
         #if not raw == '':
         #    self.label = self.type
         self.associative = associative
+        self.arg = arg
+
+    def __eq__(self, other):
+        if len(self.children) == 0 and len(other.children) == 0:
+            return self.type == other.type and self.raw == other.raw
+        if (len(self.children) == 0 and not len(other.children) == 0) or \
+            (not len(self.children) == 0 and len(other.children) == 0):
+            return False
+        return all([self_child == other_child for self_child in self.children 
+                                            for other_child in other.children])
+
+    def template(self):
+        children = map(lambda x: x.template(), self.children) 
+        if self.arg:
+            p = ParseTreeNode('', arg=True)
+        else:
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative)
+        p.add_children(children)
+        return p
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:

@@ -24,19 +24,22 @@ def p_dedup(p):
 def p_optionlist(p):
     """optionlist : COLLECT_OPT EQ field optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    opt_node = ParseTreeNode(p[1].upper())
+    option.add_children([opt_node, p[3]])
     p[0] = [option] + p[4]
 
 def p_optionlist_comma(p):
     """optionlist : COLLECT_OPT EQ field COMMA optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    opt_node = ParseTreeNode(p[1].upper())
+    option.add_children([opt_node, p[3]])
     p[0] = [option] + p[5]
 
 def p_optionlist_one(p):
     """optionlist : COLLECT_OPT EQ field"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    opt_node = ParseTreeNode(p[1].upper())
+    option.add_children([opt_node, p[3]])
     p[0] = [option]
 
 def p_error(p):

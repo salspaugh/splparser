@@ -46,7 +46,7 @@ def p_deltaopt(p):
     p[0] = ParseTreeNode('EQ')
     opt_node = ParseTreeNode(p[1].upper())
     p[0].add_child(opt_node)
-    int_node = ParseTreeNode('INT', raw=p[3])
+    int_node = ParseTreeNode('INT', raw=p[3], arg=True)
     p[0].add_child(int_node)
 
 def p_error(p):

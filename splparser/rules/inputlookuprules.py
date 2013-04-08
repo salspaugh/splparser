@@ -31,13 +31,13 @@ def p_inputlookup_optionlist_name(p):
 def p_optionlist_single(p):
     """optionlist : INPUTLOOKUP_OPT EQ field"""
     eq = ParseTreeNode('EQ')
-    eq.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    eq.add_children([ParseTreeNode('WORD', raw=p[1], arg=True), p[3]])
     p[0] = [eq]
 
 def p_optionlist(p):
     """optionlist : INPUTLOOKUP_OPT EQ field optionlist"""
     eq = ParseTreeNode('EQ')
-    eq.add_children([ParseTreeNode('WORD', raw=p[1]), p[3]])
+    eq.add_children([ParseTreeNode('WORD', raw=p[1], arg=True), p[3]])
     p[0] = [eq] + p[4]
 
 def p_error(p):
