@@ -46,18 +46,19 @@ ipaddr_no_end = r'(?:(?:' + ipv4_addr_no_end + r')|(?:' + ipv6_addr_no_end + r')
 ipaddr = r'(?:' + ipv4_addr + r')|(?:' + ipv6_addr + r')'
 
 tld = r'[a-zA-Z]{1,255}'
-hostname_no_end = r'(?:(?:[a-zA-Z0-9\-*]+(?:\.[a-zA-Z0-9\-*]+)+)+\.?){1,255}(?::' + port + r')?'
+hostname_no_end = r'(?:(?:[a-zA-Z0-9\*-]+(?:\.[a-zA-Z0-9\*-]+)+)+\.?){1,255}(?::' + port + r')?'
 hostname = r'(?:' + hostname_no_end + end_of_token + r')|(?:"\s*' + hostname_no_end + r'\s*"' + end_of_token + r')' 
 
-valid_email_char = r"[a-zA-Z0-9!$%&*+\-/?^_`{|}~#']"
+valid_email_char = r"[a-zA-Z0-9!$%&*+\/?^_`{|}~#'-]"
 email_local_simple = r'(?:(?:' + valid_email_char + r'\.' + valid_email_char + r')|' + valid_email_char + r'){1,64}'
-email_local_quoted = r'''"(?:[a-zA-Z0-9!#$%&\'*+\-/=?^_`{|}~. (),:;<>@\\\[\]]|\"){0,64}"'''
+email_local_quoted = r'''"(?:[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~. (),:;<>@\\\[\]-]|\"){0,64}"'''
 email_domain_simple = r'(?:' + hostname_no_end + r'|' + tld + r')'
 email_domain_ip = r'(?:\[' + ipv4_addr_no_end + r'\]|\[' + ipv6_addr_no_end + '\])' 
 email_no_end = r'(?:(?:' + email_local_simple + r'@' + email_domain_simple + r')|' + \
                r'(?:' + email_local_simple + r'@' + email_domain_ip + r')|' + \
                r'(?:' + email_local_quoted + r'@' + email_domain_simple + r')|' + \
                r'(?:' + email_local_quoted + r'@' + email_domain_ip + r'))'
+email_no_end = r'(?:' + email_local_simple + r'@' + email_domain_simple + r')'
 email = r'(?:' + email_no_end + end_of_token + r')|(?:"\s*' + email_no_end + r'\s*"' + end_of_token + r')' 
 
 us_phone_no_end = r'(?:(?:(?:1-)?\d{3}-\d{3}-\d{4})|(?:\(\d{3}\)\s*\d{3}-\d{4}))'
@@ -66,10 +67,10 @@ us_phone = r'(?:' + us_phone_no_end + end_of_token + r')|(?:"\s*' + us_phone_no_
 # TODO: Enforce path restrictions. Had to remove length  restrictions because
 #       path was being matched instead of query string ...
 path_char_set = r"[a-zA-Z0-9_\-~!*'();:@&+$,?%#\[\].]"
-unix_abs_path = r'/' + path_char_set + r'*(?:/' + path_char_set + r'+)*/?'
+unix_abs_path = r'/' + path_char_set + r'+(?:/' + path_char_set + r'+)*/?'
 unix_rel_path = r'/?' + path_char_set + r'+(?:/' + path_char_set + r'+)+/?'
-windows_abs_path = r'[a-zA-Z]:\\' + path_char_set + r'*(?:\\' + path_char_set + r'+)*\\?'
-windows_rel_path = r'(?:(?:[a-zA-Z]:)?\\)?' + path_char_set + r'*(?:\\' + path_char_set + r'+)+\\?'
+windows_abs_path = r'[a-zA-Z]:\\' + path_char_set + r'+(?:\\' + path_char_set + r'+)*\\?'
+windows_rel_path = r'(?:(?:[a-zA-Z]:)?\\)?' + path_char_set + r'+(?:\\' + path_char_set + r'+)+\\?'
 path_no_end = r'(?:(?:' + unix_abs_path + r')|' + \
               r'(?:' + unix_rel_path + r')|' + \
               r'(?:' + windows_rel_path + r')|' + \
@@ -87,7 +88,7 @@ url = r'(?:' + url_no_end + end_of_token + r')|(?:"\s*' + url_no_end + r'\s*"' +
 word_no_end = r'(?:[a-zA-Z]+)'
 word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')'
 
-int_end_of_token = r'(?:' + end_of_token + r'|%|L|l)' 
+int_end_of_token = r'(?:' + end_of_token + r'|%)' 
 
 wc_int_part = r'[\d*]'
 wc_int = r'[1-9*](?:' + wc_int_part + r')*'
@@ -112,7 +113,7 @@ id = r'([a-zA-Z0-9_"*:-]+)' + end_of_token
 
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
 
-nbstr_sans_at = r'[^,|@()=!<>\[\]\s]+'
+nbstr_sans_at = r'[^",|@()=!<>\[\]\s]+'
 email = nbstr_sans_at + r'@' + nbstr_sans_at + end_of_token
 
 regular_expression = r'".*"' + end_of_token
