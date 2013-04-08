@@ -170,7 +170,8 @@ def p_cmdexpr_eventstats(p):
 @splcommandrule
 def p_cmdexpr_export(p):
     """cmdexpr : EXPORT arglist
-               | EXPORT MACRO"""
+               | EXPORT MACRO
+               | EXPORT"""
 
 @notimplemented
 def p_cmdexpr_extractkv(p):
@@ -514,7 +515,7 @@ def p_cmdexpr_stats(p):
                | SISTATS arglist
                | SISTATS MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_strcat(p):
     """cmdexpr : STRCAT arglist
                | STRCAT MACRO"""
