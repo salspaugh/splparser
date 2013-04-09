@@ -1,0 +1,15 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser
+
+>>> splparser.parse('transpose').print_tree()
+('ROOT')
+    ('STAGE')
+        ('TRANSPOSE')
+
+>>> splparser.parse('transpose 3').print_tree()
+('ROOT')
+    ('STAGE')
+        ('TRANSPOSE')
+            ('INT': '3')
