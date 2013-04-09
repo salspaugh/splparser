@@ -29,7 +29,7 @@ def p_cmdexpr_addtotals_field(p):
 
 def p_addtotalscmd_addtotals(p):
     """makemvcmd : MAKEMV wc_stringlist
-                    | MAKEMV field"""
+                 | MAKEMV field"""
     p[0] = ParseTreeNode('MAKEMV')
     p[0].add_child(p[2])
 
