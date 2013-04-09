@@ -391,7 +391,7 @@ def p_cmdexpr_rangemap(p):
     """cmdexpr : RANGEMAP arglist
                | RANGEMAP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_rare(p):
     """cmdexpr : RARE arglist
                | RARE MACRO

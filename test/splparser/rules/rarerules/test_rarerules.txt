@@ -1,0 +1,20 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse("rare url").print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('WORD': 'url')
+
+>>> splparser.parse("rare user by host").print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('WORD': 'user')
+            ('BY')
+                ('WORD': 'host')
+
+
