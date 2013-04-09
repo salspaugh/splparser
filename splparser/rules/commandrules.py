@@ -529,7 +529,7 @@ def p_cmdexpr_table(p):
     """cmdexpr : TABLE arglist
                | TABLE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_tags(p):
     """cmdexpr : TAGS arglist
                | TAGS MACRO"""
