@@ -256,7 +256,7 @@ def p_cmdexpr_input(p):
     """cmdexpr : INPUT arglist
                | INPUT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_inputcsv(p):
     """cmdexpr : INPUTCSV arglist
                | INPUTCSV MACRO"""
@@ -529,7 +529,7 @@ def p_cmdexpr_table(p):
     """cmdexpr : TABLE arglist
                | TABLE MACRO"""
 
-@splcommandrule
+@notimplemented
 def p_cmdexpr_tags(p):
     """cmdexpr : TAGS arglist
                | TAGS MACRO"""
