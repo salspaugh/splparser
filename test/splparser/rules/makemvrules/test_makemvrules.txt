@@ -1,0 +1,25 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('makemv delim="," senders').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MAKEMV')
+            ('EQ')
+                ('DELIM')
+                ('","')
+            ('WORD': 'senders')
+
+>>> splparser.parse('makemv delim=":" allowempty=t foo').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MAKEMV')
+            ('EQ')
+                ('DELIM')
+                ('ID': '":"')
+            ('EQ')
+                ('ALLOWEMPTY')
+                ('WORD': 't')
+            ('WORD': 'foo')
