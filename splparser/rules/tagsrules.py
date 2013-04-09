@@ -37,7 +37,11 @@ def p_tags_opt(p):
     """wc_string : TAGS_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
     p[1] = ParseTreeNode(p[1].upper())
+<<<<<<< HEAD
     p[0].add_children([p[1], p[3]])
+=======
+    p[0].add_children([p[1],p[3]])
+>>>>>>> 8384759d0c38dc3400d21c071a3ddbef8acbd35a
 
 def p_tags_opt_list(p):
     """wc_stringlist : wc_string"""

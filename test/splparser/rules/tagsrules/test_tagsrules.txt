@@ -31,6 +31,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('WORD': 'host')
             ('WORD': 'sourcetype')
 
+<<<<<<< HEAD
 >>> splparser.parse('tags outputfield="tag"').print_tree()
 ('ROOT')
     ('STAGE')
@@ -39,3 +40,5 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('OUTPUTFIELD')
                 ('WORD': '"tag"')
 
+=======
+>>>>>>> 8384759d0c38dc3400d21c071a3ddbef8acbd35a
