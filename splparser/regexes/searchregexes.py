@@ -25,6 +25,8 @@ makemv_opt = r'(?:delim|tokenizer|allowempty|setsv)' + end_of_token
 
 tags_opt = r'(?:outputfield|inclname|inclvalue)' + end_of_token
 
+inputcsv_opt = r'(?:append|start|max|events)' + end_of_token
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token
