@@ -1,0 +1,37 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse("rare url").print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('WORD': 'url')
+
+>>> splparser.parse("rare user by host").print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('WORD': 'user')
+            ('BY')
+                ('WORD': 'host')
+
+>>> splparser.parse('rare limit=100 message').print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('LIMIT')
+                ('INT': '100')
+            ('WORD': 'message')
+
+>>> splparser.parse('rare 15 RiskName').print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('LIMIT')
+                ('INT': '15')
+            ('WORD': 'RiskName')
+
+
+
