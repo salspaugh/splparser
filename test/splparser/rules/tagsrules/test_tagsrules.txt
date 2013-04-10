@@ -39,6 +39,3 @@ Below are clips from an interactive session in which I test various aspects of t
             ('EQ')
                 ('OUTPUTFIELD')
                 ('WORD': '"tag"')
-
-=======
->>>>>>> 8384759d0c38dc3400d21c071a3ddbef8acbd35a
