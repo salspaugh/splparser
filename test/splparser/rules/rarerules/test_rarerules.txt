@@ -17,4 +17,12 @@ Below are clips from an interactive session in which I test various aspects of t
             ('BY')
                 ('WORD': 'host')
 
+>>> splparser.parse('rare limit=100 message').print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('LIMIT')
+                ('INT': '100')
+            ('WORD': 'message')
+
 
