@@ -27,4 +27,10 @@ Below are clips from an interactive session in which I test various aspects of t
         ('INPUTCSV')
             ('HOSTNAME': 'foo.csv')
 
+>>> splparser.parse('inputcsv /maintained_data/windows_interactive_login_except_exclusions_user').print_tree()
+('ROOT')
+    ('STAGE')
+        ('INPUTCSV')
+            ('PATH': '/maintained_data/windows_interactive_login_except_exclusions_user')
+
 
