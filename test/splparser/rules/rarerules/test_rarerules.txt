@@ -25,4 +25,13 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('INT': '100')
             ('WORD': 'message')
 
+>>> splparser.parse('rare 15 RiskName').print_tree()
+('ROOT')
+    ('STAGE')
+        ('RARE')
+            ('LIMIT')
+                ('INT': '15')
+            ('WORD': 'RiskName')
+
+
 
