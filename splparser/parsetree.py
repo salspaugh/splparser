@@ -233,9 +233,12 @@ class ParseTreeNode(object):
         print self.str_tree(recursive=recursive)
 
     def jsonify(self):
-        encoding = {'node': (self.type) if self.raw == '' else (self.type, self.raw)}
-        if len(self.children) > 0:
-            encoding['children'] = []
+        encoding = {}
+        encoding['type'] = self.type
+        encoding['raw'] = self.raw
+        encoding['associative'] = self.associative
+        encoding['arg'] = self.arg
+        encoding['children'] = []
         for child in self.children:
             encoding['children'].append(child.jsonify())
         return encoding
@@ -246,5 +249,5 @@ class ParseTreeNode(object):
                 return obj.jsonify()
             return json.JSONEncoder.default(self, obj)
     
-    def dumps(self):
-        return json.dumps(self, cls=self.ParseTreeNodeEncoder)
+    def dumps(self, **kwargs):
+        return json.dumps(self, cls=self.ParseTreeNodeEncoder, **kwargs)
