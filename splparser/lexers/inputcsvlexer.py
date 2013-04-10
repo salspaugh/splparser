@@ -8,7 +8,6 @@ from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
-    'COMMA',
     'WILDCARD',
     'EQ',
     'IPV4ADDR', 'IPV6ADDR',
@@ -100,11 +99,6 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.lexpos -= len(t.value)
     t.lexer.begin('INITIAL')
     return
-
-def t_COMMA(t):
-    r'''(?:\,)|(?:"\,")|(?:'\,')'''
-    t.lexer.begin('ipunchecked')
-    return t
 
 @TOKEN(wildcard)
 def t_WILDCARD(t):

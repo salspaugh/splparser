@@ -38,17 +38,14 @@ def p_rare_rareopt_fieldlist(p):
     p[0].add_children(p[3].children)
 
 def p_rare_weird(p):
-    """rarecmd : RARE limit_int fieldlist
-              | SIRARE limit_int fieldlist"""
+    """rarecmd : RARE INT fieldlist
+               | SIRARE INT fieldlist"""
     p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_child(p[2])
+    Node = ParseTreeNode('LIMIT')
+    Node_2 = ParseTreeNode('INT', raw=p[2], arg=True)
+    Node.add_child(Node_2)
+    p[0].add_child(Node)
     p[0].add_children(p[3].children)
-
-def p_rare_limit(p):
-    """limit_int : INT"""
-    p[0] = ParseTreeNode('LIMIT')
-    p[1] = ParseTreeNode('INT', raw=p[1], arg=True)
-    p[0].add_child(p[1])
 
 def p_rare_rareopt_fieldlist_by(p):
     """rarecmd : RARE rareoptlist fieldlist by fieldlist

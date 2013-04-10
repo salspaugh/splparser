@@ -22,15 +22,13 @@ def p_cmdexpr_inputcsv_single(p):
     p[0] = ParseTreeNode('INPUTCSV')
 
 def p_cmdexpr_inputcsv_field(p):
-    """inputcsvcmd : INPUTCSV wc_stringlist field
-                   | INPUTCSV wc_stringlist value"""
+    """inputcsvcmd : INPUTCSV wc_stringlist value"""
     p[0] = ParseTreeNode('INPUTCSV')
     p[0].add_children(p[2].children)
     p[0].add_child(p[3])
 
 def p_inputcsvcmd_inputcsv(p):
     """inputcsvcmd : INPUTCSV wc_stringlist
-                   | INPUTCSV field
                    | INPUTCSV value"""
     p[0] = ParseTreeNode('INPUTCSV')
     p[0].add_child(p[2])
