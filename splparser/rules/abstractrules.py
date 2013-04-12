@@ -30,7 +30,7 @@ def p_abstract_opt(p):
     """wc_string : ABSTRACT_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
     p[1] = ParseTreeNode(p[1].upper())
-    p[0].add_children([p[1],p[3]])
+    p[0].add_children([p[1], p[3]])
 
 def p_abstract_opt_list(p):
     """wc_stringlist : wc_string"""
