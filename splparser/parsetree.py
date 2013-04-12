@@ -40,6 +40,17 @@ class ParseTreeNode(object):
         return all([self_child == other_child for self_child in self.children 
                                             for other_child in other.children])
 
+    @staticmethod
+    def from_dict(d):
+        p = ParseTreeNode("")
+        p.type = str(d['type'])
+        p.label = p.type.lower()
+        p.raw = str(d['raw'])
+        p.associative = bool(d['associative'])
+        p.arg = bool(d['arg'])
+        p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
+        return p
+
     def template(self):
         children = map(lambda x: x.template(), self.children) 
         if self.arg:
