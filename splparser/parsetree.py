@@ -2,6 +2,8 @@
 
 import json
 
+from itertools import chain
+
 INDENT = '    '
 
 class ParseTreeNode(object):
@@ -59,6 +61,46 @@ class ParseTreeNode(object):
             p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative)
         p.add_children(children)
         return p
+
+    def inverse_template(self):
+        children = map(lambda x: x.inverse_template(), self.children) 
+        if not self.arg:
+            p = ParseTreeNode('', arg=False)
+        else:
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True)
+        p.add_children(children)
+        return p
+
+    def command_arg_tuple_list(self):
+        stages = self._stage_subtrees()
+        command_and_args = [stage._command_arg_tuple_from_stage() for stage in stages]
+        return command_and_args
+
+    def _stage_subtrees(self):
+        if not self.type == 'ROOT':
+            raise ValueError("This must be 'ROOT' node for this to work properly.\n")
+        return self.children
+
+    def _command_arg_tuple_from_stage(self):
+        if not self.type == 'STAGE':
+            raise ValueError("This must be 'STAGE' node for this to work properly.\n")
+        command = self.children[0].template()._flatten_to_string()
+        args = self.children[0].inverse_template()._flatten_to_list()
+        return (command, args)
+
+    def _flatten_to_string(self):
+        flattened_children = [child._flatten_to_string() for child in self.children]
+        flattened_children = filter(lambda x: not x == '', flattened_children)
+        children_string = '_'.join(flattened_children)
+        if self.type == '':
+            return children_string
+        return '_'.join([self.type, children_string])
+
+    def _flatten_to_list(self):
+        children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
+        if self.raw == '':
+            return children_list
+        return [self.raw] + children_list
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:
