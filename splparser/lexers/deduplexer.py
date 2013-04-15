@@ -16,8 +16,7 @@ tokens = [
     'COMMA',
     'WILDCARD',
     'EQ',
-    'IPV4ADDR', 'IPV6ADDR',
-    'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
+    'HOSTNAME',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
     'LPAREN', 'RPAREN',
@@ -30,11 +29,7 @@ tokens = [
 
 reserved = {
     'dedup' : 'DEDUP',
-    'as' : 'ASLC',
-    'AS' : 'ASUC',
     'sortby' : 'SORTBY',
-    'OUTPUT' : 'OUTPUT',
-    'OUTPUTNEW' : 'OUTPUTNEW',
 }
 
 tokens = tokens + list(reserved.values())
