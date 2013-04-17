@@ -367,7 +367,7 @@ def p_cmdexpr_outputcsv(p):
     """cmdexpr : OUTPUTCSV arglist
                | OUTPUTCSV MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_outputlookup(p):
     """cmdexpr : OUTPUTLOOKUP arglist
                | OUTPUTLOOKUP MACRO"""
