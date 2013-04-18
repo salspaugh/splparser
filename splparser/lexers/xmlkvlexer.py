@@ -18,11 +18,11 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'XMLKV_OPT',
 ]
 
 reserved = {
     'xmlkv' : 'XMLKV',
-    'maxinputs' : 'MAXINPUTS',
 }
 
 tokens = tokens + list(reserved.values())
@@ -76,7 +76,10 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    return reserved.get(t.value, default)
+    if re.match(xmlkv_opt, t.value):
+        return 'XMLKV_OPT'
+    else:
+        return reserved.get(t.value, default)
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""

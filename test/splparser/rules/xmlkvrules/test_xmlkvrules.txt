@@ -17,4 +17,18 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('INT': '10000')
 
 >>> splparser.parse('xmlkv myxml').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+            ('WORD': 'myxml')
 
+>>> splparser.parse('xmlkv maxinputs=10000 id=serverop').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+            ('EQ')
+                ('MAXINPUTS')
+                ('INT': '10000')
+            ('EQ')
+                ('ID')
+                ('WORD': 'serverop')
