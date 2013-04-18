@@ -172,7 +172,7 @@ def p_cmdexpr_export(p):
                | EXPORT MACRO
                | EXPORT"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_extractkv(p):
     """cmdexpr : EXTRACT arglist
                | KV arglist
@@ -203,7 +203,7 @@ def p_cmdexpr_filldown(p):
 @splcommandrule
 def p_cmdexpr_fillnull(p):
     """cmdexpr : FILLNULL
-	       | FILLNULL arglist
+	           | FILLNULL arglist
                | FILLNULL MACRO"""
 
 @notimplemented

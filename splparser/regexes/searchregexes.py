@@ -31,6 +31,8 @@ abstract_opt = r'(?:maxterms|maxlines)' + end_of_token
 
 xmlkv_opt = r'(?:maxinputs|id)'
 
+extractkv_opt = r'(?:auto|clean_keys|kvdelim|limit|maxchars|mv_add|pairdelim|reload|segment)'
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token
