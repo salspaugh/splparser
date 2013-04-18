@@ -15,3 +15,6 @@ Below are clips from an interactive session in which I test various aspects of t
             ('EQ')
                 ('MAXINPUTS')
                 ('INT': '10000')
+
+>>> splparser.parse('xmlkv myxml').print_tree()
+

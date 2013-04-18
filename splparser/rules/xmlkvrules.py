@@ -21,7 +21,7 @@ def p_cmdexpr_xmlkv_debug(p):
     """xmlkvcmd : XMLKV"""
     p[0] = ParseTreeNode('XMLKV')
 
-def p_transpose_int(p):
+def p_xmlkv_int(p):
 	"""xmlkvcmd : XMLKV MAXINPUTS EQ value"""
 	p[0] = ParseTreeNode('XMLKV')
 	Node = ParseTreeNode('EQ')
