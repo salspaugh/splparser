@@ -1,0 +1,14 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('gauge myCount 750 1000 1250 1500').print_tree()
+('ROOT')
+    ('STAGE')
+        ('GAUGE')
+            ('WORD': 'myCount')
+            ('INT': '750')
+            ('INT': '1000')
+            ('INT': '1250')
+            ('INT': '1500')
