@@ -1,7 +1,7 @@
 
 from splparser.decorators import *
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_abstract(p):
     """cmdexpr : ABSTRACT arglist
                | ABSTRACT MACRO"""
