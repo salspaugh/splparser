@@ -352,7 +352,7 @@ def p_cmdexpr_mvexpand(p):
     """cmdexpr : MVEXPAND arglist
                | MVEXPAND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_nomv(p):
     """cmdexpr : NOMV arglist
                | NOMV MACRO"""
