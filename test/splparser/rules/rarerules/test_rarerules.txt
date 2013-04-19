@@ -21,7 +21,8 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('RARE')
-            ('LIMIT')
+            ('EQ')
+                ('LIMIT')
                 ('INT': '100')
             ('WORD': 'message')
 
@@ -29,7 +30,8 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('RARE')
-            ('LIMIT')
+            ('EQ')
+                ('LIMIT')
                 ('INT': '15')
             ('WORD': 'RiskName')
 
