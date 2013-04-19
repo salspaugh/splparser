@@ -100,11 +100,14 @@ class ParseTreeNode(object):
 
     def _flatten_to_string(self):
         flattened_children = [child._flatten_to_string() for child in self.children]
-        flattened_children = filter(lambda x: not x == '', flattened_children)
-        children_string = '_'.join(flattened_children)
+        flattened_children = filter(lambda x: not x == '()', flattened_children)
+        children_string = ''.join(flattened_children)
+        children_string = ''.join(['(', children_string, ')'])
         if self.type == '':
             return children_string
-        return '_'.join([self.type, children_string])
+        if children_string == '()':
+            return self.type
+        return ''.join([self.type, children_string])
 
     def _flatten_to_list(self):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
