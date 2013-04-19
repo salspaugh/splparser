@@ -1,7 +1,7 @@
 
 from splparser.decorators import *
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_abstract(p):
     """cmdexpr : ABSTRACT arglist
                | ABSTRACT MACRO"""
@@ -603,9 +603,10 @@ def p_cmdexpr_x11(p):
     """cmdexpr : X11 arglist
                | X11 MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_xmlkv(p):
-    """cmdexpr : XMLKV arglist
+    """cmdexpr : XMLKV
+               | XMLKV arglist
                | XMLKV MACRO"""
 
 @notimplemented

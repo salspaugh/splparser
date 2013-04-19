@@ -1,0 +1,12 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse("abstract maxlines=5").print_tree()
+('ROOT')
+    ('STAGE')
+        ('ABSTRACT')
+            ('EQ')
+                ('MAXLINES')
+                ('INT': '5')
