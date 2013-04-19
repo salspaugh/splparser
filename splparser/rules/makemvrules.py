@@ -36,14 +36,16 @@ def p_addtotalscmd_makemv(p):
 def p_makemv_opt_comma(p):
     """wc_string : MAKEMV_OPT EQ COMMA"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper())
+    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1].values.append(p[3])
     p[3] = ParseTreeNode(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_makemv_opt(p):
     """wc_string : MAKEMV_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper())
+    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_makemv_opt_list(p):
