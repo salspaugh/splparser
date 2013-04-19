@@ -8,7 +8,7 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, type, raw="", associative=False, arg=False):
+    def __init__(self, type, raw="", associative=False, arg=False, expr=False, field=False, option=False, renamed=None, value=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.type
@@ -23,15 +23,25 @@ class ParseTreeNode(object):
           File "<stdin>", line 1, in <module>
         TypeError: __init__() takes at least 2 arguments (1 given)
         """
+        
         self.type = type
         self.raw = raw
         self.parent = None
         self.children = []
+
         self.label = self.type.lower()
         #if not raw == '':
         #    self.label = self.type
+        
         self.associative = associative
+        
         self.arg = arg
+        self.expr = expr
+        self.field = field
+        self.option = option
+        self.renamed = renamed
+        self.value = value
+        self.values = []
 
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
@@ -101,6 +111,16 @@ class ParseTreeNode(object):
         if self.raw == '':
             return children_list
         return [self.raw] + children_list
+
+    def field_value_tuple_list(self):
+        stages = self._stage_subtrees()
+        fields_and_values = [stage._field_value_tuples_from_stage() for stage in stages]
+        return fields_and_values
+
+    def _field_value_tuples_from_stage(self):
+        if not self.type == 'STAGE':
+            raise ValueError("This must be 'STAGE' node for this to work properly.\n")
+        
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:
