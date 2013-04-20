@@ -66,18 +66,18 @@ class ParseTreeNode(object):
     def template(self):
         children = map(lambda x: x.template(), self.children) 
         if self.arg:
-            p = ParseTreeNode('', arg=True)
+            p = ParseTreeNode('', arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
     def inverse_template(self):
         children = map(lambda x: x.inverse_template(), self.children) 
         if not self.arg:
-            p = ParseTreeNode('', arg=False)
+            p = ParseTreeNode('', arg=False, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
@@ -113,7 +113,7 @@ class ParseTreeNode(object):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
         if self.raw == '':
             return children_list
-        return [self.raw] + children_list
+        return [(self.raw, self.field)] + children_list
 
     def schema_info_list(self):
         stages = self._stage_subtrees()
