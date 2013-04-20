@@ -1,0 +1,34 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('xmlkv').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+
+>>> splparser.parse('xmlkv maxinputs=10000').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+            ('EQ')
+                ('MAXINPUTS')
+                ('INT': '10000')
+
+>>> splparser.parse('xmlkv myxml').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+            ('WORD': 'myxml')
+
+>>> splparser.parse('xmlkv maxinputs=10000 id=serverop').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XMLKV')
+            ('EQ')
+                ('MAXINPUTS')
+                ('INT': '10000')
+            ('EQ')
+                ('ID')
+                ('WORD': 'serverop')

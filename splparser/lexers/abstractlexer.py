@@ -7,46 +7,28 @@ import re
 from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
-# overriding regexes
-
-id = r'([\w:.\/]+)+' + end_of_token
-dedup_opt = r'(?:consecutive|keepempty|keepevents)' + end_of_token
-
 tokens = [
-    'COMMA',
     'WILDCARD',
     'EQ',
-    'HOSTNAME',
+    'IPV4ADDR', 'IPV6ADDR',
+    'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
-    'LPAREN', 'RPAREN',
     'ID',
-    'PLUS', 'MINUS',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
-    'DEDUP_OPT',
+    'ABSTRACT_OPT',
 ]
 
 reserved = {
-    'dedup' : 'DEDUP',
-    'sortby' : 'SORTBY',
+    'abstract' : 'ABSTRACT',
 }
 
 tokens = tokens + list(reserved.values())
 
-@TOKEN(dedup_opt)
-def t_DEDUP_OPT(t):
-    t.type = type_if_reserved(t, 'DEDUP_OPT')
-    t.lexer.begin('ipunchecked')
-    return t
-
 t_ignore = ' '
 
 t_EQ = r'='
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_PLUS = r'\+'
-t_MINUS = r'\-'
 
 # !!!   The order in which these functions are defined determine matchine. The 
 #       first to match is used. Take CARE when reordering.
@@ -93,7 +75,10 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    return reserved.get(t.value, default)
+    if re.match(abstract_opt, t.value):
+        return 'ABSTRACT_OPT'
+    else:
+        return reserved.get(t.value, default)
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""
@@ -115,10 +100,15 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.begin('INITIAL')
     return
 
-def t_COMMA(t):
-    r'''(?:\,)|(?:"\,")|(?:'\,')'''
+@TOKEN(wildcard)
+def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
+
+@TOKEN(search_key)
+def t_SEARCH_KEY(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
@@ -144,14 +134,14 @@ def t_FLOAT(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(int)
-def t_INT(t):
-    t.lexer.begin('ipunchecked')
-    return t
-
 @TOKEN(word)
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(int)
+def t_INT(t):
     t.lexer.begin('ipunchecked')
     return t
 
@@ -161,11 +151,46 @@ def t_ID(t):
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(email)
+def t_EMAIL(t):
+    t.type = type_if_reserved(t, 'EMAIL')
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(path)
+def t_PATH(t):
+    t.type = type_if_reserved(t, 'PATH')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(url)
+def t_URL(t):
+    t.type = type_if_reserved(t, 'URL')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(us_phone)
+def t_US_PHONE(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(nbstr)
+def t_NBSTR(t): # non-breaking string
+    t.type = type_if_reserved(t, 'NBSTR')
+    t.lexer.begin('ipunchecked')
+    return t
+
 def t_error(t):
     badchar = t.value[0]
     t.lexer.skip(1)
     t.lexer.begin('ipunchecked')
-    raise SPLSyntaxError("Illegal character in search lexer '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in abstract lexer '%s'" % badchar)
 
 def lex():
     return ply.lex.lex()

@@ -62,6 +62,8 @@ def p_carg_statsfnexpr_as_over(p):
     over_node = parsetreenode('over')
     over_node.add_child(p[5])
     p[0].add_child(over_node)
+    p[1].expr = True
+    p[3].values.append(p[1].children)
 
 def p_carg_statsfn_as_over(p):
     """carg : STATS_FN as simplefield OVER simplefield"""
@@ -72,6 +74,8 @@ def p_carg_statsfn_as_over(p):
     over_node = parsetreenode('over')
     over_node.add_child(p[5])
     p[0].add_child(over_node)
+    p[1].expr = True
+    p[3].values.append(p[1])
 
 def p_carg_statsfnexpr_as_by(p):
     """carg : statsfnexpr as simplefield splitbyclause"""
@@ -80,6 +84,8 @@ def p_carg_statsfnexpr_as_by(p):
     p[0].add_child(as_node)
     as_node.add_child(p[3])
     p[0].add_children(p[4].children)
+    p[1].expr = True
+    p[3].values.append(p[1].children)
 
 def p_carg_statsfn_as_by(p):
     """carg : STATS_FN as simplefield splitbyclause"""
@@ -88,6 +94,8 @@ def p_carg_statsfn_as_by(p):
     p[0].add_child(as_node)
     as_node.add_child(p[3])
     p[0].add_children(p[4].children)
+    p[1].expr = True
+    p[3].values.append(p[1])
 
 def p_carg_statsfnexpr_as_over_by(p):
     """carg : statsfnexpr as simplefield OVER simplefield splitbyclause"""
@@ -99,6 +107,8 @@ def p_carg_statsfnexpr_as_over_by(p):
     over_node.add_child(p[5])
     p[0].add_child(over_node)
     p[0].add_children(p[6].children)
+    p[1].expr = True
+    p[3].values.append(p[1].children)
 
 def p_carg_statsfn_as_over_by(p):
     """carg : STATS_FN as simplefield OVER simplefield splitbyclause"""
@@ -110,6 +120,8 @@ def p_carg_statsfn_as_over_by(p):
     over_node.add_child(p[5])
     p[0].add_child(over_node)
     p[0].add_children(p[6].children)
+    p[1].expr = True
+    p[3].values.append(p[1])
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in chart parser input!") 

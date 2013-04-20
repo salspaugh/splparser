@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import ply.yacc
-import logging
 
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
@@ -24,21 +23,24 @@ def p_dedup(p):
 def p_optionlist(p):
     """optionlist : COLLECT_OPT EQ field optionlist"""
     option = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
     option.add_children([opt_node, p[3]])
     p[0] = [option] + p[4]
 
 def p_optionlist_comma(p):
     """optionlist : COLLECT_OPT EQ field COMMA optionlist"""
     option = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
     option.add_children([opt_node, p[3]])
     p[0] = [option] + p[5]
 
 def p_optionlist_one(p):
     """optionlist : COLLECT_OPT EQ field"""
     option = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
     option.add_children([opt_node, p[3]])
     p[0] = [option]
 

@@ -7,46 +7,37 @@ import re
 from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
-# overriding regexes
+#regexes
+outputlookup_opt = r'(?:append|create_empty|max|createinapp)' + end_of_token
 
-id = r'([\w:.\/]+)+' + end_of_token
-dedup_opt = r'(?:consecutive|keepempty|keepevents)' + end_of_token
 
 tokens = [
-    'COMMA',
     'WILDCARD',
     'EQ',
     'HOSTNAME',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
-    'LPAREN', 'RPAREN',
     'ID',
-    'PLUS', 'MINUS',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
-    'DEDUP_OPT',
+    'OUTPUTLOOKUP_OPT',
 ]
 
 reserved = {
-    'dedup' : 'DEDUP',
-    'sortby' : 'SORTBY',
+    'outputlookup' : 'OUTPUTLOOKUP', 
 }
 
 tokens = tokens + list(reserved.values())
 
-@TOKEN(dedup_opt)
-def t_DEDUP_OPT(t):
-    t.type = type_if_reserved(t, 'DEDUP_OPT')
+@TOKEN(outputlookup_opt)
+def t_OUTPUTLOOKUP_OPT(t):
+    t.type = type_if_reserved(t, 'OUTPUTLOOKUP_OPT')
     t.lexer.begin('ipunchecked')
     return t
 
 t_ignore = ' '
 
 t_EQ = r'='
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_PLUS = r'\+'
-t_MINUS = r'\-'
 
 # !!!   The order in which these functions are defined determine matchine. The 
 #       first to match is used. Take CARE when reordering.
@@ -115,8 +106,8 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.begin('INITIAL')
     return
 
-def t_COMMA(t):
-    r'''(?:\,)|(?:"\,")|(?:'\,')'''
+@TOKEN(wildcard)
+def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
@@ -144,20 +135,55 @@ def t_FLOAT(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(int)
-def t_INT(t):
-    t.lexer.begin('ipunchecked')
-    return t
-
 @TOKEN(word)
 def t_WORD(t):
     t.type = type_if_reserved(t, 'WORD')
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(int)
+def t_INT(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
 @TOKEN(id)
 def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(email)
+def t_EMAIL(t):
+    t.type = type_if_reserved(t, 'EMAIL')
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(path)
+def t_PATH(t):
+    t.type = type_if_reserved(t, 'PATH')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(url)
+def t_URL(t):
+    t.type = type_if_reserved(t, 'URL')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(us_phone)
+def t_US_PHONE(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(nbstr)
+def t_NBSTR(t): # non-breaking string
+    t.type = type_if_reserved(t, 'NBSTR')
     t.lexer.begin('ipunchecked')
     return t
 

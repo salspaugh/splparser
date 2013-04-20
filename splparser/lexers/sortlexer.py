@@ -24,10 +24,6 @@ tokens = [
 
 reserved = {
     'sort' : 'SORT', 
-    'as' : 'ASLC',
-    'AS' : 'ASUC',
-    'OUTPUT' : 'OUTPUT',
-    'OUTPUTNEW' : 'OUTPUTNEW',
 }
 
 tokens = tokens + list(reserved.values())

@@ -9,47 +9,47 @@ from splparser.exceptions import SPLSyntaxError
 from splparser.rules.common.fieldlistrules import *
 from splparser.rules.common.valuerules import *
 
-from splparser.lexers.addtotalslexer import tokens
+from splparser.lexers.xmlkvlexer import tokens
 
 start = 'cmdexpr'
 
-def p_cmdexpr_addtotals(p):
-    """cmdexpr : addtotalscmd"""
+def p_cmdexpr_xmlkv(p):
+    """cmdexpr : xmlkvcmd"""
     p[0] = p[1]
 
-def p_cmdexpr_addtotals_single(p):
-    """addtotalscmd : ADDTOTALS"""
-    p[0] = ParseTreeNode('ADDTOTALS')
+def p_cmdexpr_xmlkv_single(p):
+    """xmlkvcmd : XMLKV"""
+    p[0] = ParseTreeNode('XMLKV')
 
-def p_cmdexpr_addtotals_field(p):
-    """addtotalscmd : ADDTOTALS wc_stringlist fieldlist"""
-    p[0] = ParseTreeNode('ADDTOTALS')
+def p_cmdexpr_xmlkv_field(p):
+    """xmlkvcmd : XMLKV wc_stringlist fieldlist"""
+    p[0] = ParseTreeNode('XMLKV')
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
-def p_addtotalscmd_addtotals(p):
-    """addtotalscmd : ADDTOTALS wc_stringlist
-                    | ADDTOTALS fieldlist"""
-    p[0] = ParseTreeNode('ADDTOTALS')
+def p_xmlkvcmd_xmlkv(p):
+    """xmlkvcmd : XMLKV wc_stringlist
+                | XMLKV fieldlist"""
+    p[0] = ParseTreeNode('XMLKV')
     p[0].add_children(p[2].children)
 
-def p_addtotals_opt(p):
-    """wc_string : ADDTOTALS_OPT EQ value"""
+def p_xmlkv_opt(p):
+    """wc_string : XMLKV_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
     p[1] = ParseTreeNode(p[1].upper(), option=True)
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
-def p_addtotals_opt_list(p):
+def p_xmlkv_opt_list(p):
     """wc_stringlist : wc_string"""
     p[0] = ParseTreeNode('EQ')
     p[0].add_child(p[1])
 
-def p_addtotals_optlist(p):
+def p_xmlkv_optlist(p):
     """wc_stringlist : wc_string wc_stringlist"""
     p[0] = ParseTreeNode('EQ')
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)
 
 def p_error(p):
-    raise SPLSyntaxError("Syntax error in addtotals parser input!")
+    raise SPLSyntaxError("Syntax error in xmlkv parser input!")

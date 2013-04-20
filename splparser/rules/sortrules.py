@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 import ply.yacc
-import logging
 
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
 from splparser.rules.common.fieldrules import *
-from splparser.rules.common.fieldlistrules import *
 from splparser.rules.common.valuerules import *
 
 from splparser.lexers.sortlexer import tokens
@@ -31,6 +29,7 @@ def p_sort_num_sortfields(p):
 def p_sort_num_limit_sortfields(p):
     """sortcmd : SORT field EQ value sortfields"""
     p[0] = ParseTreeNode('SORT')
+    p[2].values.append(p[4])
     p[0].add_children([p[4]] + p[5])
 
 def p_sortfields_list(p):
