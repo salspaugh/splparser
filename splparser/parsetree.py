@@ -101,7 +101,7 @@ class ParseTreeNode(object):
     def _flatten_to_string(self):
         flattened_children = [child._flatten_to_string() for child in self.children]
         flattened_children = filter(lambda x: not x == '()', flattened_children)
-        children_string = ''.join(flattened_children)
+        children_string = ','.join(flattened_children)
         children_string = ''.join(['(', children_string, ')'])
         if self.type == '':
             return children_string
@@ -115,15 +115,15 @@ class ParseTreeNode(object):
             return children_list
         return [self.raw] + children_list
 
-    def field_value_tuple_list(self):
+    def schema_info_list(self):
         stages = self._stage_subtrees()
-        fields_and_values = [stage._field_value_tuples_from_stage() for stage in stages]
-        return fields_and_values
+        schema_info = [stage._schema_info_from_stage() for stage in stages]
+        return schema_info
 
-    def _field_value_tuples_from_stage(self):
+    def _schema_info_from_stage(self):
         if not self.type == 'STAGE':
             raise ValueError("This must be 'STAGE' node for this to work properly.\n")
-        
+        # TODO: Finish implementing this later.
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:
