@@ -59,12 +59,14 @@ def p_headoptlist_headopt(p):
 
 def p_headopt(p):
     """headopt : HEAD_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode(p[1].upper(), option=True)
+    p[0].values.append(p[3])
     p[0].add_child(p[3])
 
 def p_headopt_commonopt(p):
     """headopt : COMMON_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode(p[1].upper(), option=True)
+    p[0].values.append(p[3])
     p[0].add_child(p[3])
 
 def p_error(p):

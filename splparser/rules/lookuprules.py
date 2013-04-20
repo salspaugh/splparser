@@ -27,6 +27,7 @@ def p_lookup_options_tablename(p):
     boolean = p[4]
     option.add_child(boolean)
     p[0].add_children([option] + p[5])
+    p[2].values.append(p[4])
 
 def p_table_tablename(p):
     """table : fieldlist"""
@@ -45,6 +46,7 @@ def p_field_as(p):
     _as.add_children(p[3].children)
     p[1].add_child(_as)
     p[0] = p[1]
+    p[1].renamed = p[3].children[0]
 
 def p_out(p):
     """out : OUTPUT fieldlist

@@ -54,12 +54,15 @@ def p_searchexpr_not(p):
 
 def p_searchexpr_value(p):
     """searchexpr : value"""
+    p[1].value = True
     p[0] = p[1]
 
 # TODO: Ask Carrasso about this rule, I don't really understand it.
 def p_searchexpr_tag(p):
     """searchexpr : TAG EQ SEARCH_KEY DCOLON value"""
     p[0] = ParseTreeNode('TAG')
+    p[3].field = True
+    p[3].values.append(p[5])
     p[0].add_children([p[3], p[5]])
 
 # NOTE: '==' is not a valid comparator -- will parse out to SEARCH_KEY EQ =val, where
@@ -69,6 +72,7 @@ def p_searchexpr_eq(p):
     """searchexpr : field EQ value
                   | field DCOLON value"""
     p[0] = ParseTreeNode('EQ')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 # TODO: eliminate numerical comparison rules with the following rule
@@ -80,35 +84,40 @@ def p_searchexpr_eq(p):
 def p_searchexpr_ne(p):
     """searchexpr : field NE value"""
     p[0] = ParseTreeNode('NE')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_lt(p):
     """searchexpr : field LT value"""
     p[0] = ParseTreeNode('LT')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_le(p):
     """searchexpr : field LE value"""
     p[0] = ParseTreeNode('LE')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_ge(p):
     """searchexpr : field GE value"""
     p[0] = ParseTreeNode('GE')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_gt(p):
     """searchexpr : field GT value"""
     p[0] = ParseTreeNode('GT')
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])    
 
 def p_field_searchfield(p):
     """field : SEARCH_KEY"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode(p[1].upper(), option=True)
 
 def p_field_host(p):
     """field : HOST"""
-    p[0] = ParseTreeNode('HOST')
+    p[0] = ParseTreeNode('HOST', option=True)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in search parser input!") 

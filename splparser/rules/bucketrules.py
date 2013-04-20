@@ -27,6 +27,7 @@ def p_bucketargs(p):
 def p_bucketargs_as(p):
     """bucketargs : field as field"""
     p[0] = p[1]
+    p[1].renamed = p[3]
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
@@ -57,7 +58,8 @@ def p_bucketoptlist(p):
 def p_bucketopts(p):
     """bucketopts : BUCKET_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    bucket_opt_node = ParseTreeNode(p[1].upper())
+    bucket_opt_node = ParseTreeNode(p[1].upper(), option=True)
+    bucket_opt_node.values.append(p[3])
     p[0].add_child(bucket_opt_node)
     p[0].add_child(p[3])
 

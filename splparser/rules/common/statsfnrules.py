@@ -33,6 +33,7 @@ def p_statsfnexpr_keqv(p):
     fn_node = ParseTreeNode(p[1].upper())
     eq_node = ParseTreeNode('EQ')
     eq_node.add_children([p[3], p[5]])
+    p[3].values.append(p[5])
     fn_node.add_child(eq_node)
     p[0].add_child(fn_node)
 
