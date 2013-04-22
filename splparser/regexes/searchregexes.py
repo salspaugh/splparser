@@ -39,6 +39,8 @@ minus = r'-' + end_of_token
 
 # ---------------- General argument types: ------------------
 
+literal = r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"|"[=;|]+[^"]*"|"[^"]*[;=|]+"'
+
 wildcard = r'\*' + end_of_token
 
 port = r'\d{1,5}'
