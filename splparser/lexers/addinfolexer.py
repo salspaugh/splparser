@@ -4,7 +4,6 @@ import ply.lex
 from ply.lex import TOKEN
 import re
 
-from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
