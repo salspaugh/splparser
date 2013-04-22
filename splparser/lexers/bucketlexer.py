@@ -82,8 +82,9 @@ def type_if_reserved(t, default):
     else:
         return reserved.get(t.value, default)
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)
