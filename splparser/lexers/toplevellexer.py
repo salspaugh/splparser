@@ -4,8 +4,8 @@ from splparser.exceptions import SPLSyntaxError
 
 tokens = [
     'PIPE',
-#    'LBRACKET', TODO: Add support for subsearches anad macros.
-#    'RBRACKET',
+    'LBRACKET',
+    'RBRACKET',
     'MACRO',
     'ARGS'
     ]
@@ -146,7 +146,7 @@ tokens = tokens + list(reserved.values())
 whitespace = ' \t\n\r\f\v'
 
 def nonbreaking_char(c):
-    return c not in whitespace and c != '|' and c != '`' and c != '"' and c != "'"
+    return c not in whitespace and c != '|' and c != '`' and c != '"' and c != "'" and c!= "[" and c!= "]"
 
 class SPLToken(object):
 
@@ -199,7 +199,17 @@ class SPLLexer(object):
             self.data = self.data[1:]
             self.lexpos += 1 
             return SPLToken('PIPE', '|')
-        
+
+        if self.data[0] == '[':
+            self.data = self.data[1:]
+            self.lexpos += 1 
+            return SPLToken('LBRACKET', '[')
+
+        if self.data[0] == ']':
+            self.data = self.data[1:]
+            self.lexpos += 1 
+            return SPLToken('RBRACKET', ']')
+
         for k in reserved.iterkeys():
             if self.data.find(k + ' ') == 0 or self.data == k:
                 self.data = self.data[len(k)+1:]

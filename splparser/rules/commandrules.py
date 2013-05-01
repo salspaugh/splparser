@@ -41,7 +41,7 @@ def p_cmdexpr_anomalousvalue(p):
     """cmdexpr : ANOMALOUSVALUE arglist
                | ANOMALOUSVALUE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_append(p):
     """cmdexpr : APPEND arglist
                | APPEND MACRO"""
