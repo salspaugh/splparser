@@ -1,0 +1,11 @@
+>>> import splparser
+
+>>> splparser.parse("append [search foo]").print_tree()
+('ROOT')
+    ('STAGE')
+        ('APPEND')
+            ('SUBSEARCH')
+                ('ROOT')
+                    ('STAGE')
+                        ('SEARCH')
+                            ('WORD': 'foo')

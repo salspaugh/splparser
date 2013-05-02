@@ -43,7 +43,8 @@ def p_cmdexpr_anomalousvalue(p):
 
 @splcommandrule
 def p_cmdexpr_append(p):
-    """cmdexpr : APPEND arglist
+    """cmdexpr : APPEND
+               | APPEND arglist
                | APPEND MACRO"""
 
 @notimplemented
