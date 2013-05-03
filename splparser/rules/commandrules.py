@@ -47,9 +47,10 @@ def p_cmdexpr_append(p):
                | APPEND arglist
                | APPEND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_appendcols(p):
-    """cmdexpr : APPENDCOLS arglist
+    """cmdexpr : APPENDCOLS
+               | APPENDCOLS arglist
                | APPENDCOLS MACRO"""
 
 @notimplemented
