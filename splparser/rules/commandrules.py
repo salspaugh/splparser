@@ -273,9 +273,10 @@ def p_cmdexpr_iplocation(p):
     """cmdexpr : IPLOCATION arglist
                | IPLOCATION MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_join(p):
-    """cmdexpr : JOIN arglist
+    """cmdexpr : JOIN
+               | JOIN arglist
                | JOIN MACRO"""
 
 @notimplemented
