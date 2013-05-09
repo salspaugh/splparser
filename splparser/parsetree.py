@@ -44,13 +44,49 @@ class ParseTreeNode(object):
         self.values = []
 
     def __eq__(self, other):
+        #print "I am ", self.type, self.raw
         if len(self.children) == 0 and len(other.children) == 0:
-            return self.type == other.type and self.raw == other.raw
+            eq = self._node_eq(other)
+            #print "No children and eq is:", eq
+            return eq
         if (len(self.children) == 0 and not len(other.children) == 0) or \
             (not len(self.children) == 0 and len(other.children) == 0):
+            #print "One has children and the other doesn't"
             return False
-        return all([self_child == other_child for self_child in self.children 
-                                            for other_child in other.children])
+        return all([self_child == other_child for (self_child, other_child) in zip(self.children, other.children)])
+
+    def _node_eq(self, other):
+        return self.type == other.type and self.raw == other.raw
+
+    def is_supertree_of(self, other):
+        #print "I am ", self.type, self.raw
+        if other is None:
+            #print "other is None"
+            return True
+        if len(self.children) >= 0 and len(other.children) == 0:
+            eq = self._node_eq(other)
+            #print "other is childless and eq is", eq
+            return eq
+        if len(self.children) == 0 and len(other.children) > 0:
+            #print "other has more children than me 1"
+            return False
+        if len(self.children) < len(other.children):
+            #print "other has more children than me 2"
+            return False
+        if len(self.children) > 0 and len(other.children) > 0:
+            #print "other and I are comparing children"
+            ocidx = 0
+            children_eq = True
+            for child in self.children:
+                if ocidx >= len(other.children):
+                    break
+                if child._node_eq(other.children[ocidx]):
+                    children_eq = children_eq and child.is_supertree_of(other.children[ocidx])
+                    #print "children_eq is", children_eq
+                    ocidx += 1
+            if len(other.children) > ocidx + 1:
+                return False
+            return self._node_eq(other) and children_eq
 
     @staticmethod
     def from_dict(d):
@@ -113,7 +149,8 @@ class ParseTreeNode(object):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
         if self.raw == '':
             return children_list
-        return [(self.raw, self.field)] + children_list
+        field = (self.field and not self.option)
+        return [(self.raw, field)] + children_list
 
     def schema_info_list(self):
         stages = self._stage_subtrees()
