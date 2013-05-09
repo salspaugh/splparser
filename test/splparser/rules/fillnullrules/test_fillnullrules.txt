@@ -34,7 +34,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('EQ')
                 ('VALUE')
                 ('ID': '"-"')
-            ('MARCO': '`summary_unattributed_base_dimensions_list`')
+            ('MACRO': '`summary_unattributed_base_dimensions_list`')
             ('ID': 'c_segments_d')
             ('ID': 'c_segments_a1')
             ('ID': 'c_segments_a2')

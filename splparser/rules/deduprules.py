@@ -56,19 +56,25 @@ def p_dedup_args_field_option_sort(p):
 def p_optionlist(p):
     """optionlist : DEDUP_OPT EQ field optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1], arg=True), p[3]])
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
+    option.add_children([opt_node, p[3]])
     p[0] = [option] + p[4]
 
 def p_optionlist_comma(p):
     """optionlist : DEDUP_OPT EQ field COMMA optionlist"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1], arg=True), p[3]])
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
+    option.add_children([opt_node, p[3]])
     p[0] = [option] + p[5]
 
 def p_optionlist_one(p):
     """optionlist : DEDUP_OPT EQ field"""
     option = ParseTreeNode('EQ')
-    option.add_children([ParseTreeNode('WORD', raw=p[1], arg=True), p[3]])
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
+    option.add_children([opt_node, p[3]])
     p[0] = [option]
 
 def p_sort(p):

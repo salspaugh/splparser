@@ -36,6 +36,7 @@ def p_deltaarg_as(p):
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
+    p[1].renamed = p[3]
 
 def p_deltaarg(p):
     """deltaarg : field"""
@@ -44,7 +45,8 @@ def p_deltaarg(p):
 def p_deltaopt(p):
     """deltaopt : DELTA_OPT EQ INT"""
     p[0] = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     int_node = ParseTreeNode('INT', raw=p[3], arg=True)
     p[0].add_child(int_node)

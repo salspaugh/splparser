@@ -38,8 +38,9 @@ def t_COMMA(t):
 def t_WILDCARD(t):
     return t
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(hostname)

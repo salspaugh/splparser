@@ -36,7 +36,8 @@ def p_addtotalscmd_addtotals(p):
 def p_addtotals_opt(p):
     """wc_string : ADDTOTALS_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper())
+    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_addtotals_opt_list(p):

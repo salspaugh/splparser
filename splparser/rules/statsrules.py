@@ -70,13 +70,19 @@ def p_statsoptlist_statsopt(p):
 
 def p_statsopt_simplefield(p):
     """statsopt : STATS_OPT EQ simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('EQ')
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
+    p[0].add_child(opt_node)
     p[0].add_child(p[3])
 
 def p_statsopt_delimiter(p):
     """statsopt : STATS_OPT EQ COMMA"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('EQ')
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
     comma_node = ParseTreeNode('COMMA')
+    opt_node.values.append(comma_node)
+    p[0].add_child(opt_node)
     p[0].add_child(comma_node)
 
 def p_statscmdstart_statsfnexpr(p):
@@ -117,12 +123,16 @@ def p_statsfnexpr_stats_fn(p):
     fn_node = ParseTreeNode(p[1].upper())
     p[0].add_child(fn_node)
     p[0].children[0].add_children(p[2].children)
+    if p[2].children[0].type == 'AS':
+        p[2].children[0].values.append(p[1])
 
 def p_statsfnexpr_asbylist(p):
     """statsfnexpr : statsfnexpr asbylist"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
     p[0].add_children(p[1].children)
     p[0].children[0].add_children(p[2].children)
+    if p[2].children[0].type == 'AS':
+        p[2].children[0].values.append(p[1])
 
 def p_asbylist_as(p):
     """asbylist : as simplefield"""

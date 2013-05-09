@@ -56,8 +56,9 @@ def t_PLUS(t):
 def t_MINUS(t):
     return t
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(hostname)

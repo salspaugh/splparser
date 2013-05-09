@@ -20,8 +20,11 @@ def p_strcat_opt(p):
     """cmdexpr : STRCAT STRCAT_OPT EQ value fieldlist"""
     p[0] = ParseTreeNode('STRCAT')
     eq_node = ParseTreeNode('EQ')
-    p[0].add_child(p[2])
-    p[0].add_child(p[4])
+    opt_node = ParseTreeNode(p[2].upper(), option=True)
+    opt_node.values.append(p[4])
+    p[0].add_child(eq_node)
+    eq_node.add_child(opt_node)
+    eq_node.add_child(p[4])
     p[0].add_children(p[5].children)
 
 def p_error(p):
