@@ -8,6 +8,7 @@ from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
+    'COMMA',
     'WILDCARD',
     'HOSTNAME', 
     'WORD',
@@ -24,6 +25,7 @@ reserved = {
 tokens = tokens + list(reserved.values())
 
 t_ignore = ' '
+
 
 # !!!   The order in which these functions are defined determine matchine. The 
 #       first to match is used. Take CARE when reordering.
@@ -69,6 +71,11 @@ def t_SEARCH_KEY(t):
 def t_LITERAL(t):
     t.lexer.begin('ipunchecked')
     return(t)
+
+def t_COMMA(t):
+    r'''(?:\,)|(?:"\,")|(?:'\,')'''
+    t.lexer.begin('ipunchecked')
+    return t
 
 @TOKEN(bin)
 def t_BIN(t):
