@@ -121,8 +121,9 @@ def t_CONVERT_FN(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)

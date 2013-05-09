@@ -112,6 +112,7 @@ def p_opexpr_like(p):
     else:
         p[0].add_child(p[3])
 
+# TODO: Figure out how to include these in the schema extraction.
 def p_opexpr_comparator(p):
     """opexpr : opexpr comparator opexpr %prec EQ"""
     p[0] = p[2]

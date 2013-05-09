@@ -38,20 +38,20 @@ def p_fieldlist(p):
 def p_fillnull_macro(p):
     """fillnullcmd : FILLNULL MACRO"""
     p[0] = ParseTreeNode('FILLNULL')
-    p[1] = ParseTreeNode('MARCO', raw=p[1])
+    p[1] = ParseTreeNode('MACRO', raw=p[1], arg=True)
     p[0].add_child(p[1])
 
 def p_fillnull_value_macro(p):
     """fillnullcmd : FILLNULL fillvalue MACRO"""
     p[0] = ParseTreeNode('FILLNULL')
-    p[3] = ParseTreeNode('MARCO', raw=p[3])
+    p[3] = ParseTreeNode('MACRO', raw=p[3], arg=True)
     p[0].add_child(p[2])
     p[0].add_child(p[3])
 
 def p_fillnullcmd_value_macro_field(p):
     """fillnullcmd : FILLNULL fillvalue MACRO fieldlist"""
     p[0] = ParseTreeNode('FILLNULL')
-    p[3] = ParseTreeNode('MARCO', raw=p[3])
+    p[3] = ParseTreeNode('MACRO', raw=p[3], arg=True)
     p[0].add_child(p[2])
     p[0].add_child(p[3])
     p[0].add_children(p[4].children)
@@ -59,7 +59,7 @@ def p_fillnullcmd_value_macro_field(p):
 def p_fillnullcmd_value_macro_comma_field(p):
     """fillnullcmd : FILLNULL fillvalue MACRO COMMA fieldlist"""
     p[0] = ParseTreeNode('FILLNULL')
-    p[3] = ParseTreeNode('MARCO', raw=p[3])
+    p[3] = ParseTreeNode('MACRO', raw=p[3], arg=True)
     p[0].add_child(p[2])
     p[0].add_child(p[3])
     p[0].add_children(p[5].children)
@@ -67,7 +67,8 @@ def p_fillnullcmd_value_macro_comma_field(p):
 def p_value(p):
     """fillvalue : VALUE EQ value"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper())
+    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_error(p):
