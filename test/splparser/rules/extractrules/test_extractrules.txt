@@ -1,0 +1,32 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('extract pairdelim="|;", kvdelim="=:", auto=f').print_tree()
+('ROOT')
+    ('STAGE')
+        ('extract')
+            ('EQ')
+                ('PAIRDELIM')
+                ('LITERAL': '"|;"')
+            ('EQ')
+                ('KVDELIM')
+                ('LITERAL': '"=:"')
+            ('EQ')
+                ('AUTO')
+                ('WORD': 'f')
+
+>>> splparser.parse('extract reload=true').print_tree()
+('ROOT')
+    ('STAGE')
+        ('extract')
+            ('EQ')
+                ('RELOAD')
+                ('WORD': 'true')
+
+>>> splparser.parse('extract access-extractions').print_tree()
+('ROOT')
+    ('STAGE')
+        ('extract')
+            ('ID': 'access-extractions')
