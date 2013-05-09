@@ -8,7 +8,7 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, type, raw="", associative=False, arg=False):
+    def __init__(self, type, raw="", associative=False, arg=False, expr=False, field=False, option=False, renamed=None, value=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.type
@@ -23,24 +23,70 @@ class ParseTreeNode(object):
           File "<stdin>", line 1, in <module>
         TypeError: __init__() takes at least 2 arguments (1 given)
         """
+        
         self.type = type
         self.raw = raw
         self.parent = None
         self.children = []
+
         self.label = self.type.lower()
         #if not raw == '':
         #    self.label = self.type
+        
         self.associative = associative
+        
         self.arg = arg
+        self.expr = expr
+        self.field = field
+        self.option = option
+        self.renamed = renamed
+        self.value = value
+        self.values = []
 
     def __eq__(self, other):
+        #print "I am ", self.type, self.raw
         if len(self.children) == 0 and len(other.children) == 0:
-            return self.type == other.type and self.raw == other.raw
+            eq = self._node_eq(other)
+            #print "No children and eq is:", eq
+            return eq
         if (len(self.children) == 0 and not len(other.children) == 0) or \
             (not len(self.children) == 0 and len(other.children) == 0):
+            #print "One has children and the other doesn't"
             return False
-        return all([self_child == other_child for self_child in self.children 
-                                            for other_child in other.children])
+        return all([self_child == other_child for (self_child, other_child) in zip(self.children, other.children)])
+
+    def _node_eq(self, other):
+        return self.type == other.type and self.raw == other.raw
+
+    def is_supertree_of(self, other):
+        #print "I am ", self.type, self.raw
+        if other is None:
+            #print "other is None"
+            return True
+        if len(self.children) >= 0 and len(other.children) == 0:
+            eq = self._node_eq(other)
+            #print "other is childless and eq is", eq
+            return eq
+        if len(self.children) == 0 and len(other.children) > 0:
+            #print "other has more children than me 1"
+            return False
+        if len(self.children) < len(other.children):
+            #print "other has more children than me 2"
+            return False
+        if len(self.children) > 0 and len(other.children) > 0:
+            #print "other and I are comparing children"
+            ocidx = 0
+            children_eq = True
+            for child in self.children:
+                if ocidx >= len(other.children):
+                    break
+                if child._node_eq(other.children[ocidx]):
+                    children_eq = children_eq and child.is_supertree_of(other.children[ocidx])
+                    #print "children_eq is", children_eq
+                    ocidx += 1
+            if len(other.children) > ocidx + 1:
+                return False
+            return self._node_eq(other) and children_eq
 
     @staticmethod
     def from_dict(d):
@@ -56,18 +102,18 @@ class ParseTreeNode(object):
     def template(self):
         children = map(lambda x: x.template(), self.children) 
         if self.arg:
-            p = ParseTreeNode('', arg=True)
+            p = ParseTreeNode('', arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
     def inverse_template(self):
         children = map(lambda x: x.inverse_template(), self.children) 
         if not self.arg:
-            p = ParseTreeNode('', arg=False)
+            p = ParseTreeNode('', arg=False, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
@@ -90,17 +136,31 @@ class ParseTreeNode(object):
 
     def _flatten_to_string(self):
         flattened_children = [child._flatten_to_string() for child in self.children]
-        flattened_children = filter(lambda x: not x == '', flattened_children)
-        children_string = '_'.join(flattened_children)
+        flattened_children = filter(lambda x: not x == '()', flattened_children)
+        children_string = ','.join(flattened_children)
+        children_string = ''.join(['(', children_string, ')'])
         if self.type == '':
             return children_string
-        return '_'.join([self.type, children_string])
+        if children_string == '()':
+            return self.type
+        return ''.join([self.type, children_string])
 
     def _flatten_to_list(self):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
         if self.raw == '':
             return children_list
-        return [self.raw] + children_list
+        field = (self.field and not self.option)
+        return [(self.raw, field)] + children_list
+
+    def schema_info_list(self):
+        stages = self._stage_subtrees()
+        schema_info = [stage._schema_info_from_stage() for stage in stages]
+        return schema_info
+
+    def _schema_info_from_stage(self):
+        if not self.type == 'STAGE':
+            raise ValueError("This must be 'STAGE' node for this to work properly.\n")
+        # TODO: Finish implementing this later.
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:

@@ -30,13 +30,15 @@ def p_outputlookup_optionlist_name(p):
 
 def p_optionlist_single(p):
     """optionlist : OUTPUTLOOKUP_OPT EQ field"""
-    opt = ParseTreeNode(p[1].upper())
+    opt = ParseTreeNode(p[1].upper(), option=True)
+    opt.values.append(p[3])
     opt.add_child(p[3])
     p[0] = [opt]
 
 def p_optionlist(p):
     """optionlist : OUTPUTLOOKUP_OPT EQ field optionlist"""
-    opt= ParseTreeNode(p[1].upper())
+    opt= ParseTreeNode(p[1].upper(), option=True)
+    opt.values.append(p[3])
     opt.add_child(p[3])
     p[0] = [opt] + p[4]
 

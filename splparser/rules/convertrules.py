@@ -15,7 +15,8 @@ def p_convert_timeformat_exprlist(p):
     """cmdexpr : CONVERT TIMEFORMAT EQ value convertexprlist"""
     p[0] = ParseTreeNode('CONVERT')
     eq_node = ParseTreeNode('EQ')
-    timeformat_node = ParseTreeNode('TIMEFORMAT')
+    timeformat_node = ParseTreeNode('TIMEFORMAT', option=True)
+    timeformat_node.values.append(p[4])
     eq_node.add_child(timeformat_node)
     eq_node.add_child(p[4])
     p[0].add_child(eq_node)
@@ -41,6 +42,8 @@ def p_convertexpr(p):
     """convertexpr : CONVERT_FN LPAREN value RPAREN"""
     p[0] = ParseTreeNode(p[1].upper())
     p[0].add_child(p[3])
+    p[3].value = False
+    p[3].field = True
 
 def p_convertexpr_as(p):
     """convertexpr : CONVERT_FN LPAREN value RPAREN as value"""
@@ -49,10 +52,15 @@ def p_convertexpr_as(p):
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[6])
+    p[3].value = False
+    p[3].field = True
+    p[6].value = False
+    p[6].field = True
+    p[6].values = p[0]
 
 def p_convertexpr_macro(p):
     """convertexpr : MACRO"""
-    p[0] = ('MACRO', p[1])
+    p[0] = ParseTreeNode('MACRO', raw=p[1], arg=True)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in convert parser input!") 
