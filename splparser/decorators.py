@@ -3,6 +3,7 @@ from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.parser import SPLParser
 
 OPTIMIZE = False
+#OPTIMIZE = True
 
 def splcommandrule(f):
     cmd = f.__doc__.split(':')[1].split()[0].strip().lower()
