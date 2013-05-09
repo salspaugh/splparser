@@ -614,7 +614,7 @@ def p_cmdexpr_xmlunescape(p):
     """cmdexpr : XMLUNESCAPE arglist
                | XMLUNESCAPE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_xpath(p):
     """cmdexpr : XPATH arglist
                | XPATH MACRO"""
