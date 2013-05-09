@@ -357,9 +357,10 @@ def p_cmdexpr_nomv(p):
     """cmdexpr : NOMV arglist
                | NOMV MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_outlier(p):
-    """cmdexpr : OUTLIER arglist
+    """cmdexpr : OUTLIER
+               | OUTLIER arglist
                | OUTLIER MACRO"""
 
 @notimplemented
