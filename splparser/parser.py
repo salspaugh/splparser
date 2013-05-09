@@ -15,18 +15,18 @@ class SPLParser(object):
         self.parsetab_name = parsetab_name
         self.parsetab_dir = parsetab_dir
         self.parsetab = self.setup_parsetab()
-        #self.log = self.setup_log(logname)
-        self.rules = rulesmod
-        #self.parser = ply.yacc.yacc(module=self.rules, 
-        #                            debug=True,
-        #                            debuglog=self.log, 
-        #                            tabmodule=self.parsetab_name, 
-        #                            outputdir=self.parsetab_dir,
-        #                            optimize=optimize)
+        self.log = self.setup_log(logname)
+        #self.rules = rulesmod
         self.parser = ply.yacc.yacc(module=self.rules, 
+                                    debug=True,
+                                    debuglog=self.log, 
                                     tabmodule=self.parsetab_name, 
                                     outputdir=self.parsetab_dir,
                                     optimize=optimize)
+        #self.parser = ply.yacc.yacc(module=self.rules, 
+        #                            tabmodule=self.parsetab_name, 
+        #                            outputdir=self.parsetab_dir,
+        #                            optimize=optimize)
 
     def setup_parsetab(self):
         
@@ -78,8 +78,8 @@ class SPLParser(object):
     def parse(self, data):
         parsetree = None
         try:
-            #parsetree = self.parser.parse(data, lexer=self.lexer, debug=self.log)
-            parsetree = self.parser.parse(data, lexer=self.lexer)
+            parsetree = self.parser.parse(data, lexer=self.lexer, debug=self.log)
+            #parsetree = self.parser.parse(data, lexer=self.lexer)
         except NotImplementedError:
             raise
         except Exception:
