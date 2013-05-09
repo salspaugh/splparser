@@ -16,7 +16,7 @@ class SPLParser(object):
         self.parsetab_dir = parsetab_dir
         self.parsetab = self.setup_parsetab()
         self.log = self.setup_log(logname)
-        #self.rules = rulesmod
+        self.rules = rulesmod
         self.parser = ply.yacc.yacc(module=self.rules, 
                                     debug=True,
                                     debuglog=self.log, 
