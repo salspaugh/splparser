@@ -50,17 +50,21 @@ def p_rexcmd_error_rex(p):
 def p_rex_req(p):
     """rex_req : rex_opt EQ value"""
     p[0] = ParseTreeNode('EQ')
+    p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_rex_max_match(p):
     """max_match : MAX_MATCH EQ value"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('EQ')
+    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node.values.append(p[3])
+    p[0].add_child(opt_node)
     p[0].add_child(p[3])
 
 def p_rex_opt(p):
     """rex_opt : FIELD
                | MODE"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode(p[1].upper(), option=True)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in rex parser input!") 

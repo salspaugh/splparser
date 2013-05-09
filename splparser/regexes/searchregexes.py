@@ -11,7 +11,7 @@ common_opt = r'(?:limit)' + end_of_token
 
 top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
 
-search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startsminutesago|starthoursago|startsdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
+search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startminutesago|starthoursago|startdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
 
 multikv_list_opt = r'(?:filter|FIELDS|fields)' + end_of_token
 
@@ -40,6 +40,8 @@ plus = r'\+' + end_of_token
 minus = r'-' + end_of_token
 
 # ---------------- General argument types: ------------------
+
+literal = r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"|"[=;|]+[^"]*"|"[^"]*[;=|]+"'
 
 wildcard = r'\*' + end_of_token
 

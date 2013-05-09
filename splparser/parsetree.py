@@ -8,7 +8,7 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, type, raw="", associative=False, arg=False):
+    def __init__(self, type, raw="", associative=False, arg=False, expr=False, field=False, option=False, renamed=None, value=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.type
@@ -23,15 +23,25 @@ class ParseTreeNode(object):
           File "<stdin>", line 1, in <module>
         TypeError: __init__() takes at least 2 arguments (1 given)
         """
+        
         self.type = type
         self.raw = raw
         self.parent = None
         self.children = []
+
         self.label = self.type.lower()
         #if not raw == '':
         #    self.label = self.type
+        
         self.associative = associative
+        
         self.arg = arg
+        self.expr = expr
+        self.field = field
+        self.option = option
+        self.renamed = renamed
+        self.value = value
+        self.values = []
 
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
@@ -56,18 +66,18 @@ class ParseTreeNode(object):
     def template(self):
         children = map(lambda x: x.template(), self.children) 
         if self.arg:
-            p = ParseTreeNode('', arg=True)
+            p = ParseTreeNode('', arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
     def inverse_template(self):
         children = map(lambda x: x.inverse_template(), self.children) 
         if not self.arg:
-            p = ParseTreeNode('', arg=False)
+            p = ParseTreeNode('', arg=False, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True)
+            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
         p.add_children(children)
         return p
 
@@ -90,17 +100,30 @@ class ParseTreeNode(object):
 
     def _flatten_to_string(self):
         flattened_children = [child._flatten_to_string() for child in self.children]
-        flattened_children = filter(lambda x: not x == '', flattened_children)
-        children_string = '_'.join(flattened_children)
+        flattened_children = filter(lambda x: not x == '()', flattened_children)
+        children_string = ','.join(flattened_children)
+        children_string = ''.join(['(', children_string, ')'])
         if self.type == '':
             return children_string
-        return '_'.join([self.type, children_string])
+        if children_string == '()':
+            return self.type
+        return ''.join([self.type, children_string])
 
     def _flatten_to_list(self):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
         if self.raw == '':
             return children_list
-        return [self.raw] + children_list
+        return [(self.raw, self.field)] + children_list
+
+    def schema_info_list(self):
+        stages = self._stage_subtrees()
+        schema_info = [stage._schema_info_from_stage() for stage in stages]
+        return schema_info
+
+    def _schema_info_from_stage(self):
+        if not self.type == 'STAGE':
+            raise ValueError("This must be 'STAGE' node for this to work properly.\n")
+        # TODO: Finish implementing this later.
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:

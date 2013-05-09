@@ -51,7 +51,8 @@ def p_copt(p):
     """copt : CHART_OPT EQ simplevalue
             | COMMON_OPT EQ simplevalue"""
     p[0] = ParseTreeNode('EQ')
-    copt_node = ParseTreeNode(p[1].upper())
+    copt_node = ParseTreeNode(p[1].upper(), option=True)
+    copt_node.values.append(p[3])
     p[0].add_child(copt_node)
     p[0].add_child(p[3])
 
@@ -65,6 +66,8 @@ def p_carg_statsfn_as(p):
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
+    p[3].values.append(p[0])
+    p[0].expr = True
 
 def p_carg_statsfnexpr(p):
     """carg : statsfnexpr"""
@@ -76,10 +79,12 @@ def p_carg_statsfnexpr_as(p):
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
+    p[3].values.append(p[0])
+    p[0].expr = True
 
 def p_carg_macro(p):
     """carg : MACRO"""
-    p[0] = ParseTreeNode('MACRO', raw=p[1])
+    p[0] = ParseTreeNode('MACRO', raw=p[1], arg=True)
 
 def p_carg_statsfn_by(p):
     """carg : STATS_FN splitbyclause"""
@@ -98,6 +103,7 @@ def p_splitbyclause(p):
     p[0].add_child(by_node)
     by_node.add_children(p[2].children)
 
+# TODO: How do we include the 'where*' rules in the schema extraction?
 def p_splitbyclause_where(p):
     """splitbyclause : by simplefieldlist wherecomp"""
     p[0] = ParseTreeNode('_SPLITBYCLAUSE')

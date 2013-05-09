@@ -110,8 +110,9 @@ def t_REGULAR_EXPRESSION(t):
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)

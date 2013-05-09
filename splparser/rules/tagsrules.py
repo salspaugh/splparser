@@ -36,7 +36,8 @@ def p_tagscmd_tags(p):
 def p_tags_opt(p):
     """wc_string : TAGS_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper())
+    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_tags_opt_list(p):
