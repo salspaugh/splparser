@@ -41,14 +41,16 @@ def p_cmdexpr_anomalousvalue(p):
     """cmdexpr : ANOMALOUSVALUE arglist
                | ANOMALOUSVALUE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_append(p):
-    """cmdexpr : APPEND arglist
+    """cmdexpr : APPEND
+               | APPEND arglist
                | APPEND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_appendcols(p):
-    """cmdexpr : APPENDCOLS arglist
+    """cmdexpr : APPENDCOLS
+               | APPENDCOLS arglist
                | APPENDCOLS MACRO"""
 
 @notimplemented
@@ -271,9 +273,10 @@ def p_cmdexpr_iplocation(p):
     """cmdexpr : IPLOCATION arglist
                | IPLOCATION MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_join(p):
-    """cmdexpr : JOIN arglist
+    """cmdexpr : JOIN
+               | JOIN arglist
                | JOIN MACRO"""
 
 @notimplemented
