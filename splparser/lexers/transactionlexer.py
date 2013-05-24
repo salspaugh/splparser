@@ -7,27 +7,23 @@ import re
 from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
-outputlookup_opt = r'(?:connected|endswith|maxspan|maxpause|maxevents|startswith|unifyends|keepevicted|maxopenevents|maxopentxn|delim|mvlist|mvraw|nullstr)' + end_of_token
+transaction_opt = r'(?:connected|endswith|keeporphans|maxspan|maxpause|maxevents|startswith|unifyends|keepevicted|maxopenevents|maxopentxn|delim|mvlist|mvraw|nullstr|name)' + end_of_token
 
 tokens = [
     'COMMA',
     'WILDCARD',
     'EQ',
-    'IPV4ADDR', 'IPV6ADDR',
-    'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
+    'HOSTNAME',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'TRANSACTION_OPT',
 ]
 
 reserved = {
-    'lookup' : 'LOOKUP', 
-    'as' : 'ASLC',
-    'AS' : 'ASUC',
-    'OUTPUT' : 'OUTPUT',
-    'OUTPUTNEW' : 'OUTPUTNEW',
+    'transaction' : 'TRANSACTION', 
 }
 
 tokens = tokens + list(reserved.values())
@@ -42,6 +38,12 @@ t_EQ = r'='
 states = (
     ('ipunchecked', 'inclusive'),
 )
+
+@TOKEN(transaction_opt)
+def t_TRANSACTION_OPT(t):
+    t.type = type_if_reserved(t, 'TRANSACTION_OPT')
+    t.lexer.begin('ipunchecked')
+    return t
 
 def is_ipv4addr(addr):
     addr = addr.replace('*', '0')
