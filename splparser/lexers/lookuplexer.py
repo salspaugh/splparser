@@ -7,8 +7,6 @@ import re
 from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
-outputlookup_opt = r'(?:connected|endswith|maxspan|maxpause|maxevents|startswith|unifyends|keepevicted|maxopenevents|maxopentxn|delim|mvlist|mvraw|nullstr)' + end_of_token
-
 tokens = [
     'COMMA',
     'WILDCARD',
