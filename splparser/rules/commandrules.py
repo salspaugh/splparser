@@ -556,7 +556,7 @@ def p_cmdexpr_top(p):
                | SITOP arglist
                | SITOP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_transaction(p):
     """cmdexpr : TRANSACTION arglist
                | TRANSACTION MACRO"""
