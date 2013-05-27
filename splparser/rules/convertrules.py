@@ -56,7 +56,7 @@ def p_convertexpr_as(p):
     p[3].field = True
     p[6].value = False
     p[6].field = True
-    p[6].values = p[0]
+    p[6].values.append(p[0])
 
 def p_convertexpr_macro(p):
     """convertexpr : MACRO"""
