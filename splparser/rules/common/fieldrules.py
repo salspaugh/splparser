@@ -31,15 +31,15 @@ def p_field_num(p):
 
 def p_num_bin(p):
     """num : BIN"""
-    p[0] = ParseTreeNode('BIN', raw=p[1], arg=True, field=True)
+    p[0] = ParseTreeNode('BIN', raw=p[1], arg=True, option=True)
 
 def p_num_oct(p):
     """num : OCT"""
-    p[0] = ParseTreeNode('OCT', raw=p[1], arg=True, field=True)
+    p[0] = ParseTreeNode('OCT', raw=p[1], arg=True, option=True)
 
 def p_num_hex(p):
     """num : HEX"""
-    p[0] = ParseTreeNode('HEX', raw=p[1], arg=True, field=True)
+    p[0] = ParseTreeNode('HEX', raw=p[1], arg=True, option=True)
 
 def p_num_int(p):
     """num : int"""
@@ -47,8 +47,8 @@ def p_num_int(p):
 
 def p_posint(p):
     """int : INT"""
-    p[0] = ParseTreeNode('INT', raw=p[1], arg=True, field=True)
+    p[0] = ParseTreeNode('INT', raw=p[1], arg=True, option=True)
 
 def p_num_float(p):
     """num : FLOAT"""
-    p[0] = ParseTreeNode('FLOAT', raw=p[1], arg=True, field=True)
+    p[0] = ParseTreeNode('FLOAT', raw=p[1], arg=True, option=True)

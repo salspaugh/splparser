@@ -125,6 +125,11 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.begin('INITIAL')
     return
 
+@TOKEN(literal)
+def t_LITERAL(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''
     t.lexer.begin('ipunchecked')
@@ -137,11 +142,6 @@ def t_WILDCARD(t):
 
 @TOKEN(search_key)
 def t_SEARCH_KEY(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
-
-@TOKEN(literal)
-def t_LITERAL(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
