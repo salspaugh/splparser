@@ -23,6 +23,9 @@ def p_headcmd_head_int(p):
     """headcmd : HEAD int"""
     p[0] = ParseTreeNode('HEAD')
     p[0].add_child(p[2])
+    p[2].field = False
+    p[2].value = False
+    p[2].option = True
 
 def p_headcmd_head_eval(p):
     """headcmd : HEAD evalfnexpr"""
@@ -39,6 +42,9 @@ def p_headcmd_head_int_headopt(p):
     p[0] = ParseTreeNode('HEAD')
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)
+    p[2].field = False
+    p[2].value = False
+    p[2].option = True
 
 def p_headcmd_head_eval_headopt(p):
     """headcmd : HEAD evalfnexpr headoptlist"""
