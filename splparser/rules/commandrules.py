@@ -41,14 +41,16 @@ def p_cmdexpr_anomalousvalue(p):
     """cmdexpr : ANOMALOUSVALUE arglist
                | ANOMALOUSVALUE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_append(p):
-    """cmdexpr : APPEND arglist
+    """cmdexpr : APPEND
+               | APPEND arglist
                | APPEND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_appendcols(p):
-    """cmdexpr : APPENDCOLS arglist
+    """cmdexpr : APPENDCOLS
+               | APPENDCOLS arglist
                | APPENDCOLS MACRO"""
 
 @notimplemented
@@ -221,7 +223,7 @@ def p_cmdexpr_format(p):
     """cmdexpr : FORMAT arglist
                | FORMAT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_gauge(p):
     """cmdexpr : GAUGE arglist
                | GAUGE MACRO"""
@@ -271,9 +273,10 @@ def p_cmdexpr_iplocation(p):
     """cmdexpr : IPLOCATION arglist
                | IPLOCATION MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_join(p):
-    """cmdexpr : JOIN arglist
+    """cmdexpr : JOIN
+               | JOIN arglist
                | JOIN MACRO"""
 
 @notimplemented
@@ -286,7 +289,7 @@ def p_cmdexpr_kvform(p):
     """cmdexpr : KVFORM arglist
                | KVFORM MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_loadjob(p):
     """cmdexpr : LOADJOB arglist
                | LOADJOB MACRO"""
@@ -342,7 +345,7 @@ def p_cmdexpr_multisearch(p):
     """cmdexpr : MULTISEARCH arglist
                | MULTISEARCH MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_mvcombine(p):
     """cmdexpr : MVCOMBINE arglist
                | MVCOMBINE MACRO"""
@@ -352,7 +355,7 @@ def p_cmdexpr_mvexpand(p):
     """cmdexpr : MVEXPAND arglist
                | MVEXPAND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_nomv(p):
     """cmdexpr : NOMV arglist
                | NOMV MACRO"""
@@ -554,7 +557,7 @@ def p_cmdexpr_top(p):
                | SITOP arglist
                | SITOP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_transaction(p):
     """cmdexpr : TRANSACTION arglist
                | TRANSACTION MACRO"""
@@ -615,7 +618,7 @@ def p_cmdexpr_xmlunescape(p):
     """cmdexpr : XMLUNESCAPE arglist
                | XMLUNESCAPE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_xpath(p):
     """cmdexpr : XPATH arglist
                | XPATH MACRO"""

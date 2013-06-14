@@ -29,9 +29,15 @@ inputcsv_opt = r'(?:append|start|max|events)' + end_of_token
 
 abstract_opt = r'(?:maxterms|maxlines)' + end_of_token
 
+xpath_opt = r'(?:outfield|field|default)' + end_of_token
+
 xmlkv_opt = r'(?:maxinputs|id)'
 
+<<<<<<< HEAD
 outlier_opt = r'(?:param|action|type|uselower)'
+=======
+loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)'
+>>>>>>> 8d1427537e3dfcac11076bf17a266afc5c853ff6
 
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
