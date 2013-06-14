@@ -289,7 +289,7 @@ def p_cmdexpr_kvform(p):
     """cmdexpr : KVFORM arglist
                | KVFORM MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_loadjob(p):
     """cmdexpr : LOADJOB arglist
                | LOADJOB MACRO"""

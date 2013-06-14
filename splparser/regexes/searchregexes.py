@@ -31,6 +31,8 @@ abstract_opt = r'(?:maxterms|maxlines)' + end_of_token
 
 xmlkv_opt = r'(?:maxinputs|id)'
 
+loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)'
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token

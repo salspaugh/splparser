@@ -19,7 +19,7 @@ def splcommandrule(f):
         try:
             p[0]  = parser.parse(' '.join(p[1:]))
         except Exception as e:
-            raise TerminatingSPLSyntaxError(e.message) 
+            raise TerminatingSPLSyntaxError(e.args) 
     helper.__doc__ = f.__doc__
     return helper
 
