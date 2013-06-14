@@ -3,6 +3,7 @@ from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.parser import SPLParser
 
 OPTIMIZE = False
+#OPTIMIZE = True
 
 def splcommandrule(f):
     cmd = f.__doc__.split(':')[1].split()[0].strip().lower()
@@ -18,7 +19,7 @@ def splcommandrule(f):
         try:
             p[0]  = parser.parse(' '.join(p[1:]))
         except Exception as e:
-            raise TerminatingSPLSyntaxError(e.message) 
+            raise TerminatingSPLSyntaxError(e.args) 
     helper.__doc__ = f.__doc__
     return helper
 

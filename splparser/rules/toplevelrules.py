@@ -30,6 +30,14 @@ def p_stage_cmdexpr(p):
     p[0] = ParseTreeNode('STAGE')
     p[0].add_child(p[1])
 
+def p_stage_cmdexpr_subsearch(p):
+    """stage : cmdexpr LBRACKET start RBRACKET"""
+    p[0] = ParseTreeNode('STAGE')
+    p[0].add_child(p[1])
+    subsearch = ParseTreeNode('SUBSEARCH')
+    subsearch.add_child(p[3])
+    p[1].add_child(subsearch)
+
 def p_stage_macro(p):
     """stage : MACRO"""
     p[0] = ParseTreeNode('STAGE')

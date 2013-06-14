@@ -1,0 +1,21 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('loadjob savedsearch="admin:search:MySavedSearch"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('LOADJOB')
+            ('EQ')
+                ('SAVEDSEARCH')
+                ('ID': '"admin:search:MySavedSearch"')
+
+>>> splparser.parse('loadjob 1233886270.2 events=t').print_tree()
+('ROOT')
+    ('STAGE')
+        ('LOADJOB')
+            ('FLOAT': '1233886270.2')
+            ('EQ')
+                ('EVENTS')
+                ('WORD': 't')
