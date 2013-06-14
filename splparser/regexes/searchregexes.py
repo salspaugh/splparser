@@ -33,6 +33,8 @@ xpath_opt = r'(?:outfield|field|default)' + end_of_token
 
 xmlkv_opt = r'(?:maxinputs|id)'
 
+extractkv_opt = r'(?:auto|clean_keys|kvdelim|limit|maxchars|mv_add|pairdelim|reload|segment)'
+
 outlier_opt = r'(?:param|action|type|uselower)'
 
 loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)'
