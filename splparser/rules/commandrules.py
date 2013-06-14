@@ -345,7 +345,7 @@ def p_cmdexpr_multisearch(p):
     """cmdexpr : MULTISEARCH arglist
                | MULTISEARCH MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_mvcombine(p):
     """cmdexpr : MVCOMBINE arglist
                | MVCOMBINE MACRO"""
