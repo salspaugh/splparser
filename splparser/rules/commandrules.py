@@ -223,7 +223,7 @@ def p_cmdexpr_format(p):
     """cmdexpr : FORMAT arglist
                | FORMAT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_gauge(p):
     """cmdexpr : GAUGE arglist
                | GAUGE MACRO"""
