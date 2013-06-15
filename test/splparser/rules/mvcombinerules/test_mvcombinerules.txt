@@ -1,0 +1,31 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('mvcombine delim="," ip').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVCOMBINE')
+            ('EQ')
+                ('DELIM')
+                ('","')
+            ('WORD': 'ip')
+
+>>> splparser.parse('mvcombine delim=":" foo').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVCOMBINE')
+            ('EQ')
+                ('DELIM')
+                ('ID': '":"')
+            ('WORD': 'foo')
+
+>>> splparser.parse('mvcombine delim="," RecordNumber').print_tree()
+('ROOT')
+    ('STAGE')
+        ('MVCOMBINE')
+            ('EQ')
+                ('DELIM')
+                ('","')
+            ('WORD': 'RecordNumber')

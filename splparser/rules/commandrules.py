@@ -174,7 +174,7 @@ def p_cmdexpr_export(p):
                | EXPORT MACRO
                | EXPORT"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_extractkv(p):
     """cmdexpr : EXTRACT arglist
                | KV arglist
@@ -205,7 +205,7 @@ def p_cmdexpr_filldown(p):
 @splcommandrule
 def p_cmdexpr_fillnull(p):
     """cmdexpr : FILLNULL
-	       | FILLNULL arglist
+	           | FILLNULL arglist
                | FILLNULL MACRO"""
 
 @notimplemented
@@ -223,7 +223,7 @@ def p_cmdexpr_format(p):
     """cmdexpr : FORMAT arglist
                | FORMAT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_gauge(p):
     """cmdexpr : GAUGE arglist
                | GAUGE MACRO"""
@@ -289,7 +289,7 @@ def p_cmdexpr_kvform(p):
     """cmdexpr : KVFORM arglist
                | KVFORM MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_loadjob(p):
     """cmdexpr : LOADJOB arglist
                | LOADJOB MACRO"""
@@ -345,7 +345,7 @@ def p_cmdexpr_multisearch(p):
     """cmdexpr : MULTISEARCH arglist
                | MULTISEARCH MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_mvcombine(p):
     """cmdexpr : MVCOMBINE arglist
                | MVCOMBINE MACRO"""
@@ -355,14 +355,15 @@ def p_cmdexpr_mvexpand(p):
     """cmdexpr : MVEXPAND arglist
                | MVEXPAND MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_nomv(p):
     """cmdexpr : NOMV arglist
                | NOMV MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_outlier(p):
-    """cmdexpr : OUTLIER arglist
+    """cmdexpr : OUTLIER
+               | OUTLIER arglist
                | OUTLIER MACRO"""
 
 @notimplemented
@@ -617,7 +618,7 @@ def p_cmdexpr_xmlunescape(p):
     """cmdexpr : XMLUNESCAPE arglist
                | XMLUNESCAPE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_xpath(p):
     """cmdexpr : XPATH arglist
                | XPATH MACRO"""

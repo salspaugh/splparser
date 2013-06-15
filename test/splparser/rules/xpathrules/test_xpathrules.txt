@@ -1,0 +1,31 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('xpath outfield=name "//bar/@name"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XPATH')
+            ('EQ')
+                ('OUTFIELD')
+                ('WORD': 'name')
+            ('NBSTR': '"//bar/@name"')
+
+>>> splparser.parse('xpath outfield=identity_id "//DataSet/identity_id"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XPATH')
+            ('EQ')
+                ('OUTFIELD')
+                ('ID': 'identity_id')
+            ('LITERAL': '"//DataSet/identity_id"')
+
+>>> splparser.parse(r'xpath outfield=instrument_id "//DataSet[sname=\"BARC\"]/instrument_id"').print_tree()
+('ROOT')
+    ('STAGE')
+        ('XPATH')
+            ('EQ')
+                ('OUTFIELD')
+                ('ID': 'instrument_id')
+            ('NBSTR': '"//DataSet[sname=\"BARC\"]/instrument_id"')
