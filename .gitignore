@@ -2,6 +2,8 @@
 *parsetab.py
 *.log
 parse.py
+*.out
+*.tmp
 
 # OS specific files
 .DS_Store
