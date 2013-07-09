@@ -2,6 +2,8 @@
 
 import json
 
+from . import schema
+
 from itertools import chain
 
 INDENT = '    '
@@ -151,16 +153,6 @@ class ParseTreeNode(object):
             return children_list
         field = (self.field and not self.option)
         return [(self.raw, field)] + children_list
-
-    def schema_info_list(self):
-        stages = self._stage_subtrees()
-        schema_info = [stage._schema_info_from_stage() for stage in stages]
-        return schema_info
-
-    def _schema_info_from_stage(self):
-        if not self.type == 'STAGE':
-            raise ValueError("This must be 'STAGE' node for this to work properly.\n")
-        # TODO: Finish implementing this later.
 
     def add_child(self, child):
         if self.associative and child.type == self.type and len(child.children) > 0:
@@ -364,3 +356,54 @@ class ParseTreeNode(object):
     
     def dumps(self, **kwargs):
         return json.dumps(self, cls=self.ParseTreeNodeEncoder, **kwargs)
+
+    def schema(self):
+        field_tokens = self.extract_fields()
+        fields = {}
+        for field_token in field_tokens:
+            if not field_token.raw in fields:
+                fields[field_token.raw] = schema.Field(field_token.raw)
+            field = fields[field_token.raw]
+            field.values = list(set(field.values) | set([value.raw for value in field_token.values]))
+        s = schema.Schema()
+        s.fields = fields.values()
+        
+        value_tokens = self.extract_values()
+        for value_token in value_tokens:
+            if value_token.raw == "":
+                value_token.raw = value_token.type.lower()
+            present = False
+            for f in s.fields:
+                if value_token.raw in f.values:
+                    present = True
+            if not present:
+                g = schema.Field("")
+                g.values = [value_token.raw]
+                s.fields.append(g)
+        return s
+
+    def extract_fields(self):
+        stack = []
+        fields = []
+        stack.insert(0, self)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.field:
+                fields.append(node)
+            if len(node.children) > 0:
+                for c in node.children:
+                    stack.insert(0, c)
+        return fields
+    
+    def extract_values(self):
+        stack = []
+        values = []
+        stack.insert(0, self)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.value:
+                values.append(node)
+            if len(node.children) > 0:
+                for c in node.children:
+                    stack.insert(0, c)
+        return values
