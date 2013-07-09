@@ -113,11 +113,11 @@ def p_searchexpr_gt(p):
 
 def p_field_searchfield(p):
     """field : SEARCH_KEY"""
-    p[0] = ParseTreeNode(p[1].upper(), option=True)
+    p[0] = ParseTreeNode(p[1].upper(), field=True)
 
 def p_field_host(p):
     """field : HOST"""
-    p[0] = ParseTreeNode('HOST', option=True)
+    p[0] = ParseTreeNode('HOST', field=True)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in search parser input!") 
