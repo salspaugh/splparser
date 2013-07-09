@@ -1,6 +1,12 @@
 
 end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|(?=\\)|(?=:)|(?=/)|(?=\.)|(?=-)|(?=\+)|(?=\*)|$)'
 
+internal_fields = r'(?:_raw|_time|_indextime|_cd)' + end_of_token
+
+default_fields = r'(?:host|index|linecount|punct|source|sourcetype|splunk_server|timestamp)' + end_of_token
+
+default_datetime_fields = r'(?:date_hour|date_mday|date_minute|date_month|date_second|date_wday|date_year|date_zone)' + end_of_token
+
 # ---------------- Command specific options: ----------------
 
 chart_opt = r'(?:sep|partial|cont|agg|bins|minspan|span|start|end|fixedrange|usenull|useother|nullstr|otherstr)' + end_of_token

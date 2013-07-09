@@ -29,22 +29,22 @@ def p_searchexpr_macro(p):
 
 def p_searchexpr_space(p):
     """searchexpr : searchexpr searchexpr"""
-    p[0] = ParseTreeNode('AND', associative=True)
+    p[0] = ParseTreeNode('AND', is_associative=True)
     p[0].add_children([p[1], p[2]])
 
 def p_searchexpr_comma(p):
     """searchexpr : searchexpr COMMA searchexpr"""
-    p[0] = ParseTreeNode('AND', associative=True)
+    p[0] = ParseTreeNode('AND', is_associative=True)
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_and(p):
     """searchexpr : searchexpr AND searchexpr"""
-    p[0] = ParseTreeNode('AND', associative=True)
+    p[0] = ParseTreeNode('AND', is_associative=True)
     p[0].add_children([p[1], p[3]])
     
 def p_searchexpr_or(p):
     """searchexpr : searchexpr OR searchexpr"""
-    p[0] = ParseTreeNode('OR', associative=True)
+    p[0] = ParseTreeNode('OR', is_associative=True)
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_not(p):
@@ -57,13 +57,21 @@ def p_searchexpr_value(p):
     p[1].value = True
     p[0] = p[1]
 
-# TODO: Ask Carrasso about this rule, I don't really understand it.
 def p_searchexpr_tag(p):
-    """searchexpr : TAG EQ SEARCH_KEY DCOLON value"""
-    p[0] = ParseTreeNode('TAG')
-    p[3].field = True
-    p[3].values.append(p[5])
-    p[0].add_children([p[3], p[5]])
+    """searchexpr : TAG EQ value"""
+    p[0] = ParseTreeNode('EQ')
+    p[3].role = 'TAG'
+    tag_node = ParseTreeNode('KEYWORD', raw=p[1])
+    p[0].add_children([tag_node, p[3]])
+
+def p_searchexpr_tag_value(p):
+    """searchexpr : TAG DCOLON field EQ value"""
+    tag_node = ParseTreeNode('KEYWORD', raw=p[1])
+    dcolon_node = ParseTreeNode('DCOLON')
+    eq_node = ParseTreeNode('EQ')
+    p[5].role = 'TAG'
+    eq_node.add_children([p[3], p[5]])
+    dcolon_node.add_children([tag_node, eq_node])
 
 # NOTE: '==' is not a valid comparator -- will parse out to SEARCH_KEY EQ =val, where
 #       the second '=' is included as a part of the value.
@@ -74,12 +82,6 @@ def p_searchexpr_eq(p):
     p[0] = ParseTreeNode('EQ')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
-
-# TODO: eliminate numerical comparison rules with the following rule
-#def p_searchexpr_comparison(p):
-#    """searchexpr : field COMPARISON value"""
-#    p[0] = ParseTreeNode(p[2].upper())
-#    p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_ne(p):
     """searchexpr : field NE value"""
@@ -111,13 +113,21 @@ def p_searchexpr_gt(p):
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])    
 
-def p_field_searchfield(p):
-    """field : SEARCH_KEY"""
-    p[0] = ParseTreeNode(p[1].upper(), field=True)
+def p_field_default_field(p):
+    """field : DEFAULT_FIELD"""
+    p[0] = ParseTreeNode('DEFAULT_FIELD', raw=p[1])
 
-def p_field_host(p):
-    """field : HOST"""
-    p[0] = ParseTreeNode('HOST', field=True)
+def p_field_internal_field(p):
+    """field : INTERNAL_FIELD"""
+    p[0] = ParseTreeNode('INTERNAL_FIELD', raw=p[1])
+
+def p_field_default_datetime_field(p):
+    """field : DEFAULT_DATETIME_FIELD"""
+    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', raw=p[1])
+
+def p_field_search_opt(p):
+    """field : SEARCH_OPT"""
+    p[0] = ParseTreeNode('OPTION', raw=p[1])
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in search parser input!") 

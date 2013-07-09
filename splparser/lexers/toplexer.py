@@ -117,11 +117,6 @@ def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
-
 @TOKEN(literal)
 def t_LITERAL(t):
     t.lexer.begin('ipunchecked')

@@ -48,10 +48,6 @@ def type_if_reserved(t, default):
 def t_WILDCARD(t):
     return t
 
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
-    return(t)
-
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
     return(t)

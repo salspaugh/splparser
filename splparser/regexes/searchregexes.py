@@ -1,5 +1,10 @@
 end_of_token = r'(?:(?=\s)|(?==)|(?=,)|(?=\()|(?=\))|(?=])|(?=\|)|(?=!)|(?=<)|(?=>)|$)'
 
+internal_field = r'(?:_raw|_time|_indextime|_cd)' + end_of_token
+
+default_field = r'(?:host|index|linecount|punct|source|sourcetype|splunk_server|timestamp)' + end_of_token
+
+default_datetime_field = r'(?:date_hour|date_mday|date_minute|date_month|date_second|date_wday|date_year|date_zone)' + end_of_token
 
 # ---------------- Command specific options: ----------------
 
@@ -11,7 +16,7 @@ common_opt = r'(?:limit)' + end_of_token
 
 top_opt = r'(?:countfield|limit|otherstr|percentfield|showcount|showperc|useother)' + end_of_token
 
-search_key = r'(?:source|sourcetype|hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startminutesago|starthoursago|startdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
+search_opt = r'(?:hosttag|eventtype|eventttypetag|savedsearch|savedsplunk|timeformat|starttime|endtime|earliest|latest|startminutesago|starthoursago|startdaysago|startmonthsago|endminutesago|endhoursago|enddaysago|endmonthsago|searchtimespanhours|searchtimespanminutes|searchtimespandays|searchtimespanmonths|minutesago|hoursago|daysago|monthsago)' + end_of_token
 
 multikv_list_opt = r'(?:filter|FIELDS|fields)' + end_of_token
 
