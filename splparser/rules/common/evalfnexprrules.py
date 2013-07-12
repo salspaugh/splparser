@@ -3,14 +3,20 @@ from splparser.parsetree import *
 
 from splparser.rules.common.simplevaluerules import *
 
+FIELD_TYPES = ['WORD', 'ID']
+
+def check_role(node):
+    if node.type in FIELD_TYPES:
+        node.role = 'FIELD'
+
 def p_oplist_parens(p):
     """oplist : LPAREN oplist RPAREN"""
     p[0] = p[2]
 
 def p_oplist(p):
     """oplist : opexpr"""
-    p[0] = ParseTreeNode('_OPERATORLSIT')
-    if p[1].type[0] == '_':
+    p[0] = ParseTreeNode('_OPERATORLIST')
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
@@ -32,12 +38,14 @@ def p_evalfnexpr_evalfn(p):
 
 def p_opexpr_simplevalue(p):
     """opexpr : simplevalue"""
+    check_role(p[1])
     p[0] = p[1]
 
 def p_oplist_op(p):
     """oplist : opexpr COMMA oplist"""
+    check_role(p[1])
     p[0] = ParseTreeNode('_OPERATORLIST')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
@@ -54,36 +62,42 @@ def p_opexpr_not(p):
 
 def p_opexpr_minus(p):
     """opexpr : opexpr MINUS opexpr"""
+    check_role(p[1])
+    check_role(p[3])
     p[0] = ParseTreeNode('MINUS')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_opexpr_divides(p):
     """opexpr : opexpr DIVIDES opexpr"""
+    check_role(p[1])
+    check_role(p[3])
     p[0] = ParseTreeNode('DIVIDES')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_opexpr_modulus(p):
     """opexpr : opexpr MODULUS opexpr"""
+    check_role(p[1])
+    check_role(p[3])
     p[0] = ParseTreeNode('MODULUS')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
@@ -91,23 +105,24 @@ def p_opexpr_modulus(p):
 def p_opexpr_xor(p):
     """opexpr : opexpr XOR opexpr"""
     p[0] = ParseTreeNode('XOR')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_opexpr_like(p):
     """opexpr : opexpr LIKE opexpr"""
+    p[1].role = 'FIELD'
     p[0] = ParseTreeNode('LIKE')
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
@@ -115,12 +130,14 @@ def p_opexpr_like(p):
 # TODO: Figure out how to include these in the schema extraction.
 def p_opexpr_comparator(p):
     """opexpr : opexpr comparator opexpr %prec EQ"""
+    check_role(p[1])
+    check_role(p[3])
     p[0] = p[2]
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
@@ -155,36 +172,42 @@ def p_comparator_deq(p):
 
 def p_opexpr_concat(p):
     """opexpr : opexpr PERIOD opexpr"""
-    p[0] = ParseTreeNode('CONCAT', associative=True)
-    if p[1].type[0] == '_':
+    check_role(p[1])
+    check_role(p[3])
+    p[0] = ParseTreeNode('CONCAT', is_associative=True)
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_opexpr_plus(p):
     """opexpr : opexpr PLUS opexpr"""
-    p[0] = ParseTreeNode('PLUS', associative=True)
-    if p[1].type[0] == '_':
+    check_role(p[1])
+    check_role(p[3])
+    p[0] = ParseTreeNode('PLUS', is_associative=True)
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_opexpr_times(p):
     """opexpr : opexpr TIMES opexpr"""
-    p[0] = ParseTreeNode('TIMES', associative=True)
-    if p[1].type[0] == '_':
+    check_role(p[1])
+    check_role(p[3])
+    p[0] = ParseTreeNode('TIMES', is_associative=True)
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
@@ -192,20 +215,20 @@ def p_opexpr_times(p):
 def p_opexpr_boolean_op(p):
     """opexpr : opexpr boolean_op opexpr %prec COMMA"""
     p[0] = p[2]
-    if p[1].type[0] == '_':
+    if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
-    if p[3].type[0] == '_':
+    if p[3].role[0] == '_':
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
 
 def p_boolean_op_and(p):
     """boolean_op : AND"""
-    p[0] = ParseTreeNode('AND', associative=True)
+    p[0] = ParseTreeNode('AND', is_associative=True)
 
 def p_boolean_op_or(p):
     """boolean_op : OR"""
-    p[0] = ParseTreeNode('OR', associative=True)
+    p[0] = ParseTreeNode('OR', is_associative=True)
 

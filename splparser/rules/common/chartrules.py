@@ -1,3 +1,6 @@
+
+import re
+
 from splparser.parsetree import *
 
 from splparser.rules.common.asrules import *
@@ -9,7 +12,7 @@ from splparser.rules.common.statsfnrules import *
 def p_carglist_carg(p):
     """carglist : carg"""
     p[0] = ParseTreeNode('_CARGLIST')
-    if p[1].type == '_COPTLIST':
+    if p[1].role == '_COPTLIST':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
@@ -17,7 +20,7 @@ def p_carglist_carg(p):
 def p_carglist(p):
     """carglist : carg carglist"""
     p[0] = ParseTreeNode('_CARGLIST')
-    if p[1].type == '_COPTLIST':
+    if p[1].role == '_COPTLIST':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
@@ -26,7 +29,7 @@ def p_carglist(p):
 def p_carglist_comma(p):
     """carglist : carg COMMA carglist"""
     p[0] = ParseTreeNode('_CARGLIST')
-    if p[1].type == '_COPTLIST':
+    if p[1].role == '_COPTLIST':
         p[0].add_children(p[1].children)
     else:
         p[0].add_child(p[1])
@@ -47,11 +50,28 @@ def p_ctoptlist(p):
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)    
 
+def check_option_value(option, value):
+    log_pattern = r'[\d]*\.?[\d]*log[\d]*\.?[\d]*'
+    if option in ("sep", "format", "nullstr", "otherstr"):
+        if not value.type in ['WORD', 'ID', 'NBSTR', 'LITERAL']:
+            value.type = 'NBSTR'
+    if option in ("limit", "bins", "span", "start", "end"):
+        if not value.type in ['INT', 'FLOAT']:
+            value.type = 'INT'
+        if len(re.findall(log_pattern, value.raw)) == 1:
+            value.type = 'LOG'
+    if option in ("cont", "usenull", "useother"):
+        value.type = 'BOOLEAN'
+    if option in ("agg"):
+        value.role = value.raw.upper()
+        value.type = "SPL"
+
 def p_copt(p):
     """copt : CHART_OPT EQ simplevalue
             | COMMON_OPT EQ simplevalue"""
+    check_option_value(p[1], p[3]) 
     p[0] = ParseTreeNode('EQ')
-    copt_node = ParseTreeNode(p[1].upper(), option=True)
+    copt_node = ParseTreeNode('OPTION', raw=p[1])
     copt_node.values.append(p[3])
     p[0].add_child(copt_node)
     p[0].add_child(p[3])

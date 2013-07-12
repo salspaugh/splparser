@@ -10,7 +10,7 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, role, type="", raw="", is_associative=False, is_argument=False):
+    def __init__(self, role, type="SPL", raw="", is_associative=False, is_argument=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.role

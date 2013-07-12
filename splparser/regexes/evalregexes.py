@@ -56,7 +56,7 @@ ipaddr_no_end = r'(?:(?:' + ipv4_addr_no_end + r')|(?:' + ipv6_addr_no_end + r')
 ipaddr = r'(?:' + ipv4_addr + r')|(?:' + ipv6_addr + r')'
 
 word_no_end = r'(?:[a-zA-Z]+)'
-word = r'(?:' + word_no_end + end_of_token + r')|(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')' 
+word = r'(?:' + word_no_end + end_of_token + r')' 
 
 int_end_of_token = r'(?:' + end_of_token + r'|%|L|l)' 
 
@@ -82,3 +82,7 @@ hex = r'(?:' + hex_no_end + int_end_of_token + r')|(?:"\s*' + hex_no_end + r'\s*
 id = r'([a-zA-Z0-9_:]+)+' + end_of_token
 
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
+
+literal = r'(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')'
+
+#literal = r'"(?:[^"]+(?:(\s|-|\(|\)|_|=)+[^"]+)+\s*)"|"[=;|]+[^"]*"|"[^"]*[;=|]+"' + "|'(?:[^']+(?:(\s|-|\(|\)|_|=)+[^']+)+\s*)'|'[=;|]+[^']*'|'[^']*[;=|]+'" + '|"[^"]"' + end_of_token + "|'[^']'" + end_of_token

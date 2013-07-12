@@ -19,7 +19,7 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'EVAL_FN',
-    'COMMON_FN'
+    'COMMON_FN',
 ]
 
 reserved = {
@@ -152,7 +152,7 @@ def t_EVAL_FN(t):
     return(t)
 
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"|"[a-zA-Z0-9]+"'
     return(t)
 
 @TOKEN(bin)
