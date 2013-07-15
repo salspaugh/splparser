@@ -134,7 +134,7 @@ class ParseTreeNode(object):
         return [(self.raw, field)] + children_list
 
     def add_child(self, child):
-        if self.is_associative and child.role == self.role and len(child.children) > 0:
+        if self.is_associative and child.raw == self.raw and len(child.children) > 0:
             self.add_children(child.children)
         else:
             self.children.append(child)

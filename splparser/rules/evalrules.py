@@ -16,7 +16,7 @@ def p_cmdexpr_eval(p):
 
 def p_eval_evalexpr(p):
     """evalcmd : EVAL oplist"""
-    p[0] = ParseTreeNode('EVAL')
+    p[0] = ParseTreeNode('COMMAND', raw='eval')
     p[0].add_children(p[2].children)
 
 def p_error(p):
