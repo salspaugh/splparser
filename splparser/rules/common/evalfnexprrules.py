@@ -205,6 +205,9 @@ def p_opexpr_plus(p):
     check_role(p[1])
     check_role(p[3])
     p[0] = ParseTreeNode('FUNCTION', raw='plus', is_associative=True)
+    number_types = ['INT', 'FLOAT', 'BIN', 'OCT', 'HEX']
+    if not p[1].type in number_types or not p[3].type in number_types:
+        p[0] = ParseTreeNode('FUNCTION', raw='concat', is_associative=True)
     if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
     else:
