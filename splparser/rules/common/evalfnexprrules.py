@@ -143,7 +143,7 @@ def p_opexpr_comparator(p):
     """opexpr : opexpr comparator opexpr %prec EQ"""
     check_role(p[1])
     check_role(p[3])
-    if p[2].role == 'EQ':
+    if p[1].type != 'SPL':
         p[1].role = 'FIELD'
         match_role(p[3], p[1].raw, 'FIELD') 
     p[0] = p[2]
