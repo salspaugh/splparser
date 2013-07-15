@@ -22,10 +22,8 @@ def p_headcmd_head(p):
 def p_headcmd_head_int(p):
     """headcmd : HEAD int"""
     p[0] = ParseTreeNode('HEAD')
+    p[2].role = 'VALUE'
     p[0].add_child(p[2])
-    p[2].field = False
-    p[2].value = False
-    p[2].option = True
 
 def p_headcmd_head_eval(p):
     """headcmd : HEAD evalfnexpr"""
@@ -40,11 +38,9 @@ def p_headcmd_head_headopt(p):
 def p_headcmd_head_int_headopt(p):
     """headcmd : HEAD int headoptlist"""
     p[0] = ParseTreeNode('HEAD')
+    p[2].role = 'VALUE'
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)
-    p[2].field = False
-    p[2].value = False
-    p[2].option = True
 
 def p_headcmd_head_eval_headopt(p):
     """headcmd : HEAD evalfnexpr headoptlist"""
@@ -65,13 +61,13 @@ def p_headoptlist_headopt(p):
 
 def p_headopt(p):
     """headopt : HEAD_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode(p[1].upper(), option=True)
+    p[0] = ParseTreeNode('OPTION', raw=p[1])
     p[0].values.append(p[3])
     p[0].add_child(p[3])
 
 def p_headopt_commonopt(p):
     """headopt : COMMON_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode(p[1].upper(), option=True)
+    p[0] = ParseTreeNode('OPTION', raw=p[1])
     p[0].values.append(p[3])
     p[0].add_child(p[3])
 
