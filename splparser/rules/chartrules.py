@@ -20,7 +20,7 @@ def p_cmdexpr_chart(p):
 def p_chartcmd(p):
     """chartcmd : CHART carglist
                 | SICHART carglist"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
 
 def p_carg_statsfnexpr_over(p):
@@ -32,7 +32,7 @@ def p_carg_statsfnexpr_over(p):
 
 def p_carg_statsfn_over(p):
     """carg : STATS_FN OVER simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     over_node = ParseTreeNode('OVER')
     over_node.add_child(p[3])
     p[0].add_child(over_node)
@@ -47,7 +47,7 @@ def p_carg_statsfnexpr_over_by(p):
 
 def p_carg_statsfn_over_by(p):
     """carg : STATS_FN OVER simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     over_node = ParseTreeNode('OVER')
     over_node.add_child(p[3])
     p[0].add_child(over_node)
@@ -67,7 +67,7 @@ def p_carg_statsfnexpr_as_over(p):
 
 def p_carg_statsfn_as_over(p):
     """carg : STATS_FN as simplefield OVER simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
@@ -89,7 +89,7 @@ def p_carg_statsfnexpr_as_by(p):
 
 def p_carg_statsfn_as_by(p):
     """carg : STATS_FN as simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
@@ -112,7 +112,7 @@ def p_carg_statsfnexpr_as_over_by(p):
 
 def p_carg_statsfn_as_over_by(p):
     """carg : STATS_FN as simplefield OVER simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])

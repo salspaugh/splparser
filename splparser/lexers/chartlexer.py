@@ -54,6 +54,7 @@ precedence = (
     ('left', 'PLUS', 'MINUS'), 
     ('left', 'TIMES', 'DIVIDES', 'MODULUS', 'PERIOD'), 
     ('right', 'UMINUS'),
+    ('left', 'EVAL')
 )
 
 t_ignore = ' '

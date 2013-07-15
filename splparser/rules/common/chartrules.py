@@ -78,11 +78,11 @@ def p_copt(p):
 
 def p_carg_statsfn(p):
     """carg : STATS_FN"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
 
 def p_carg_statsfn_as(p):
     """carg : STATS_FN as simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
@@ -108,7 +108,7 @@ def p_carg_macro(p):
 
 def p_carg_statsfn_by(p):
     """carg : STATS_FN splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_children(p[2].children)
 
 def p_carg_statsfnexpr_by(p):
