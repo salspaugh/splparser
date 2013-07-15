@@ -127,11 +127,25 @@ def p_opexpr_like(p):
     else:
         p[0].add_child(p[3])
 
+def match_role(tree, raw, role):
+    stack = []
+    stack.insert(0, tree)
+    while len(stack) > 0:
+        node = stack.pop()
+        if node.raw == raw:
+            node.role = role
+        if len(node.children) > 0:
+            for c in node.children:
+                stack.insert(0, c)
+
 # TODO: Figure out how to include these in the schema extraction.
 def p_opexpr_comparator(p):
     """opexpr : opexpr comparator opexpr %prec EQ"""
     check_role(p[1])
     check_role(p[3])
+    if p[2].role == 'EQ':
+        p[1].role = 'FIELD'
+        match_role(p[3], p[1].raw, 'FIELD') 
     p[0] = p[2]
     if p[1].role[0] == '_':
         p[0].add_children(p[1].children)
