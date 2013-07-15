@@ -13,7 +13,7 @@ def p_cmdexpr_reverse(p):
 
 def p_cmdexpr_reverse_debug(p):
     """reversecmd : REVERSE"""
-    p[0] = ParseTreeNode('REVERSE')
+    p[0] = ParseTreeNode('COMMAND', raw='reverse')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in reverse parser input!") 

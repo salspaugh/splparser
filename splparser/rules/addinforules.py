@@ -13,7 +13,7 @@ def p_cmdexpr_addinfo(p):
 
 def p_cmdexpr_addinfo_debug(p):
     """addinfocmd : ADDINFO"""
-    p[0] = ParseTreeNode('ADDINFO')
+    p[0] = ParseTreeNode('COMMAND', raw='addinfo')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in addinfo parser input!") 

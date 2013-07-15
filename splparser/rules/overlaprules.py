@@ -13,7 +13,7 @@ def p_cmdexpr_overlap(p):
 
 def p_cmdexpr_overlap_debug(p):
     """overlapcmd : OVERLAP"""
-    p[0] = ParseTreeNode('OVERLAP')
+    p[0] = ParseTreeNode('COMMAND', raw='overlap')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in overlap parser input!") 

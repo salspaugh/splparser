@@ -13,7 +13,7 @@ def p_cmdexpr_delete(p):
 
 def p_cmdexpr_delete_debug(p):
     """deletecmd : DELETE"""
-    p[0] = ParseTreeNode('DELETE')
+    p[0] = ParseTreeNode('COMMAND', raw='delete')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in delete parser input!") 

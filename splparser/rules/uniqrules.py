@@ -13,7 +13,7 @@ def p_cmdexpr_uniq(p):
 
 def p_cmdexpr_uniq_debug(p):
     """uniqcmd : UNIQ"""
-    p[0] = ParseTreeNode('UNIQ')
+    p[0] = ParseTreeNode('COMMAND', raw='uniq')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in uniq parser input!") 

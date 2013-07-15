@@ -13,7 +13,7 @@ def p_cmdexpr_localop(p):
 
 def p_cmdexpr_localop_debug(p):
     """localopcmd : LOCALOP"""
-    p[0] = ParseTreeNode('LOCALOP')
+    p[0] = ParseTreeNode('COMMAND', raw='localop')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in localop parser input!") 
