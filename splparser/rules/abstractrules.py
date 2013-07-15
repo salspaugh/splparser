@@ -19,17 +19,17 @@ def p_cmdexpr_abstract(p):
 
 def p_cmdexpr_abstract_single(p):
     """abstractcmd : ABSTRACT"""
-    p[0] = ParseTreeNode('ABSTRACT')
+    p[0] = ParseTreeNode('COMMAND', raw='abstract')
 
 def p_addtotalscmd_abstract(p):
     """abstractcmd : ABSTRACT wc_stringlist"""
-    p[0] = ParseTreeNode('ABSTRACT')
+    p[0] = ParseTreeNode('COMMAND', raw='abstract')
     p[0].add_children(p[2].children)
 
 def p_abstract_opt(p):
     """wc_string : ABSTRACT_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1] = ParseTreeNode('OPTION', raw=p[1])
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
