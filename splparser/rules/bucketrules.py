@@ -17,7 +17,7 @@ def p_cmdexpr_bucket(p):
 
 def p_bucketcmd(p):
     """bucketcmd : BUCKET bucketargs"""
-    p[0] = ParseTreeNode('BUCKET')
+    p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_child(p[2])
 
 def p_bucketargs(p):
@@ -27,20 +27,19 @@ def p_bucketargs(p):
 def p_bucketargs_as(p):
     """bucketargs : field as field"""
     p[0] = p[1]
-    p[1].renamed = p[3]
     as_node = ParseTreeNode('AS')
     p[0].add_child(as_node)
     as_node.add_child(p[3])
 
 def p_bucketcmd_bucketopts_bucketargs(p):
     """bucketcmd : BUCKET bucketoptlist bucketargs"""
-    p[0] = ParseTreeNode('BUCKET')
+    p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_children(p[2].children)
     p[0].add_child(p[3])
 
 def p_bucketcmd_bucketargs_bucketopts(p):
     """bucketcmd : BUCKET bucketargs bucketoptlist"""
-    p[0] = ParseTreeNode('BUCKET')
+    p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)
 
@@ -58,7 +57,7 @@ def p_bucketoptlist(p):
 def p_bucketopts(p):
     """bucketopts : BUCKET_OPT EQ value"""
     p[0] = ParseTreeNode('EQ')
-    bucket_opt_node = ParseTreeNode(p[1].upper(), option=True)
+    bucket_opt_node = ParseTreeNode('OPTION', raw=p[1])
     bucket_opt_node.values.append(p[3])
     p[0].add_child(bucket_opt_node)
     p[0].add_child(p[3])
