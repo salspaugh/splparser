@@ -12,7 +12,7 @@ start = 'cmdexpr'
 
 def p_search_search(p):
     """cmdexpr : SEARCH searchexpr"""
-    p[0] = ParseTreeNode('SEARCH')
+    p[0] = ParseTreeNode('COMMAND', raw='search')
     p[0].add_child(p[2])
 
 def p_searchexpr_parentheses(p):
@@ -29,27 +29,27 @@ def p_searchexpr_macro(p):
 
 def p_searchexpr_space(p):
     """searchexpr : searchexpr searchexpr"""
-    p[0] = ParseTreeNode('AND', is_associative=True)
+    p[0] = ParseTreeNode('FUNCTION', raw='AND', is_associative=True)
     p[0].add_children([p[1], p[2]])
 
 def p_searchexpr_comma(p):
     """searchexpr : searchexpr COMMA searchexpr"""
-    p[0] = ParseTreeNode('AND', is_associative=True)
+    p[0] = ParseTreeNode('FUNCTION', raw='AND', is_associative=True)
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_and(p):
     """searchexpr : searchexpr AND searchexpr"""
-    p[0] = ParseTreeNode('AND', is_associative=True)
+    p[0] = ParseTreeNode('FUNCTION', raw='AND', is_associative=True)
     p[0].add_children([p[1], p[3]])
     
 def p_searchexpr_or(p):
     """searchexpr : searchexpr OR searchexpr"""
-    p[0] = ParseTreeNode('OR', is_associative=True)
+    p[0] = ParseTreeNode('FUNCTION', raw='OR', is_associative=True)
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_not(p):
     """searchexpr : NOT searchexpr"""
-    p[0] = ParseTreeNode('NOT')
+    p[0] = ParseTreeNode('FUNCTION', raw='NOT')
     p[0].add_child(p[2])
 
 def p_searchexpr_value(p):
@@ -85,31 +85,31 @@ def p_searchexpr_eq(p):
 
 def p_searchexpr_ne(p):
     """searchexpr : field NE value"""
-    p[0] = ParseTreeNode('NE')
+    p[0] = ParseTreeNode('FUNCTION', raw='ne')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_lt(p):
     """searchexpr : field LT value"""
-    p[0] = ParseTreeNode('LT')
+    p[0] = ParseTreeNode('FUNCTION', raw='lt')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_le(p):
     """searchexpr : field LE value"""
-    p[0] = ParseTreeNode('LE')
+    p[0] = ParseTreeNode('FUNCTION', raw='le')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_ge(p):
     """searchexpr : field GE value"""
-    p[0] = ParseTreeNode('GE')
+    p[0] = ParseTreeNode('FUNCTION', raw='ge')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_searchexpr_gt(p):
     """searchexpr : field GT value"""
-    p[0] = ParseTreeNode('GT')
+    p[0] = ParseTreeNode('FUNCTION', raw='gt')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])    
 
