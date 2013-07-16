@@ -1,4 +1,7 @@
 
+import inspect
+import sys
+
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.parser import SPLParser
 
@@ -19,6 +22,9 @@ def splcommandrule(f):
         try:
             p[0]  = parser.parse(' '.join(p[1:]))
         except Exception as e:
+            for frame in inspect.trace():
+                sys.stderr.write(str(frame))
+                sys.stderr.write("\n")
             raise TerminatingSPLSyntaxError(e.args) 
     helper.__doc__ = f.__doc__
     return helper
