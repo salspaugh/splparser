@@ -70,7 +70,7 @@ def p_copt(p):
     """copt : CHART_OPT EQ simplevalue
             | COMMON_OPT EQ simplevalue"""
     check_option_value(p[1], p[3]) 
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     copt_node = ParseTreeNode('OPTION', raw=p[1])
     copt_node.values.append(p[3])
     p[0].add_child(copt_node)

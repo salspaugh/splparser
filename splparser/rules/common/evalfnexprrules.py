@@ -181,7 +181,7 @@ def p_comparator_ne(p):
 
 def p_comparator_eq(p):
     """comparator : EQ"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
 
 def p_comparator_deq(p):
     """comparator : DEQ"""
