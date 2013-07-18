@@ -56,7 +56,7 @@ def p_bucketoptlist(p):
 
 def p_bucketopts(p):
     """bucketopts : BUCKET_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     bucket_opt_node = ParseTreeNode('OPTION', raw=p[1])
     bucket_opt_node.values.append(p[3])
     p[0].add_child(bucket_opt_node)

@@ -23,7 +23,7 @@ def p_headcmd_head_int(p):
     """headcmd : HEAD int""" # FIXME: reduce/reduce error
     p[2].role = 'VALUE'
     p[0] = ParseTreeNode('COMMAND', raw='head')
-    eq_node = ParseTreeNode('EQ')
+    eq_node = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(eq_node)
     opt_node = ParseTreeNode('OPTION', raw='limit')
     opt_node.values.append(p[2])
@@ -43,7 +43,7 @@ def p_headcmd_head_int_headopt(p):
     """headcmd : HEAD int headoptlist"""
     p[2].role = 'VALUE'
     p[0] = ParseTreeNode('COMMAND', raw='head')
-    eq_node = ParseTreeNode('EQ')
+    eq_node = ParseTreeNode('EQ', raw='assign')
     p[0].append(eq_node)
     opt_node = ParseTreeNode('OPTION', raw='limit')
     eq_node.add_children([opt_node, p[2]])
@@ -69,14 +69,14 @@ def p_headoptlist_headopt(p):
 
 def p_headopt(p):
     """headopt : HEAD_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     p[0].add_children([opt_node, p[3]])
     opt_node.values.append(p[3])
 
 def p_headopt_commonopt(p):
     """headopt : COMMON_OPT EQ simplevalue"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     p[0].add_children([opt_node, p[3]])
     opt_node.values.append(p[3])

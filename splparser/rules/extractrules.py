@@ -42,19 +42,19 @@ def p_extractkv_opt(p):
     """wc_string : EXTRACTKV_OPT EQ value COMMA
                  | EXTRACTKV_OPT EQ value
                  | EXTRACTKV_OPT EQ regex"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode(p[1].upper(), option=True)
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_extractkv_opt_list(p):
     """wc_stringlist : wc_string"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(p[1])
 
 def p_extractkv_optlist(p):
     """wc_stringlist : wc_string wc_stringlist"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)
 

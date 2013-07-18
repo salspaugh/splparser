@@ -32,7 +32,7 @@ def p_sort_num_sortfields(p):
     """sortcmd : SORT int sortfields"""
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[2].role = 'VALUE'
-    eq_node = ParseTreeNode('EQ')
+    eq_node = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION')
     eq_node.add_children([opt_node, p[2]])
     p[0].add_children([eq_node] + p[3])

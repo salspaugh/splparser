@@ -22,7 +22,7 @@ def p_regexcmd_regex(p):
 
 def p_regex_eq(p):
     """regex_req : field EQ regex"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 

@@ -41,7 +41,7 @@ def p_rare_weird(p):
     """rarecmd : RARE INT fieldlist
                | SIRARE INT fieldlist"""
     p[0] = ParseTreeNode(p[1].upper())
-    eq_node = ParseTreeNode('EQ')
+    eq_node = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(eq_node)
     p[0].add_children(p[3].children)
     limit_node = ParseTreeNode('LIMIT', option=True)
@@ -72,7 +72,7 @@ def p_rareoptlist_rareopt(p):
 
 def p_rareopt(p):
     """rareopt : TOP_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode(p[1].upper())
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
@@ -80,7 +80,7 @@ def p_rareopt(p):
 
 def p_rareopt_commonopt(p):
     """rareopt : COMMON_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode(p[1].upper())
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)

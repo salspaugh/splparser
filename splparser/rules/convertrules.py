@@ -14,7 +14,7 @@ start = 'cmdexpr'
 def p_convert_timeformat_exprlist(p):
     """cmdexpr : CONVERT TIMEFORMAT EQ value convertexprlist"""
     p[0] = ParseTreeNode('CONVERT')
-    eq_node = ParseTreeNode('EQ')
+    eq_node = ParseTreeNode('EQ', raw='assign')
     timeformat_node = ParseTreeNode('TIMEFORMAT', option=True)
     timeformat_node.values.append(p[4])
     eq_node.add_child(timeformat_node)

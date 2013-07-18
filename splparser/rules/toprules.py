@@ -60,7 +60,7 @@ def p_topoptlist_topopt(p):
 
 def p_topopt(p):
     """topopt : TOP_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode(p[1].upper())
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
@@ -68,7 +68,7 @@ def p_topopt(p):
 
 def p_topopt_commonopt(p):
     """topopt : COMMON_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode(p[1].upper())
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)

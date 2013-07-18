@@ -51,13 +51,13 @@ def p_rex_req(p):
     """rex_req : rex_opt EQ value"""
     if p[1].raw == 'field':
         p[3].role = 'FIELD'
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_rex_max_match(p):
     """max_match : MAX_MATCH EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)

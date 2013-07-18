@@ -31,14 +31,14 @@ def p_fieldlist(p):
 
 def p_value(p):
     """m_delim : DELIM EQ value"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode(p[1].upper(), option=True)
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_comma(p):
     """m_delim : DELIM EQ COMMA"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode(p[1].upper())
     p[3] = ParseTreeNode(p[3])
     p[0].add_children([p[1],p[3]])

@@ -26,14 +26,14 @@ def p_transaction_fieldlist_options(p):
 
 def p_optionlist_single(p):
     """optionlist : TRANSACTION_OPT EQ field"""
-    eq = ParseTreeNode('EQ')    
+    eq = ParseTreeNode('EQ', raw='assign')    
     opt = ParseTreeNode(p[1].upper(), option=True)
     eq.add_children([opt, p[3]])
     p[0] = [eq]
 
 def p_optionlist(p):
     """optionlist : TRANSACTION_OPT EQ field optionlist"""
-    eq = ParseTreeNode('EQ')    
+    eq = ParseTreeNode('EQ', raw='assign')    
     opt = ParseTreeNode(p[1].upper(), option=True)
     eq.add_children([opt, p[3]])
     p[0] = [eq] + p[4]
