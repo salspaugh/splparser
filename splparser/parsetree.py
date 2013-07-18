@@ -47,6 +47,23 @@ class ParseTreeNode(object):
     def _node_eq(self, other):
         return self.role == other.role and self.raw == other.raw
 
+    def flatten(self):
+        s = ""
+        paren = False
+        if len(self.raw) > 0:
+            s = ''.join([s, self.raw])
+        if len(self.children) > 0:
+            if len(s) > 0 and len(''.join([c.raw for c in self.children])) > 0: 
+                s = ''.join([s, '('])
+                paren = True
+            for c in self.children[:-1]:
+                s = ''.join([s, c.flatten()])
+                s = ''.join([s, ', '])
+            s = ''.join([s, self.children[-1].flatten()])
+            if paren:     
+                s = ''.join([s, ')'])
+        return s
+
     def is_supertree_of(self, other):
         if other is None:
             return True
@@ -81,16 +98,42 @@ class ParseTreeNode(object):
         return p
 
     def template(self):
-        children = map(lambda x: x.template(), self.children) 
-        if self.is_argument:
-            p = ParseTreeNode('', is_argument=True)
-        else:
-            p = ParseTreeNode(self.role, raw=self.raw, is_associative=self.is_associative) 
+        p = self.copy_tree()
+        variable_number = 0
+        variables = {}
+        stack = []
+        stack.insert(0, p)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.role == 'FIELD':
+                if not node.raw in variables:
+                    variables[node.raw] = ''.join(["x", str(variable_number)])
+                    variable_number += 1
+                node.raw = variables[node.raw]
+            for c in node.children:
+                stack.insert(0, c)
+        return p
+
+    def copy_tree(self):
+        children = map(lambda x: x.copy_tree(), self.children) 
+        p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
+                            is_associative=self.is_associative, 
+                            is_argument=self.is_argument)
+        p.values = self.values
         p.add_children(children)
         return p
 
-    def inverse_template(self):
-        children = map(lambda x: x.inverse_template(), self.children) 
+    def skeleton(self):
+        children = map(lambda x: x.skeleton(), self.children) 
+        if self.is_argument:
+            p = ParseTreeNode('', is_argument=True)
+        else:
+            p = ParseTreeNode(self.role, type=self.type, raw=self.raw, is_associative=self.is_associative) 
+        p.add_children(children)
+        return p
+
+    def inverse_skeleton(self):
+        children = map(lambda x: x.inverse_skeleton(), self.children) 
         if not self.is_argument:
             p = ParseTreeNode('', is_argument=False)
         else:
@@ -111,12 +154,12 @@ class ParseTreeNode(object):
     def _command_argument_tuple_from_stage(self):
         if not self.role == 'STAGE':
             raise ValueError("This must be 'STAGE' node for this to work properly.\n")
-        command = self.children[0].template()._flatten_to_string()
-        is_arguments = self.children[0].inverse_template()._flatten_to_list()
+        command = self.children[0].skeleton()._flatten_roles_to_string()
+        is_arguments = self.children[0].inverse_skeleton()._flatten_to_list()
         return (command, is_arguments)
 
-    def _flatten_to_string(self):
-        flattened_children = [child._flatten_to_string() for child in self.children]
+    def _flatten_roles_to_string(self):
+        flattened_children = [child._flatten_roles_to_string() for child in self.children]
         flattened_children = filter(lambda x: not x == '()', flattened_children)
         children_string = ','.join(flattened_children)
         children_string = ''.join(['(', children_string, ')'])
