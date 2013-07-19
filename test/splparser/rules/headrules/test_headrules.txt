@@ -7,7 +7,7 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('COMMAND': 'head')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'limit')
                 ('VALUE': '20')
 
@@ -15,7 +15,7 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('COMMAND': 'head')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'limit')
                 ('VALUE': '20')
 
@@ -23,7 +23,7 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('COMMAND': 'head')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'limit')
                 ('VALUE': '-25')
 
@@ -31,7 +31,7 @@ Below are clips from an interactive session in which I test various aspects of t
 ('ROOT')
     ('STAGE')
         ('COMMAND': 'head')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'limit')
                 ('VALUE': '750000')
 

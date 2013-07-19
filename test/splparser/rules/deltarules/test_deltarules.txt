@@ -8,7 +8,7 @@ Below are clips from an interactive session in which I test various aspects of t
     ('STAGE')
         ('DELTA')
             ('WORD': 'count')
-            ('EQ')
+            ('EQ': 'assign')
                 ('P')
                 ('INT': '1')
 
@@ -19,7 +19,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('ID': '_time')
                 ('AS')
                     ('WORD': 'timeDeltaS')
-            ('EQ')
+            ('EQ': 'assign')
                 ('P')
                 ('INT': '1')
 
