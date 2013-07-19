@@ -113,18 +113,6 @@ def p_searchexpr_gt(p):
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])    
 
-def p_field_default_field(p):
-    """field : DEFAULT_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_FIELD', raw=p[1])
-
-def p_field_internal_field(p):
-    """field : INTERNAL_FIELD"""
-    p[0] = ParseTreeNode('INTERNAL_FIELD', raw=p[1])
-
-def p_field_default_datetime_field(p):
-    """field : DEFAULT_DATETIME_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', raw=p[1])
-
 def p_field_search_opt(p):
     """field : SEARCH_OPT"""
     p[0] = ParseTreeNode('OPTION', raw=p[1])

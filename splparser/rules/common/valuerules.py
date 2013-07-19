@@ -1,6 +1,8 @@
 
 from splparser.parsetree import *
 
+from splparser.rules.common.fieldrules import *
+
 def p_value_times(p):
     """value : field"""
     p[0] = p[1]
