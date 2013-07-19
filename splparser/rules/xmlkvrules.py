@@ -6,7 +6,6 @@ import logging
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
-from splparser.rules.common.fieldlistrules import *
 from splparser.rules.common.valuerules import *
 
 from splparser.lexers.xmlkvlexer import tokens
@@ -19,18 +18,11 @@ def p_cmdexpr_xmlkv(p):
 
 def p_cmdexpr_xmlkv_single(p):
     """xmlkvcmd : XMLKV"""
-    p[0] = ParseTreeNode('XMLKV')
+    p[0] = ParseTreeNode('COMMAND', raw='xmlkv')
 
 def p_cmdexpr_xmlkv_field(p):
-    """xmlkvcmd : XMLKV wc_stringlist fieldlist"""
-    p[0] = ParseTreeNode('XMLKV')
-    p[0].add_children(p[2].children)
-    p[0].add_children(p[3].children)
-
-def p_xmlkvcmd_xmlkv(p):
-    """xmlkvcmd : XMLKV wc_stringlist
-                | XMLKV fieldlist"""
-    p[0] = ParseTreeNode('XMLKV')
+    """xmlkvcmd : XMLKV wc_stringlist"""
+    p[0] = ParseTreeNode('COMMAND', raw='xmlkv')
     p[0].add_children(p[2].children)
 
 def p_xmlkv_opt(p):

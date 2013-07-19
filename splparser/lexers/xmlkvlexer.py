@@ -8,7 +8,6 @@ from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
 tokens = [
-    'COMMA',
     'WILDCARD',
     'EQ',
     'IPV4ADDR', 'IPV6ADDR',
