@@ -11,7 +11,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('FIELD': 'A')
                 ('BY')
                     ('FIELD': 'A')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'span')
                 ('VALUE': 'log2')
 
@@ -43,7 +43,7 @@ Below are clips from an interactive session in which I test various aspects of t
             ('FUNCTION': 'count')
                 ('BY')
                     ('FIELD': 'duration')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'span')
                 ('VALUE': 'log2')
 
@@ -55,7 +55,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('FIELD': 'eventcount')
                 ('BY')
                     ('FIELD': 'duration')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'span')
                 ('VALUE': 'log2')
 
@@ -69,7 +69,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('FIELD': 'date_hour')
                 ('BY')
                     ('FIELD': 'category_id')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'usenull')
                 ('VALUE': 'f')
 
@@ -82,7 +82,7 @@ Below are clips from an interactive session in which I test various aspects of t
                     ('FIELD': 'Magnitude')
                 ('BY')
                     ('FIELD': 'Region')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'useother')
                 ('VALUE': 'f')
 
@@ -119,7 +119,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('FIELD': 'delay')
                 ('BY')
                     ('FIELD': 'size')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'bins')
                 ('VALUE': '10')
 
@@ -200,7 +200,7 @@ TODO: Should this last by apply to the whole list?
 ('ROOT')
     ('STAGE')
         ('COMMAND': 'chart')
-            ('EQ')
+            ('EQ': 'assign')
                 ('OPTION': 'limit')
                 ('VALUE': '8')
             ('FUNCTION': 'dc')
