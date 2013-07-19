@@ -17,6 +17,9 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'DELTA_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -50,6 +53,18 @@ def t_WILDCARD(t):
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     return(t)
 
 @TOKEN(bin)

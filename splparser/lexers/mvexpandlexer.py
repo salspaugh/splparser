@@ -18,6 +18,9 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {

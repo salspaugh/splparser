@@ -19,7 +19,10 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'SORT_FN',
-    'DESC'
+    'DESC',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -43,6 +46,21 @@ def type_if_reserved(t, default):
         return 'SORT_FN'
     else:
         return reserved.get(t.value, default)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
 
 def t_DESC(t):
     r"""(d|desc)"""

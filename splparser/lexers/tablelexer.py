@@ -16,6 +16,9 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -29,6 +32,18 @@ precedence = (
 )
 
 t_ignore = ' '
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    return(t)
 
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''

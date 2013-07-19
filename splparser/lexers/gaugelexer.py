@@ -16,6 +16,9 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -61,6 +64,22 @@ def t_ipunchecked_IPV6ADDR(t):
 def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
 
 @TOKEN(literal)
 def t_LITERAL(t):
