@@ -44,6 +44,12 @@ t_EQ = r'='
 def type_if_reserved(t, default):
     if re.match(delta_opt, t.value):
         return 'DELTA_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 

@@ -91,6 +91,12 @@ def type_if_reserved(t, default):
         return 'COMMON_OPT'
     elif re.match(top_opt, t.value):
         return 'TOP_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 

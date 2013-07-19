@@ -35,6 +35,16 @@ precedence = (
 
 t_ignore = ' '
 
+def type_if_reserved(t, default):
+    if re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
+    else:
+        return reserved.get(t.value, default)
+
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''
     return t
@@ -95,7 +105,7 @@ def t_FLOAT(t):
 
 @TOKEN(word)
 def t_WORD(t):
-    t.type = reserved.get(t.value, 'WORD')
+    t.type = type_if_reserved(t, 'WORD')
     return t
 
 @TOKEN(int)
@@ -104,12 +114,12 @@ def t_INT(t):
 
 @TOKEN(id)
 def t_ID(t):
-    t.type = reserved.get(t.value, 'ID')
+    t.type = type_if_reserved(t, 'ID')
     return t
 
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
-    t.type = reserved.get(t.value, 'NBSTR')
+    t.type = type_if_reserved(t, 'NBSTR')
     return t
 
 def t_error(t):

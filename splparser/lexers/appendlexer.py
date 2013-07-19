@@ -88,7 +88,14 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    return reserved.get(t.value, default)
+    if re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
+    else:
+        return reserved.get(t.value, default)
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""
