@@ -33,7 +33,7 @@ def p_conf_multikvoptlist(p):
 def p_conf(p):
     """conf : CONF EQ value"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])
@@ -52,7 +52,7 @@ def p_multikvoptlist_multikvopt(p):
 def p_multikvopt(p):
     """multikvopt : MULTIKV_SINGLE_OPT EQ value"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])
@@ -65,7 +65,7 @@ def p_multipkopt_listopt(p):
 def p_multikvopt_equal(p):
     """multikvopt : MULTIKV_LIST_OPT EQ value"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])

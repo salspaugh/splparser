@@ -36,7 +36,7 @@ def p_xmlkvcmd_xmlkv(p):
 def p_xmlkv_opt(p):
     """wc_string : XMLKV_OPT EQ value"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[1] = ParseTreeNode('OPTION', raw=p[1])
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 

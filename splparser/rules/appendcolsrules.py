@@ -25,14 +25,14 @@ def p_appendcols_optionlist(p):
 
 def p_optionlist_single(p):
     """optionlist : APPENDCOLS_OPT EQ field"""
-    opt = ParseTreeNode(p[1].upper(), option=True)
+    opt = ParseTreeNode('OPTION', raw=p[1])
     opt.values.append(p[3])
     opt.add_child(p[3])
     p[0] = [opt]
 
 def p_optionlist(p):
     """optionlist : APPENDCOLS_OPT EQ field optionlist"""
-    opt= ParseTreeNode(p[1].upper(), option=True)
+    opt= ParseTreeNode('OPTION', raw=p[1])
     opt.values.append(p[3])
     opt.add_child(p[3])
     p[0] = [opt] + p[4]

@@ -71,7 +71,7 @@ def p_statsoptlist_statsopt(p):
 def p_statsopt_simplefield(p):
     """statsopt : STATS_OPT EQ simplefield"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])
@@ -79,7 +79,7 @@ def p_statsopt_simplefield(p):
 def p_statsopt_delimiter(p):
     """statsopt : STATS_OPT EQ COMMA"""
     p[0] = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
     comma_node = ParseTreeNode('COMMA')
     opt_node.values.append(comma_node)
     p[0].add_child(opt_node)
