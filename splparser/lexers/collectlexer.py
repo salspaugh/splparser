@@ -11,7 +11,7 @@ from splparser.exceptions import SPLSyntaxError
 # overriding regexes
 
 id = r'([\w:.\/]+)+' + end_of_token
-collect_opt = r'(?:index|addtime|file|spool|marker|testmode|run-in-preview)' + end_of_token
+collect_opt = r'(?:addtime|file|spool|marker|testmode|run-in-preview)' + end_of_token
 
 tokens = [
     'COMMA',
