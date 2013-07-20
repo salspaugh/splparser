@@ -107,8 +107,8 @@ def t_ipunchecked_IPV4ADDR(t):
 
 @TOKEN(ipv6_addr)
 def t_ipunchecked_IPV6ADDR(t):
-    if t.value == '::' or t.value == '"::"' or t.value == "'::'":
-        t.type = 'ID'
+    if t.value == '"::"' or t.value == "'::'":
+        t.type = 'LITERAL'
         return t
     if is_ipv6addr(t.value):
         return t
@@ -141,8 +141,9 @@ def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"|"(?:[^"]*[^"a-zA-Z0-9]+[^"]*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)
