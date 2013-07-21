@@ -19,24 +19,25 @@ def p_cmdexpr_tags(p):
 
 def p_cmdexpr_tags_single(p):
     """tagscmd : TAGS"""
-    p[0] = ParseTreeNode('TAGS')
+    p[0] = ParseTreeNode('COMMAND', raw='tags')
 
 def p_cmdexpr_TAGS_field(p):
     """tagscmd : TAGS wc_stringlist fieldlist"""
-    p[0] = ParseTreeNode('TAGS')
+    p[0] = ParseTreeNode('COMMAND', raw='tags')
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
 def p_tagscmd_tags(p):
-    """tagscmd : TAGS fieldlist
-               | TAGS wc_stringlist"""
-    p[0] = ParseTreeNode('TAGS')
+    """tagscmd : TAGS fieldlist"""
+    p[0] = ParseTreeNode('COMMAND', raw='tags')
     p[0].add_children(p[2].children)
 
 def p_tags_opt(p):
-    """wc_string : TAGS_OPT EQ value"""
+    """wc_string : TAGS_OPT EQ field"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode('OPTION', raw=p[1])
+    if p[1].raw in ["inclname", "inclvalue"]:
+        p[3].type = 'BOOLEAN'
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
