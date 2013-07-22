@@ -45,12 +45,12 @@ def p_convertexpr(p):
 
 def p_convertexpr_as(p):
     """convertexpr : CONVERT_FN LPAREN field RPAREN as field"""
-    p[0] = ParseTreeNode('FUNCTION', raw=p[1])
-    p[0].add_child(p[3])
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[6])
-    p[6].values.append(p[0])
+    fn_node = ParseTreeNode('FUNCTION', raw=p[1])
+    fn_node.add_child(p[3])
+    as_node = ParseTreeNode('FUNCTION', raw='as')
+    as_node.add_children([fn_node, p[6]])
+    p[6].values.append(fn_node)
+    p[0] = as_node
 
 def p_convertexpr_macro(p):
     """convertexpr : MACRO"""
