@@ -11,23 +11,28 @@ from splparser.lexers.lookuplexer import tokens
 
 start = 'cmdexpr'
 
+boolean_options = ["update", "local"]
+
 def p_cmdexpr_lookup(p):
     """cmdexpr : lookupcmd"""
     p[0] = p[1]
 
 def p_lookup_tablename(p):
-    """lookupcmd : LOOKUP table"""
-    p[0] = ParseTreeNode('LOOKUP')
-    p[0].add_children(p[2])
+    """lookupcmd : LOOKUP field table"""
+    p[0] = ParseTreeNode('COMMAND', raw='lookup')
+    lookup_node = ParseTreeNode('LOOKUP_TABLE', raw=p[2].raw)
+    p[0].add_children([lookup_node] + p[3])
 
 def p_lookup_options_tablename(p):
-    """lookupcmd :  LOOKUP field EQ value table"""
-    p[0] = ParseTreeNode('LOOKUP')
-    option = ParseTreeNode(p[2].raw.upper())
-    boolean = p[4]
-    option.add_child(boolean)
-    p[0].add_children([option] + p[5])
-    p[2].values.append(p[4])
+    """lookupcmd :  LOOKUP field EQ value field table"""
+    p[0] = ParseTreeNode('COMMAND', raw='lookup')
+    if p[2].raw in boolean_options:
+        p[4].type = 'BOOLEAN'
+    lookup_node = ParseTreeNode('LOOKUP_TABLE', raw=p[5].raw)
+    eq_node = ParseTreeNode('EQ', raw='assign')
+    option = ParseTreeNode('OPTION', raw=p[2].raw)
+    eq_node.add_children([option, p[4]])
+    p[0].add_children([eq_node, lookup_node] + p[6])
 
 def p_table_tablename(p):
     """table : fieldlist"""
@@ -40,13 +45,12 @@ def p_table_tablename_field_output(p):
     p[0] = table
 
 def p_field_as(p):
-    """field : field ASLC fieldlist
-             | field ASUC fieldlist"""
-    _as = ParseTreeNode('AS')
-    _as.add_children(p[3].children)
-    p[1].add_child(_as)
+    """field : field ASLC field
+             | field ASUC field"""
+    as_node = ParseTreeNode('AS')
+    as_node.add_child(p[3])
+    p[1].add_child(as_node)
     p[0] = p[1]
-    p[1].renamed = p[3].children[0]
 
 def p_out(p):
     """out : OUTPUT fieldlist
