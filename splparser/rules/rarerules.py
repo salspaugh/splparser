@@ -27,9 +27,11 @@ def p_rare_fieldlist_by(p):
     """rarecmd : RARE fieldlist by fieldlist
                | SIRARE fieldlist by fieldlist"""
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
-    by_node = ParseTreeNode('BY')
+    by_node = ParseTreeNode('FUNCTION', raw='groupby')
+    by_node.add_children(p[2].children)
+    for c in p[4].children:
+        c.role = 'GROUPING_' + c.role
     by_node.add_children(p[4].children)
-    p[0].add_children(p[2].children)
     p[0].add_child(by_node)
 
 def p_rare_rareopt_fieldlist(p):
@@ -54,11 +56,13 @@ def p_rare_weird(p):
 def p_rare_rareopt_fieldlist_by(p):
     """rarecmd : RARE rareoptlist fieldlist by fieldlist
                | SIRARE rareoptlist fieldlist by fieldlist"""
-    by_node = ParseTreeNode('BY')
+    by_node = ParseTreeNode('FUNCTION', raw='groupby')
+    by_node.add_children(p[3].children)
+    for c in p[5].children:
+        c.role = 'GROUPING_' + c.role
     by_node.add_children(p[5].children)
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
-    p[0].add_children(p[3].children)
     p[0].add_child(by_node)
 
 def p_rareoptlist(p):
