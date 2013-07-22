@@ -19,11 +19,14 @@ def p_cmdexpr_gauge(p):
 
 def p_cmdexpr_gauge_single(p):
     """gaugecmd : GAUGE"""
-    p[0] = ParseTreeNode('GAUGE')
+    p[0] = ParseTreeNode('COMMAND', raw='gauge')
 
 def p_gaugecmd_gauge(p):
     """gaugecmd : GAUGE fieldlist"""
-    p[0] = ParseTreeNode('GAUGE')
+    p[0] = ParseTreeNode('COMMAND', raw='gauge')
+    for c in p[2].children:
+        if c.type == 'INT':
+            c.role = 'VALUE'
     p[0].add_children(p[2].children)
 
 def p_error(p):
