@@ -26,10 +26,9 @@ def p_bucketargs(p):
 
 def p_bucketargs_as(p):
     """bucketargs : field as field"""
-    p[0] = p[1]
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
+    p[0] = ParseTreeNode('FUNCTION', raw='as')
+    p[0].add_child(p[1])
+    p[0].add_child(p[3])
 
 def p_bucketcmd_bucketopts_bucketargs(p):
     """bucketcmd : BUCKET bucketoptlist bucketargs"""
