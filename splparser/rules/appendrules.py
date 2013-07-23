@@ -24,6 +24,7 @@ def p_append_optionlist(p):
 
 def p_optionlist_single(p):
     """optionlist : APPEND_OPT EQ field"""
+    p[3].role = 'VALUE'
     eq_node = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     eq_node.add_children([opt_node, p[3]])
@@ -31,6 +32,7 @@ def p_optionlist_single(p):
 
 def p_optionlist(p):
     """optionlist : APPEND_OPT EQ field optionlist"""
+    p[3].role = 'VALUE'
     eq_node = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     eq_node.add_children([opt_node, p[3]])
