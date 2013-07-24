@@ -97,19 +97,28 @@ class ParseTreeNode(object):
         p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
         return p
 
-    def template(self, drop_options=False):
+    def template(self, drop_options=False, distinguished_argument=None):
         p = self.copy_tree()
-        variable_number = 0
-        variables = {}
+        keynum = 0
+        valnum = 0
+        keyvars = {}
+        valvars = {}
         stack = []
         stack.insert(0, p)
         while len(stack) > 0:
             node = stack.pop()
-            if node.role == 'FIELD':
-                if not node.raw in variables:
-                    variables[node.raw] = ''.join(["x", str(variable_number)])
-                    variable_number += 1
-                node.raw = variables[node.raw]
+            if distinguished_argument and node.raw == distinguished_argument:
+                node.raw = "x"
+            elif node.role.find('FIELD') > -1:
+                if not node.raw in keyvars:
+                    keyvars[node.raw] = ''.join(["k", str(keynum)])
+                    keynum += 1
+                node.raw = keyvars[node.raw]
+            elif node.type != 'SPL':
+                if not node.raw in valvars:
+                    valvars[node.raw] = ''.join(["v", str(valnum)])
+                    valnum += 1
+                node.raw = valvars[node.raw]
             new_children = []
             for c in node.children:
                 if drop_options:
@@ -121,15 +130,41 @@ class ParseTreeNode(object):
             for c in node.children:
                 stack.insert(0, c)
         return p
-
-    def copy_tree(self):
-        children = map(lambda x: x.copy_tree(), self.children) 
+    
+    def copy_node(self):
         p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
                             is_associative=self.is_associative, 
                             is_argument=self.is_argument)
+        return p
+    
+    def copy_tree(self):
+        children = map(lambda x: x.copy_tree(), self.children) 
+        p = self.copy_node()
         p.values = self.values
         p.add_children(children)
         return p
+
+    def ancestral_branch(self):
+        children = map(lambda x: x.copy_tree(), self.children) 
+        p = self.copy_node()
+        p.values = self.values
+        p.add_children(children)
+        top = self.parent
+        bottom = p
+        while top:
+            t = top.copy_node()
+            t.add_child(bottom)
+            top = top.parent 
+            bottom = t
+        return t
+
+    def ancestral_command(self):
+        up = self.parent
+        while up:
+            if up.role == 'COMMAND':
+                return up
+            up = up.parent
+        return None
 
     def skeleton(self):
         children = map(lambda x: x.skeleton(), self.children) 
