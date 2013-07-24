@@ -97,7 +97,7 @@ class ParseTreeNode(object):
         p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
         return p
 
-    def template(self):
+    def template(self, drop_options=False):
         p = self.copy_tree()
         variable_number = 0
         variables = {}
@@ -110,6 +110,14 @@ class ParseTreeNode(object):
                     variables[node.raw] = ''.join(["x", str(variable_number)])
                     variable_number += 1
                 node.raw = variables[node.raw]
+            new_children = []
+            for c in node.children:
+                if drop_options:
+                    if not (c.role == 'EQ' and c.children[0].role == 'OPTION'):
+                        new_children.append(c)
+                else:
+                    new_children.append(c)
+            node.children = new_children
             for c in node.children:
                 stack.insert(0, c)
         return p
