@@ -54,8 +54,8 @@ def p_searchexpr_not(p):
 
 def p_searchexpr_value(p):
     """searchexpr : value"""
-    p[1].value = True
-    p[0] = p[1]
+    p[0] = ParseTreeNode('FUNCTION', raw='contains')
+    p[0].add_child(p[1])
 
 def p_searchexpr_tag(p):
     """searchexpr : TAG EQ value"""
