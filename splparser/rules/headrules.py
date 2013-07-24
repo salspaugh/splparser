@@ -56,6 +56,12 @@ def p_headcmd_head_eval_headopt(p):
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
+def p_headcmd_head_headopt_eval(p):
+    """headcmd : HEAD headoptlist oplist"""
+    p[0] = ParseTreeNode('COMMAND', raw='head')
+    p[0].add_children(p[2].children)
+    p[0].add_children(p[3].children)
+
 def p_headoptlist(p):
     """headoptlist : headopt"""
     p[0] = ParseTreeNode('_HEAD_OPT_LIST')
