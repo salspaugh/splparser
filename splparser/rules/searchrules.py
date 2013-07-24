@@ -59,7 +59,7 @@ def p_searchexpr_value(p):
 
 def p_searchexpr_tag(p):
     """searchexpr : TAG EQ value"""
-    p[0] = ParseTreeNode('EQ', raw='assign')
+    p[0] = ParseTreeNode('FUNCTION', raw='eq')
     p[3].role = 'TAG'
     tag_node = ParseTreeNode('KEYWORD', raw=p[1])
     p[0].add_children([tag_node, p[3]])
@@ -68,7 +68,7 @@ def p_searchexpr_tag_value(p):
     """searchexpr : TAG DCOLON field EQ value"""
     tag_node = ParseTreeNode('KEYWORD', raw=p[1])
     dcolon_node = ParseTreeNode('DCOLON')
-    eq_node = ParseTreeNode('EQ', raw='assign')
+    eq_node = ParseTreeNode('FUNCTION', raw='eq')
     p[5].role = 'TAG'
     eq_node.add_children([p[3], p[5]])
     dcolon_node.add_children([tag_node, eq_node])
@@ -79,7 +79,7 @@ def p_searchexpr_tag_value(p):
 def p_searchexpr_eq(p):
     """searchexpr : field EQ value
                   | field DCOLON value"""
-    p[0] = ParseTreeNode('EQ', raw='assign')
+    p[0] = ParseTreeNode('FUNCTION', raw='eq')
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
