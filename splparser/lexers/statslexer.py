@@ -22,6 +22,9 @@ tokens = [
     'COMMON_FN',
     'STATS_FN',
     'STATS_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -116,6 +119,12 @@ def type_if_reserved(t, default):
         return 'COMMON_FN'
     elif re.match(stats_opt, t.value):
         return 'STATS_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 
@@ -161,6 +170,26 @@ def t_COMMON_FN(t):
 
 @TOKEN(eval_fn)
 def t_EVAL_FN(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(stats_opt)
+def t_STATS_OPT(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     t.lexer.begin('ipunchecked')
     return(t)
 

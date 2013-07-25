@@ -44,23 +44,14 @@ t_MINUS = r'\-'
 def type_if_reserved(t, default):
     if re.match(sort_fn, t.value):
         return 'SORT_FN'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
-
-@TOKEN(internal_field)
-def t_INTERNAL_FIELD(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
-
-@TOKEN(default_field)
-def t_DEFAULT_FIELD(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
-
-@TOKEN(default_datetime_field)
-def t_DEFAULT_DATETIME_FIELD(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
 
 def t_DESC(t):
     r"""(d|desc)"""
@@ -76,6 +67,26 @@ def t_COMMA(t):
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
+
+@TOKEN(sort_fn)
+def t_SORT_FN(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)
