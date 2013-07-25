@@ -55,12 +55,12 @@ def p_num_float(p):
 
 def p_field_default_field(p):
     """field : DEFAULT_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_FIELD', raw=p[1])
+    p[0] = ParseTreeNode('DEFAULT_FIELD', raw=p[1], is_argument=True)
 
 def p_field_internal_field(p):
     """field : INTERNAL_FIELD"""
-    p[0] = ParseTreeNode('INTERNAL_FIELD', raw=p[1])
+    p[0] = ParseTreeNode('INTERNAL_FIELD', raw=p[1], is_argument=True)
 
 def p_field_default_datetime_field(p):
     """field : DEFAULT_DATETIME_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', raw=p[1])
+    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', raw=p[1], is_argument=True)
