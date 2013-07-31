@@ -45,7 +45,7 @@ reserved = {
     'NOT' : 'NOT',
     'XOR' : 'XOR',
     'LIKE' : 'LIKE',
-    #'eval' : 'EVAL', # TODO: Figure out if I can delete this.
+    'eval' : 'EVAL'
 }
 
 tokens = tokens + list(reserved.values())
@@ -57,7 +57,6 @@ precedence = (
     ('left', 'PLUS', 'MINUS'), 
     ('left', 'TIMES', 'DIVIDES', 'MODULUS', 'PERIOD'), 
     ('right', 'UMINUS'),
-    ('left', 'EVAL')
 )
 
 t_ignore = ' '

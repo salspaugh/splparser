@@ -82,8 +82,7 @@ def p_cmdexpr_bucketdir(p):
     """cmdexpr : BUCKETDIR arglist
                | BUCKETDIR MACRO"""
 
-#@splcommandrule
-@notimplemented
+@splcommandrule
 def p_cmdexpr_chart(p):
     """cmdexpr : CHART arglist
                | CHART MACRO
@@ -544,8 +543,7 @@ def p_cmdexpr_tail(p):
     """cmdexpr : TAIL arglist
                | TAIL MACRO"""
 
-#@splcommandrule
-@notimplemented
+@splcommandrule
 def p_cmdexpr_timechart(p):
     """cmdexpr : TIMECHART arglist
                | TIMECHART MACRO

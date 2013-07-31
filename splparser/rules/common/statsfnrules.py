@@ -65,17 +65,16 @@ def p_statsfnexpr_statsfnexpr(p):
     p[0].add_child(fn)
 
 def p_statsfnexpr_sparkline(p):
-    """statsfnexpr : SPARKLINE statsfnexpr"""
+    """statsfnexpr : SPARKLINE"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
-    sp = ParseTreeNode('SPARKLINE')
-    sp.add_children(p[2].children)
+    sp = ParseTreeNode('FUNCTION', raw='sparkline')
     p[0].add_child(sp)
 
 # NOTE: The documentation is ambiguous / wrong about the grammar of this command.
 def p_statsfnexpr_sparkline_paren(p):
     """statsfnexpr : SPARKLINE LPAREN statsfnexpr COMMA simplefield RPAREN"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
-    sp = ParseTreeNode('SPARKLINE')
+    sp = ParseTreeNode('FUNCTION', raw='sparkline')
     sp.add_children(p[3].children)
     sp.add_child(p[5])
     p[0].add_child(sp)
@@ -94,11 +93,11 @@ def p_simplefield_stats_fn(p):
 #    p[0].add_child(eval)
 
 def p_statsfnexpr_eval(p):
-    """statsfnexpr : EVAL oplist"""
-    convert_eq(p[2]) 
+    """statsfnexpr : EVAL LPAREN oplist RPAREN"""
+    convert_eq(p[3]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     eval = ParseTreeNode('FUNCTION', raw='eval')
-    eval.add_children(p[2].children)
+    eval.add_children(p[3].children)
     p[0].add_child(eval)
 
 def p_opexpr_statsfnexpr(p):

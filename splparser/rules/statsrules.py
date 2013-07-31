@@ -33,10 +33,10 @@ def correct_groupby(command): # HACK
         for c in check.children:
             stack.insert(0, c)
     if not groupby: return
-    groupby.children = command.children[:-1] + groupby.children 
+    groupby.children = filter(lambda x: x.raw != 'groupby' and x.raw != 'assign', command.children) + groupby.children 
     for c in groupby.children:
         c.parent = groupby
-    command.children = [groupby]
+    command.children = filter(lambda x: x.raw == 'assign', command.children) + [groupby]
 
 def p_cmdexpr_stats(p):
     """cmdexpr : statscmd"""

@@ -25,7 +25,6 @@ class ParseTreeNode(object):
           File "<stdin>", line 1, in <module>
         TypeError: __init__() takes at least 2 is_arguments (1 given)
         """
-        
         self.role = role
         self.type = type
         self.raw = raw
