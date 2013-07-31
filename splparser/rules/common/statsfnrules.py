@@ -83,7 +83,7 @@ def p_statsfnexpr_sparkline_paren(p):
 def p_simplefield_stats_fn(p):
     """simplefield : STATS_FN
                    | COMMON_FN""" # HACK
-    p[0] = ParseTreeNode('VALUE', type='WORD', raw=p[1], is_argument=True)
+    p[0] = ParseTreeNode('FIELD', type='WORD', raw=p[1], is_argument=True)
 
 #def p_statsfnexpr_eval_parens(p):
 #    """statsfnexpr : EVAL LPAREN oplist RPAREN"""
