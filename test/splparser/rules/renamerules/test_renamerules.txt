@@ -48,7 +48,7 @@ Below are clips from an interactive session in which I test various aspects of t
     ('STAGE')
         ('COMMAND': 'rename')
             ('FUNCTION': 'rename')
-                ('FIELD': '_time')
+                ('INTERNAL_FIELD': '_time')
                 ('FIELD': '"Time Logged In"')
 
 >>> splparser.parse('rename atLeast25 as "25%-50% of Video Viewed", atLeast50 as "50%-100% of Video Viewed", full as "Full Video Viewed", starts as "0%-25% of Video Viewed", all as "Total Video Views", completionRate as "Completion Rate", start_time as "Start Time", end_time as "End Time"').print_tree()
