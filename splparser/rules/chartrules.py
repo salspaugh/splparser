@@ -13,6 +13,40 @@ from splparser.lexers.chartlexer import precedence, tokens
 
 start = 'cmdexpr'
 
+def correct_groupby(command): # HACK
+    groupby = None
+    stack = []
+    stack.insert(0, command)
+    while len(stack) > 0:
+        check = stack.pop()
+        if check.raw == 'groupby':
+            groupby = check
+        for c in check.children:
+            stack.insert(0, c)
+    if not groupby: return
+    groupby.parent.children.remove(groupby)
+    groupby.children = filter(lambda x: x.raw != 'groupby' and x.raw != 'assign', command.children) + groupby.children 
+    for c in groupby.children:
+        c.parent = groupby
+    command.children = filter(lambda x: x.raw == 'assign', command.children) + [groupby]
+
+def correct_over(command): # HACK
+    over = None
+    stack = []
+    stack.insert(0, command)
+    while len(stack) > 0:
+        check = stack.pop()
+        if check.raw == 'over':
+            over = check
+        for c in check.children:
+            stack.insert(0, c)
+    if not over: return
+    over.parent.children.remove(over)
+    over.children = filter(lambda x: x.raw != 'over' and x.raw != 'assign', command.children) + over.children 
+    for c in over.children:
+        c.parent = over
+    command.children = filter(lambda x: x.raw == 'assign', command.children) + [over]
+
 def p_cmdexpr_chart(p):
     """cmdexpr : chartcmd"""
     p[0] = p[1]
@@ -20,108 +54,103 @@ def p_cmdexpr_chart(p):
 def p_chartcmd(p):
     """chartcmd : CHART carglist
                 | SICHART carglist"""
-    p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_children(p[2].children)
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0].add_children(p[2])
+    correct_over(p[0])
+    correct_groupby(p[0])
 
 def p_carg_statsfnexpr_over(p):
     """carg : statsfnexpr OVER simplefield"""
-    p[0] = p[1].children[0]
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[3])
-    p[0].add_child(over_node)
+    over = ParseTreeNode('FUNCTION', raw='over')
+    over.add_children([p[1].children[0], p[3]])
+    p[3].role = ''.join(['OVER_', p[3].role])
+    p[0] = [over]
 
 def p_carg_statsfn_over(p):
     """carg : STATS_FN OVER simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[3])
-    p[0].add_child(over_node)
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    p[3].role = ''.join(['OVER_', p[3].role])
+    over = ParseTreeNode('FUNCTION', raw='over')
+    over.add_children([statsfn, p[3]])
+    p[0] = [over]
 
 def p_carg_statsfnexpr_over_by(p):
     """carg : statsfnexpr OVER simplefield splitbyclause"""
-    p[0] = p[1].children[0]
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[3])
-    p[0].add_child(over_node)
-    p[0].add_children(p[4].children)
+    over = ParseTreeNode('FUNCTION', raw='over')
+    p[3].role = ''.join(['OVER_', p[3].role])
+    over.add_children([p[1].children[0], p[3]])
+    p[4][0].children.insert(0, over)
+    over.parent = p[4][0]
+    p[0] = p[4]
 
 def p_carg_statsfn_over_by(p):
     """carg : STATS_FN OVER simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[3])
-    p[0].add_child(over_node)
-    p[0].add_children(p[4].children)
+    over = ParseTreeNode('FUNCTION', raw='over')
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    p[3].role = ''.join(['OVER_', p[3].role])
+    over.add_children([statsfn, p[3]])
+    p[4][0].children.insert(0, over)
+    over.parent = p[4][0]
+    p[0] = p[4]
 
 def p_carg_statsfnexpr_as_over(p):
     """carg : statsfnexpr as simplefield OVER simplefield"""
-    p[0] = p[1].children[0]
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    over_node = parsetreenode('over')
-    over_node.add_child(p[5])
-    p[0].add_child(over_node)
-    p[1].expr = True
-    p[3].values = p[3].values + p[1].children
+    over = ParseTreeNode('FUNCTION', raw='over')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([p[1].children[0], p[3]])
+    p[5].role = ''.join(['OVER_', p[5].role])
+    over.add_children([asn, p[5]])
+    p[0] = [over]
 
 def p_carg_statsfn_as_over(p):
     """carg : STATS_FN as simplefield OVER simplefield"""
-    p[0] = ParseTreeNode(p[1].upper())
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    over_node = parsetreenode('over')
-    over_node.add_child(p[5])
-    p[0].add_child(over_node)
-    p[1].expr = True
-    p[3].values.append(p[1])
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    over = ParseTreeNode('FUNCTION', raw='over')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([statsfn, p[3]])
+    p[5].role = ''.join(['OVER_', p[5].role])
+    over.add_children([asn, p[5]])
+    p[0] = [over]
 
 def p_carg_statsfnexpr_as_by(p):
     """carg : statsfnexpr as simplefield splitbyclause"""
-    p[0] = p[1].children[0]
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    p[0].add_children(p[4].children)
-    p[1].expr = True
-    p[3].values = p[3].values + p[1].children
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([p[1].children[0], p[3]])
+    p[4][0].children.insert(0, asn)
+    asn.parent = p[4][0]
+    p[0] = p[4]
 
 def p_carg_statsfn_as_by(p):
     """carg : STATS_FN as simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    p[0].add_children(p[4].children)
-    p[1].expr = True
-    p[3].values.append(p[1])
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([statsfn, p[3]])
+    p[4][0].children.insert(0, asn)
+    asn.parent = p[4][0]
+    p[0] = p[4]
 
 def p_carg_statsfnexpr_as_over_by(p):
     """carg : statsfnexpr as simplefield OVER simplefield splitbyclause"""
-    p[0] = p[1].children[0]
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[5])
-    p[0].add_child(over_node)
-    p[0].add_children(p[6].children)
-    p[1].expr = True
-    p[3].values = p[3].values + p[1].children
+    over = ParseTreeNode('FUNCTION', raw='over')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([p[1].children[0], p[3]])
+    over.add_children([asn, p[5]])
+    p[5].role = ''.join(['OVER_', p[5].role])
+    p[6][0].children.insert(0, over)
+    over.parent = p[6][0]
+    p[0] = p[6]
 
-def p_carg_statsfn_as_over_by(p):
+def p_carg_statsfn_as_over_by(p): # TODO
     """carg : STATS_FN as simplefield OVER simplefield splitbyclause"""
-    p[0] = ParseTreeNode(p[1].upper())
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[3])
-    over_node = ParseTreeNode('OVER')
-    over_node.add_child(p[5])
-    p[0].add_child(over_node)
-    p[0].add_children(p[6].children)
-    p[1].expr = True
-    p[3].values.append(p[1])
+    over = ParseTreeNode('FUNCTION', raw='over')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    asn.add_children([statsfn, p[3]])
+    over.add_children([asn, p[5]])
+    p[5].role = ''.join(['OVER_', p[5].role])
+    p[6][0].children.insert(0, over)
+    over.parent = p[6][0]
+    p[0] = p[6]
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in chart parser input!") 

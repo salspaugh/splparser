@@ -18,6 +18,9 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'INPUTCSV_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -77,6 +80,12 @@ def is_ipv6addr(addr):
 def type_if_reserved(t, default):
     if re.match(inputcsv_opt, t.value):
         return 'INPUTCSV_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 
@@ -100,15 +109,26 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.begin('INITIAL')
     return
 
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+
 @TOKEN(wildcard)
 def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
-
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
-    t.lexer.begin('ipunchecked')
-    return(t)
 
 @TOKEN(literal)
 def t_LITERAL(t):

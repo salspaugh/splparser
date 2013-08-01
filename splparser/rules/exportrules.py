@@ -16,14 +16,16 @@ def p_cmdexpr_export(p):
 
 def p_cmdexpr_export_debug(p):
     """exportcmd : EXPORT"""
-    p[0] = ParseTreeNode('EXPORT')
+    p[0] = ParseTreeNode('COMMAND', raw='export')
 
 def p_export_fieldlist(p):
     """exportcmd : EXPORT FORMAT EQ field fieldlist"""
-    p[0] = ParseTreeNode('EXPORT')
-    eq_node = ParseTreeNode('EQ')
-    format_node = ParseTreeNode('FORMAT', option=True)
+    p[4].role = 'VALUE'
+    p[0] = ParseTreeNode('COMMAND', raw='export')
+    eq_node = ParseTreeNode('EQ', raw='assign')
+    format_node = ParseTreeNode('OPTION', raw=p[2])
     format_node.values.append(p[4])
+    p[0].add_child(eq_node)
     eq_node.add_child(format_node)
     eq_node.add_child(p[4])
     p[0].add_children(p[5].children)

@@ -6,5 +6,5 @@ Below are clips from an interactive session in which I test various aspects of t
 >>> splparser.parse("tail 5").print_tree()
 ('ROOT')
     ('STAGE')
-        ('TAIL')
-            ('INT': '5')
+        ('COMMAND': 'tail')
+            ('VALUE': '5')

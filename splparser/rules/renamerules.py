@@ -19,7 +19,7 @@ def p_cmdexpr_rename(p):
 
 def p_rename_renameexprlist(p):
     """renamecmd : RENAME renameexprlist"""
-    p[0] = ParseTreeNode('RENAME')
+    p[0] = ParseTreeNode('COMMAND', raw='rename')
     p[0].add_children(p[2].children)
 
 # WARNING: The order of the next two rules is important.
@@ -36,22 +36,18 @@ def p_renameexprlist_renameexprlist(p):
 
 def p_renameexpr_simplefield(p):
     """renameexpr : simplefield as simplevalue"""
-    as_node = ParseTreeNode('AS')
+    as_node = ParseTreeNode('FUNCTION', raw='rename')
     as_node.add_children([p[1], p[3]])
+    p[3].role = 'FIELD'
     p[0] = as_node
-    p[3].field = True
-    p[3].value = False
-    p[1].renamed = p[3]
 
 def p_renameexpr_statsfnexpr(p):
     """renameexpr : statsfnexpr as simplevalue"""
-    as_node = ParseTreeNode('AS')
+    as_node = ParseTreeNode('FUNCTION', raw='rename')
     as_node.add_children(p[1].children)
     as_node.add_child(p[3])
+    p[3].role = 'FIELD'
     p[0] = as_node
-    p[1].expr = True
-    p[3].field = True
-    p[3].value = False
     p[3].values.append(p[1])
 
 def p_error(p):

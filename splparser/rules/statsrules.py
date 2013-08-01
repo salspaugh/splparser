@@ -13,15 +13,30 @@ from splparser.lexers.statslexer import precedence, tokens
 
 start = 'cmdexpr'
 
+boolean_options = ["allnum"]
+
 # NOTE: The strange structure of these rules is because we need to always
 #       associate STATS_FN with another token on the RHS of rules because
 #       otherwise we get a reduce/reduce conflict from the rule
 #           simplefield : STATS_FN
 #       since nothing prevents simplefields from having the same name as command
 #       functions.
-# NOTE: Now that the parser has been refactored from the monolith model to
-#       a confederation of decentralized parsers model, the above is 
-#       probably no longer true.
+
+def correct_groupby(command): # HACK
+    groupby = None
+    stack = []
+    stack.insert(0, command)
+    while len(stack) > 0:
+        check = stack.pop()
+        if check.raw == 'groupby':
+            groupby = check
+        for c in check.children:
+            stack.insert(0, c)
+    if not groupby: return
+    groupby.children = filter(lambda x: x.raw != 'groupby' and x.raw != 'assign', command.children) + groupby.children 
+    for c in groupby.children:
+        c.parent = groupby
+    command.children = filter(lambda x: x.raw == 'assign', command.children) + [groupby]
 
 def p_cmdexpr_stats(p):
     """cmdexpr : statscmd"""
@@ -35,6 +50,7 @@ def p_statscmd_cont(p):
     """statscmd : statscmdstart statscmdcont"""
     p[0] = p[1]
     p[0].add_children(p[2].children)
+    correct_groupby(p[0])
 
 def p_statscmdstart(p):
     """statscmdstart : STATS STATS_FN
@@ -49,12 +65,12 @@ def p_statscmdstart(p):
                      | SISTATS statsoptlist STATS_FN
                      | SISTATS statsoptlist COMMON_FN
                      | SISTATS statsoptlist EVAL"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     fn_idx = 2
     if len(p) > 3:
         fn_idx = 3
         p[0].add_children(p[2].children)
-    fn_node = ParseTreeNode(p[fn_idx].upper())
+    fn_node = ParseTreeNode('FUNCTION', raw=p[fn_idx])
     p[0].add_child(fn_node)
 
 def p_statsoptlist(p):
@@ -70,27 +86,30 @@ def p_statsoptlist_statsopt(p):
 
 def p_statsopt_simplefield(p):
     """statsopt : STATS_OPT EQ simplefield"""
-    p[0] = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
-    opt_node.values.append(p[3])
-    p[0].add_child(opt_node)
+    p[0] = ParseTreeNode('EQ', raw='assign')
+    opt = ParseTreeNode('OPTION', raw=p[1])
+    p[3].role = 'VALUE'
+    if opt.raw in boolean_options:
+        p[3].type = 'BOOLEAN'
+    opt.values.append(p[3])
+    p[0].add_child(opt)
     p[0].add_child(p[3])
 
 def p_statsopt_delimiter(p):
     """statsopt : STATS_OPT EQ COMMA"""
-    p[0] = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper(), option=True)
-    comma_node = ParseTreeNode('COMMA')
-    opt_node.values.append(comma_node)
-    p[0].add_child(opt_node)
-    p[0].add_child(comma_node)
+    p[0] = ParseTreeNode('EQ', raw='assign')
+    opt = ParseTreeNode('OPTION', raw=p[1])
+    comma = ParseTreeNode('VALUE', type="NBSTR", raw=p[3])
+    opt.values.append(comma)
+    p[0].add_child(opt)
+    p[0].add_child(comma)
 
 def p_statscmdstart_statsfnexpr(p):
     """statscmdstart : STATS statsfnexpr
                      | STATS statsoptlist statsfnexpr
                      | SISTATS statsfnexpr
                      | SISTATS statsoptlist statsfnexpr"""
-    p[0] = ParseTreeNode('STATS')
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     fn_idx = 2
     if len(p) > 3:
         fn_idx = 3
@@ -108,7 +127,7 @@ def p_statscmdcont(p):
                     | COMMA COMMON_FN
                     | COMMA EVAL"""
     p[0] = ParseTreeNode('_STATSCMDCONT')
-    fn_node = ParseTreeNode(p[2].upper())
+    fn_node = ParseTreeNode('FUNCTION', raw=p[2])
     p[0].add_child(fn_node)
 
 def p_statscmdcont_statsfnexpr(p):
@@ -116,47 +135,65 @@ def p_statscmdcont_statsfnexpr(p):
     p[0] = ParseTreeNode('_STATSCMDCONT')
     p[0].add_children(p[2].children)
 
-def p_statsfnexpr_stats_fn(p):
-    """statsfnexpr : STATS_FN asbylist
-                   | COMMON_FN asbylist"""
+def p_statsfnexpr_fnas(p):
+    """statsfnexpr : STATS_FN as simplefield
+                   | COMMON_FN as simplefield"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
-    fn_node = ParseTreeNode(p[1].upper())
-    p[0].add_child(fn_node)
-    p[0].children[0].add_children(p[2].children)
-    if p[2].children[0].type == 'AS':
-        p[2].children[0].values.append(p[1])
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    fn = ParseTreeNode('FUNCTION', raw=p[1])
+    asn.add_children([fn, p[3]])
+    p[0].add_child(asn)
 
-def p_statsfnexpr_asbylist(p):
-    """statsfnexpr : statsfnexpr asbylist"""
+def p_statsfnexpr_fnexpras(p):
+    """statsfnexpr : statsfnexpr as simplefield"""
     p[0] = ParseTreeNode('_STATSFNEXPR')
-    p[0].add_children(p[1].children)
-    p[0].children[0].add_children(p[2].children)
-    if p[2].children[0].type == 'AS':
-        p[2].children[0].values.append(p[1])
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children(p[1].children + [p[3]])
+    p[0].add_child(asn)
 
-def p_asbylist_as(p):
-    """asbylist : as simplefield"""
-    p[0] = ParseTreeNode('_ASBYLIST')
-    as_node = ParseTreeNode('AS')
-    p[0].add_child(as_node)
-    as_node.add_child(p[2])
+def p_statsfnexpr_fnasby(p):
+    """statsfnexpr : STATS_FN as simplefield by simplefieldlist
+                   | COMMON_FN as simplefield by simplefieldlist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    by = ParseTreeNode('FUNCTION', raw='groupby')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    fn = ParseTreeNode('FUNCTION', raw=p[1])
+    asn.add_children([fn, p[3]])
+    for c in p[5].children:
+        c.role = '_'.join(['GROUPING', c.role])
+    by.add_children([asn] + p[5].children)
+    p[0].add_child(by)
 
-def p_asbylist_by(p):
-    """asbylist : by simplefieldlist"""
-    p[0] = ParseTreeNode('_ASBYLIST')
-    by_node = ParseTreeNode('BY')
-    p[0].add_child(by_node)
-    by_node.add_children(p[2].children)
+def p_statsfnexpr_fnexprasby(p):
+    """statsfnexpr : statsfnexpr as simplefield by simplefieldlist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    by = ParseTreeNode('FUNCTION', raw='groupby')
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children(p[1].children + [p[3]])
+    for c in p[5].children:
+        c.role = '_'.join(['GROUPING', c.role])
+    by.add_children([asn] + p[5].children)
+    p[0].add_child(by)
 
-def p_asbylist(p):
-    """asbylist : as simplefield by simplefieldlist"""
-    p[0] = ParseTreeNode('_ASBYLIST')
-    as_node = ParseTreeNode('AS')
-    by_node = ParseTreeNode('BY')
-    p[0].add_child(as_node)
-    as_node.add_child(p[2])
-    p[0].add_child(by_node)
-    by_node.add_children(p[4].children)
+def p_statsfnexpr_fnby(p):
+    """statsfnexpr : STATS_FN by simplefieldlist
+                   | COMMON_FN by simplefieldlist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    by = ParseTreeNode('FUNCTION', raw='groupby')
+    fn = ParseTreeNode('FUNCTION', raw=p[1])
+    for c in p[3].children:
+        c.role = '_'.join(['GROUPING', c.role])
+    by.add_children([fn] + p[3].children)
+    p[0].add_child(by)
+
+def p_statsfnexpr_fnexprby(p):
+    """statsfnexpr : statsfnexpr by simplefieldlist"""
+    p[0] = ParseTreeNode('_STATSFNEXPR')
+    by = ParseTreeNode('FUNCTION', raw='groupby')
+    for c in p[3].children:
+        c.role = '_'.join(['GROUPING', c.role])
+    by.add_children(p[1].children + p[3].children)
+    p[0].add_child(by)
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in stats parser input!") 

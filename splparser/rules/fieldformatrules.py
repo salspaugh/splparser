@@ -16,7 +16,7 @@ def p_cmdexpr_fieldformat(p):
 
 def p_fieldformat_fieldformatexpr(p):
     """fieldformatcmd : FIELDFORMAT oplist"""
-    p[0] = ParseTreeNode('FIELDFORMAT')
+    p[0] = ParseTreeNode('COMMAND', raw='fieldformat')
     p[0].add_children(p[2].children)
 
 def p_error(p):

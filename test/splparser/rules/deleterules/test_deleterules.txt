@@ -6,4 +6,4 @@ Below are clips from an interactive session in which I test various aspects of t
 >>> splparser.parse("delete").print_tree()
 ('ROOT')
     ('STAGE')
-        ('DELETE')
+        ('COMMAND': 'delete')

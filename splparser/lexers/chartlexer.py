@@ -26,6 +26,9 @@ tokens = [
     'COMMON_OPT',
     'IN', 'NOTIN',
     'TOP', 'BOTTOM',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -42,7 +45,7 @@ reserved = {
     'NOT' : 'NOT',
     'XOR' : 'XOR',
     'LIKE' : 'LIKE',
-    'eval' : 'EVAL', 
+    'eval' : 'EVAL'
 }
 
 tokens = tokens + list(reserved.values())
@@ -123,6 +126,12 @@ def type_if_reserved(t, default):
         return 'CHART_OPT'
     elif re.match(common_opt, t.value):
         return 'COMMON_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 
@@ -188,6 +197,31 @@ def t_COMMON_FN(t):
 
 @TOKEN(eval_fn)
 def t_EVAL_FN(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(chart_opt)
+def t_CHART_OPT(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(common_opt)
+def t_COMMON_OPT(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     t.lexer.begin('ipunchecked')
     return(t)
 

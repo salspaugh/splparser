@@ -13,7 +13,7 @@ def p_cmdexpr_audit(p):
 
 def p_cmdexpr_audit_debug(p):
     """auditcmd : AUDIT"""
-    p[0] = ParseTreeNode('AUDIT')
+    p[0] = ParseTreeNode('COMMAND', raw='audit')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in audit parser input!") 

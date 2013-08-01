@@ -13,7 +13,7 @@ def p_cmdexpr_relevancy(p):
 
 def p_cmdexpr_relevancy_debug(p):
     """relevancycmd : RELEVANCY"""
-    p[0] = ParseTreeNode('RELEVANCY')
+    p[0] = ParseTreeNode('COMMAND', raw='relevancy')
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in relevancy parser input!") 

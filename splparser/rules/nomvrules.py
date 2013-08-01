@@ -18,11 +18,11 @@ def p_cmdexpr_nomv(p):
 
 def p_cmdexpr_nomv_single(p):
     """nomvcmd : NOMV"""
-    p[0] = ParseTreeNode('NOVM')
+    p[0] = ParseTreeNode('COMMAND', raw='novm')
 
 def p_addtotalscmd_nomv(p):
     """nomvcmd : NOMV field"""
-    p[0] = ParseTreeNode('NOMV')
+    p[0] = ParseTreeNode('COMMAND', raw='nomv')
     p[0].add_child(p[2])
 
 def p_error(p):

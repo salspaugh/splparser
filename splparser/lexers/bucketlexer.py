@@ -17,7 +17,10 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
-    'BUCKET_OPT'
+    'BUCKET_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -79,8 +82,30 @@ def is_ipv6addr(addr):
 def type_if_reserved(t, default):
     if re.match(bucket_opt, t.value):
         return 'BUCKET_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
 
 @TOKEN(literal)
 def t_LITERAL(t):

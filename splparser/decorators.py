@@ -1,4 +1,7 @@
 
+import inspect
+import sys
+
 from splparser.exceptions import SPLSyntaxError, TerminatingSPLSyntaxError
 from splparser.parser import SPLParser
 
@@ -19,7 +22,8 @@ def splcommandrule(f):
         try:
             p[0]  = parser.parse(' '.join(p[1:]))
         except Exception as e:
-            raise TerminatingSPLSyntaxError(e.args) 
+            msg = e.args + (stacktrace(),)
+            raise TerminatingSPLSyntaxError(msg) 
     helper.__doc__ = f.__doc__
     return helper
 
@@ -29,5 +33,14 @@ def notimplemented(f):
         raise NotImplementedError(cmd + " is not yet implemented.")
     helper.__doc__ = f.__doc__
     return helper
+
+def stacktrace():
+    s = ''
+    for frame in inspect.trace():
+        s = ''.join([s, ' ', frame[1], ': line ', str(frame[2]), ' in ', frame[3]])
+        if frame[4]:
+            s = ': '.join([s, frame[4][0].strip()])
+        s = ''.join([s, ';'])
+    return s
 
 

@@ -11,19 +11,23 @@ from splparser.exceptions import SPLSyntaxError
 # overriding regexes
 
 id = r'([\w:.\/]+)+' + end_of_token
-collect_opt = r'(?:index|addtime|file|spool|marker|testmode|run-in-preview)' + end_of_token
+collect_opt = r'(?:addtime|file|spool|marker|testmode|run-in-preview)' + end_of_token
 
 tokens = [
     'COMMA',
     'WILDCARD',
     'EQ',
-    'HOSTNAME',
+    'IPV4ADDR', 'IPV6ADDR',
+    'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
     'WORD',
     'INT', 'BIN', 'OCT', 'HEX', 'FLOAT',
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'COLLECT_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -87,7 +91,14 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    return reserved.get(t.value, default)
+    if re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
+    else:
+        return reserved.get(t.value, default)
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""
@@ -116,6 +127,21 @@ def t_COMMA(t):
 
 @TOKEN(literal)
 def t_LITERAL(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
@@ -155,6 +181,35 @@ def t_ID(t):
     t.type = type_if_reserved(t, 'ID')
     t.lexer.begin('ipunchecked')
     return t
+
+@TOKEN(email)
+def t_EMAIL(t):
+    t.type = type_if_reserved(t, 'EMAIL')
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(hostname)
+def t_HOSTNAME(t):
+    t.type = type_if_reserved(t, 'HOSTNAME')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(path)
+def t_PATH(t):
+    t.type = type_if_reserved(t, 'PATH')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(url)
+def t_URL(t):
+    t.type = type_if_reserved(t, 'URL')
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(us_phone)
+def t_US_PHONE(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
 
 def t_error(t):
     badchar = t.value[0]

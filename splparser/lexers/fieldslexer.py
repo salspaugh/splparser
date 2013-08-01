@@ -17,6 +17,9 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -32,6 +35,16 @@ precedence = (
 
 t_ignore = ' '
 
+def type_if_reserved(t, default):
+    if re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
+    else:
+        return reserved.get(t.value, default)
+
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''
     return t
@@ -43,6 +56,18 @@ def t_PERIOD(t):
 @TOKEN(wildcard)
 def t_WILDCARD(t):
     return t
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    return(t)
 
 @TOKEN(plus)
 def t_PLUS(t):
@@ -80,7 +105,7 @@ def t_FLOAT(t):
 
 @TOKEN(word)
 def t_WORD(t):
-    t.type = reserved.get(t.value, 'WORD')
+    t.type = type_if_reserved(t, 'WORD')
     return t
 
 @TOKEN(int)
@@ -89,12 +114,12 @@ def t_INT(t):
 
 @TOKEN(id)
 def t_ID(t):
-    t.type = reserved.get(t.value, 'ID')
+    t.type = type_if_reserved(t, 'ID')
     return t
 
 @TOKEN(nbstr)
 def t_NBSTR(t): # non-breaking string
-    t.type = reserved.get(t.value, 'NBSTR')
+    t.type = type_if_reserved(t, 'NBSTR')
     return t
 
 def t_error(t):

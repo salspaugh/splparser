@@ -20,8 +20,8 @@ def p_cmdexpr_timechart(p):
 def p_timechartcmd(p):
     """timechartcmd : TIMECHART carglist
                     | SITIMECHART carglist"""
-    p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_children(p[2].children)
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0].add_children(p[2])
    
 def p_error(p):
     raise SPLSyntaxError("Syntax error in timechart parser input!") 

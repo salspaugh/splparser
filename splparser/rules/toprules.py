@@ -18,33 +18,37 @@ def p_cmdexpr_top(p):
 def p_top_fieldlist(p):
     """topcmd : TOP fieldlist
               | SITOP fieldlist"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
 
 def p_top_fieldlist_by(p):
     """topcmd : TOP fieldlist by fieldlist
               | SITOP fieldlist by fieldlist"""
-    by_node = ParseTreeNode('BY')
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    by_node = ParseTreeNode('FUNCTION', raw='groupby')
+    by_node.add_children(p[2].children)
+    for c in p[4].children:
+        c.role = 'GROUPING_' + c.role
     by_node.add_children(p[4].children)
-    p[0] = ParseTreeNode(p[1].upper())
-    p[0].add_children(p[2].children)
     p[0].add_child(by_node)
 
 def p_top_topopt_fieldlist(p):
     """topcmd : TOP topoptlist fieldlist
               | SITOP topoptlist fieldlist"""
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
 def p_top_topopt_fieldlist_by(p):
     """topcmd : TOP topoptlist fieldlist by fieldlist
               | SITOP topoptlist fieldlist by fieldlist"""
-    by_node = ParseTreeNode('BY')
+    by_node = ParseTreeNode('FUNCTION', raw='groupby')
+    by_node.add_children(p[3].children)
+    for c in p[5].children:
+        c.role = 'GROUPING_' + c.role
     by_node.add_children(p[5].children)
-    p[0] = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
-    p[0].add_children(p[3].children)
     p[0].add_child(by_node)
 
 def p_topoptlist(p):
@@ -60,16 +64,20 @@ def p_topoptlist_topopt(p):
 
 def p_topopt(p):
     """topopt : TOP_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('EQ', raw='assign')
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
+    if p[1] in ['showcount', 'showperc', 'useother']:
+        p[3].type = 'BOOLEAN'
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])
 
 def p_topopt_commonopt(p):
     """topopt : COMMON_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
-    opt_node = ParseTreeNode(p[1].upper())
+    p[0] = ParseTreeNode('EQ', raw='assign')
+    opt_node = ParseTreeNode('OPTION', raw=p[1])
+    if p[1] == 'limit':
+        p[3].type = 'INT'
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])

@@ -21,7 +21,10 @@ tokens = [
     'ID',
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
-    'SEARCH_KEY',
+    'SEARCH_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -29,7 +32,6 @@ reserved = {
     'AND' : 'AND',
     'OR' : 'OR',
     'NOT' : 'NOT',
-    'host' : 'HOST',
     'tag' : 'TAG',
 }
 
@@ -100,8 +102,14 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    if re.match(search_key, t.value):
-        return 'SEARCH_KEY'
+    if re.match(search_opt, t.value):
+        return 'SEARCH_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 
@@ -140,8 +148,23 @@ def t_WILDCARD(t):
     t.lexer.begin('ipunchecked')
     return t
 
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
+@TOKEN(search_opt)
+def t_SEARCH_OPT(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     t.lexer.begin('ipunchecked')
     return(t)
 

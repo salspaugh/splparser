@@ -17,37 +17,34 @@ def p_cmdexpr_outlier(p):
     """cmdexpr : outliercmd"""
     p[0] = p[1]
 
-def p_cmdexpr_outlier_single(p):
-    """outliercmd : OUTLIER"""
-    p[0] = ParseTreeNode('OUTLIER')
-
 def p_cmdexpr_outlier_field(p):
     """outliercmd : OUTLIER wc_stringlist fieldlist"""
-    p[0] = ParseTreeNode('OUTLIER')
+    p[0] = ParseTreeNode('COMMAND', raw='outlier')
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)
 
 def p_outliercmd_outlier(p):
-    """outliercmd : OUTLIER wc_stringlist
-                  | OUTLIER fieldlist"""
-    p[0] = ParseTreeNode('OUTLIER')
+    """outliercmd : OUTLIER wc_stringlist"""
+    p[0] = ParseTreeNode('COMMAND', raw='outlier')
     p[0].add_children(p[2].children)
 
 def p_outlier_opt(p):
     """wc_string : OUTLIER_OPT EQ value"""
-    p[0] = ParseTreeNode('EQ')
-    p[1] = ParseTreeNode(p[1].upper(), option=True)
+    p[0] = ParseTreeNode('EQ', raw='assign')
+    p[1] = ParseTreeNode('OPTION', raw=p[1])
+    if p[1].raw == "uselower":
+        p[3].type = 'BOOLEAN'
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 
 def p_outlier_opt_list(p):
     """wc_stringlist : wc_string"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(p[1])
 
 def p_outlier_optlist(p):
     """wc_stringlist : wc_string wc_stringlist"""
-    p[0] = ParseTreeNode('EQ')
+    p[0] = ParseTreeNode('EQ', raw='assign')
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)
 

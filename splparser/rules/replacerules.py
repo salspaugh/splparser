@@ -19,7 +19,7 @@ def p_cmdexpr_replace(p):
 
 def p_replacecmd_replace(p):
     """replacecmd : REPLACE wc_stringlist"""
-    p[0] = ParseTreeNode('REPLACE')
+    p[0] = ParseTreeNode('COMMAND', raw='replace')
     p[0].add_children(p[2].children)
 
 def p_replace_wc(p):
@@ -30,7 +30,7 @@ def p_replace_wc(p):
 def p_replace_wc_empty(p):
     """wc_string : value WITH EMPTY"""
     p[0] = ParseTreeNode('WITH')
-    p[3] = ParseTreeNode(p[3])
+    p[3] = ParseTreeNode('VALUE', type='LITERAL', raw=p[3])
     p[0].add_children([p[1],p[3]])
     
 def p_replace_wc_list(p):
@@ -52,7 +52,7 @@ def p_replace_wclist(p):
 
 def p_replace_in(p):
     """replacecmd : REPLACE wc_stringlist in_field"""
-    p[0] = ParseTreeNode('REPLACE')
+    p[0] = ParseTreeNode('COMMAND', raw='replace')
     p[0].add_children(p[2].children)
     p[0].add_child(p[3])
 

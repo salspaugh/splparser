@@ -17,6 +17,9 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'DELTA_OPT',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -41,6 +44,12 @@ t_EQ = r'='
 def type_if_reserved(t, default):
     if re.match(delta_opt, t.value):
         return 'DELTA_OPT'
+    elif re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
 
@@ -48,12 +57,20 @@ def type_if_reserved(t, default):
 def t_WILDCARD(t):
     return t
 
-@TOKEN(search_key)
-def t_SEARCH_KEY(t):
-    return(t)
-
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    return(t)
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
     return(t)
 
 @TOKEN(bin)

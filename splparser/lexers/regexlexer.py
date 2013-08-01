@@ -7,6 +7,9 @@ import re
 from splparser.regexes.searchregexes import *
 from splparser.exceptions import SPLSyntaxError
 
+
+literal = r'"(?:[^"]+(?:(\s|-|\(|\)|_|=)+[^"]+)+\s*)"|"[=;|]+[^"]*"|"[^"]*[;=|]+"' + "|'(?:[^']+(?:(\s|-|\(|\)|_|=)+[^']+)+\s*)'|'[=;|]+[^']*'|'[^']*[;=|]+'"
+
 tokens = [
     'WILDCARD',
     'EQ',
@@ -17,7 +20,10 @@ tokens = [
     'NBSTR', # non-breaking string
     'LITERAL', # in quotes
     'REGULAR_EXPRESSION',
-    'NEQ'
+    'NEQ',
+    'INTERNAL_FIELD',
+    'DEFAULT_FIELD',
+    'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
@@ -77,7 +83,14 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    return reserved.get(t.value, default)
+    if re.match(internal_field, t.value):
+        return 'INTERNAL_FIELD'
+    elif re.match(default_field, t.value):
+        return 'DEFAULT_FIELD',
+    elif re.match(default_datetime_field, t.value):
+        return 'DEFAULT_DATETIME_FIELD'
+    else:
+        return reserved.get(t.value, default)
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""
@@ -98,6 +111,21 @@ def t_ipunchecked_IPV6ADDR(t):
     t.lexer.lexpos -= len(t.value)
     t.lexer.begin('INITIAL')
     return
+
+@TOKEN(internal_field)
+def t_INTERNAL_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_field)
+def t_DEFAULT_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(default_datetime_field)
+def t_DEFAULT_DATETIME_FIELD(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
 
 @TOKEN(wildcard)
 def t_WILDCARD(t):

@@ -10,10 +10,10 @@ INDENT = '    '
 
 class ParseTreeNode(object):
     
-    def __init__(self, type, raw="", associative=False, arg=False, expr=False, field=False, option=False, renamed=None, value=False):
+    def __init__(self, role, type="SPL", raw="", is_associative=False, is_argument=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
-        >>> p.type
+        >>> p.role
         'TYPE'
         >>> p.raw
         'raw'
@@ -23,60 +23,57 @@ class ParseTreeNode(object):
         >>> p = ParseTreeNode()
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-        TypeError: __init__() takes at least 2 arguments (1 given)
+        TypeError: __init__() takes at least 2 is_arguments (1 given)
         """
-        
+        self.role = role
         self.type = type
         self.raw = raw
         self.parent = None
         self.children = []
-
-        self.label = self.type.lower()
-        #if not raw == '':
-        #    self.label = self.type
-        
-        self.associative = associative
-        
-        self.arg = arg
-        self.expr = expr
-        self.field = field
-        self.option = option
-        self.renamed = renamed
-        self.value = value
+        self.is_associative = is_associative
+        self.is_argument = is_argument
         self.values = []
 
     def __eq__(self, other):
-        #print "I am ", self.type, self.raw
         if len(self.children) == 0 and len(other.children) == 0:
             eq = self._node_eq(other)
-            #print "No children and eq is:", eq
             return eq
         if (len(self.children) == 0 and not len(other.children) == 0) or \
             (not len(self.children) == 0 and len(other.children) == 0):
-            #print "One has children and the other doesn't"
             return False
         return all([self_child == other_child for (self_child, other_child) in zip(self.children, other.children)])
 
     def _node_eq(self, other):
-        return self.type == other.type and self.raw == other.raw
+        return self.role == other.role and self.raw == other.raw
+
+    def flatten(self):
+        s = ""
+        paren = False
+        if len(self.raw) > 0:
+            s = ''.join([s, self.raw])
+        if len(self.children) > 0:
+            if len(s) > 0 and len(''.join([c.raw for c in self.children])) > 0: 
+                s = ''.join([s, '('])
+                paren = True
+            for c in self.children[:-1]:
+                s = ''.join([s, c.flatten()])
+                s = ''.join([s, ', '])
+            s = ''.join([s, self.children[-1].flatten()])
+            if paren:     
+                s = ''.join([s, ')'])
+        return s
 
     def is_supertree_of(self, other):
-        #print "I am ", self.type, self.raw
         if other is None:
-            #print "other is None"
             return True
         if len(self.children) >= 0 and len(other.children) == 0:
             eq = self._node_eq(other)
-            #print "other is childless and eq is", eq
             return eq
         if len(self.children) == 0 and len(other.children) > 0:
-            #print "other has more children than me 1"
             return False
         if len(self.children) < len(other.children):
-            #print "other has more children than me 2"
             return False
         if len(self.children) > 0 and len(other.children) > 0:
-            #print "other and I are comparing children"
             ocidx = 0
             children_eq = True
             for child in self.children:
@@ -84,7 +81,6 @@ class ParseTreeNode(object):
                     break
                 if child._node_eq(other.children[ocidx]):
                     children_eq = children_eq and child.is_supertree_of(other.children[ocidx])
-                    #print "children_eq is", children_eq
                     ocidx += 1
             if len(other.children) > ocidx + 1:
                 return False
@@ -92,60 +88,128 @@ class ParseTreeNode(object):
 
     @staticmethod
     def from_dict(d):
-        p = ParseTreeNode("")
-        p.type = str(d['type'])
-        p.label = p.type.lower()
+        p = ParseTreeNode('')
+        p.role = str(d['role'])
         p.raw = str(d['raw'])
-        p.associative = bool(d['associative'])
-        p.arg = bool(d['arg'])
+        p.is_associative = bool(d['is_associative'])
+        p.is_argument = bool(d['is_argument'])
         p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
         return p
 
-    def template(self):
-        children = map(lambda x: x.template(), self.children) 
-        if self.arg:
-            p = ParseTreeNode('', arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
-        else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
+    def template(self, drop_options=False, distinguished_argument=None):
+        p = self.copy_tree()
+        keynum = 0
+        valnum = 0
+        keyvars = {}
+        valvars = {}
+        stack = []
+        stack.insert(0, p)
+        while len(stack) > 0:
+            node = stack.pop()
+            if distinguished_argument and node.raw == distinguished_argument:
+                node.raw = "x"
+            elif node.role.find('FIELD') > -1:
+                if not node.raw in keyvars:
+                    keyvars[node.raw] = ''.join(["k", str(keynum)])
+                    keynum += 1
+                node.raw = keyvars[node.raw]
+            elif node.type != 'SPL':
+                if not node.raw in valvars:
+                    valvars[node.raw] = ''.join(["v", str(valnum)])
+                    valnum += 1
+                node.raw = valvars[node.raw]
+            new_children = []
+            for c in node.children:
+                if drop_options:
+                    if not (c.role == 'EQ' and c.children[0].role == 'OPTION'):
+                        new_children.append(c)
+                else:
+                    new_children.append(c)
+            node.children = new_children
+            for c in node.children:
+                stack.insert(0, c)
+        return p
+    
+    def copy_node(self):
+        p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
+                            is_associative=self.is_associative, 
+                            is_argument=self.is_argument)
+        return p
+    
+    def copy_tree(self):
+        children = map(lambda x: x.copy_tree(), self.children) 
+        p = self.copy_node()
+        p.values = self.values
         p.add_children(children)
         return p
 
-    def inverse_template(self):
-        children = map(lambda x: x.inverse_template(), self.children) 
-        if not self.arg:
-            p = ParseTreeNode('', arg=False, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
+    def ancestral_branch(self):
+        children = map(lambda x: x.copy_tree(), self.children) 
+        p = self.copy_node()
+        p.values = self.values
+        p.add_children(children)
+        top = self.parent
+        bottom = p
+        while top:
+            t = top.copy_node()
+            t.add_child(bottom)
+            top = top.parent 
+            bottom = t
+        return t
+
+    def ancestral_command(self):
+        up = self.parent
+        while up:
+            if up.role == 'COMMAND':
+                return up
+            up = up.parent
+        return None
+
+    def skeleton(self):
+        children = map(lambda x: x.skeleton(), self.children) 
+        if self.is_argument:
+            p = ParseTreeNode('', is_argument=True)
         else:
-            p = ParseTreeNode(self.type, raw=self.raw, associative=self.associative, arg=True, expr=self.expr, field=self.field, option=self.option, renamed=self.renamed, value=self.value)
+            p = ParseTreeNode(self.role, type=self.type, raw=self.raw, is_associative=self.is_associative) 
         p.add_children(children)
         return p
 
-    def command_arg_tuple_list(self):
+    def inverse_skeleton(self):
+        children = map(lambda x: x.inverse_skeleton(), self.children) 
+        if not self.is_argument:
+            p = ParseTreeNode('', is_argument=False)
+        else:
+            p = ParseTreeNode(self.role, raw=self.raw, is_associative=self.is_associative, is_argument=True)
+        p.add_children(children)
+        return p
+
+    def command_argument_tuple_list(self):
         stages = self._stage_subtrees()
-        command_and_args = [stage._command_arg_tuple_from_stage() for stage in stages]
-        return command_and_args
+        command_and_is_arguments = [stage._command_argument_tuple_from_stage() for stage in stages]
+        return command_and_is_arguments
 
     def _stage_subtrees(self):
-        if not self.type == 'ROOT':
+        if not self.role == 'ROOT':
             raise ValueError("This must be 'ROOT' node for this to work properly.\n")
         return self.children
 
-    def _command_arg_tuple_from_stage(self):
-        if not self.type == 'STAGE':
+    def _command_argument_tuple_from_stage(self):
+        if not self.role == 'STAGE':
             raise ValueError("This must be 'STAGE' node for this to work properly.\n")
-        command = self.children[0].template()._flatten_to_string()
-        args = self.children[0].inverse_template()._flatten_to_list()
-        return (command, args)
+        command = self.children[0].skeleton()._flatten_roles_to_string()
+        is_arguments = self.children[0].inverse_skeleton()._flatten_to_list()
+        return (command, is_arguments)
 
-    def _flatten_to_string(self):
-        flattened_children = [child._flatten_to_string() for child in self.children]
+    def _flatten_roles_to_string(self):
+        flattened_children = [child._flatten_roles_to_string() for child in self.children]
         flattened_children = filter(lambda x: not x == '()', flattened_children)
         children_string = ','.join(flattened_children)
         children_string = ''.join(['(', children_string, ')'])
-        if self.type == '':
+        if self.role == '':
             return children_string
         if children_string == '()':
-            return self.type
-        return ''.join([self.type, children_string])
+            return self.role
+        return ''.join([self.role, children_string])
 
     def _flatten_to_list(self):
         children_list = list(chain.from_iterable([child._flatten_to_list() for child in self.children]))
@@ -155,7 +219,7 @@ class ParseTreeNode(object):
         return [(self.raw, field)] + children_list
 
     def add_child(self, child):
-        if self.associative and child.type == self.type and len(child.children) > 0:
+        if self.is_associative and child.raw == self.raw and len(child.children) > 0:
             self.add_children(child.children)
         else:
             self.children.append(child)
@@ -174,9 +238,9 @@ class ParseTreeNode(object):
         >>> y = ParseTreeNode('CHILD', raw="y")
         >>> p.add_child(y)
         >>> p.children
-        [{type: 'CHILD', raw: 'x', children: [('CHILD': 'a'), ('CHILD': 'b'), ('CHILD': 'c')], parent: ('PARENT')}, {type: 'CHILD', raw: 'y', children: [], parent: ('PARENT')}]
+        [{role: 'CHILD', raw: 'x', children: [('CHILD': 'a'), ('CHILD': 'b'), ('CHILD': 'c')], parent: ('PARENT')}, {role: 'CHILD', raw: 'y', children: [], parent: ('PARENT')}]
         >>> x.children
-        [{type: 'CHILD', raw: 'a', children: [], parent: ('CHILD': 'x')}, {type: 'CHILD', raw: 'b', children: [], parent: ('CHILD': 'x')}, {type: 'CHILD', raw: 'c', children: [], parent: ('CHILD': 'x')}]
+        [{role: 'CHILD', raw: 'a', children: [], parent: ('CHILD': 'x')}, {role: 'CHILD', raw: 'b', children: [], parent: ('CHILD': 'x')}, {role: 'CHILD', raw: 'c', children: [], parent: ('CHILD': 'x')}]
         """
         for child in children:
             self.add_child(child)
@@ -198,14 +262,14 @@ class ParseTreeNode(object):
         >>> p.add_child(y)
         >>> x.remove_children([a,b])
         >>> x.children
-        [{type: 'CHILD', raw: 'c', children: [], parent: ('CHILD': 'x')}]
+        [{role: 'CHILD', raw: 'c', children: [], parent: ('CHILD': 'x')}]
         >>> p.remove_child(y)
         >>> p.children
-        [{type: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: ('PARENT')}]
+        [{role: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: ('PARENT')}]
         >>> a
-        {type: 'CHILD', raw: 'a', children: [], parent: None}
+        {role: 'CHILD', raw: 'a', children: [], parent: None}
         >>> y
-        {type: 'CHILD', raw: 'y', children: [], parent: None}
+        {role: 'CHILD', raw: 'y', children: [], parent: None}
         >>> p.remove_child(y)
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
@@ -215,7 +279,7 @@ class ParseTreeNode(object):
         >>> p.add_child(x)
         >>> p.remove_child(x)
         >>> p.children
-        [{type: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: None}]
+        [{role: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: None}]
         >>> p.remove_child(x)
         >>> p.children
         []
@@ -223,9 +287,9 @@ class ParseTreeNode(object):
         >>> p.add_child(x)
         >>> p.remove_children([x, x])
         >>> p
-        {type: 'PARENT', raw: '', children: [], parent: None}
+        {role: 'PARENT', raw: '', children: [], parent: None}
         >>> x
-        {type: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: None}
+        {role: 'CHILD', raw: 'x', children: [('CHILD': 'c')], parent: None}
         """
         tmp = []
         for child in self.children:
@@ -250,11 +314,11 @@ class ParseTreeNode(object):
         >>> y = ParseTreeNode('CHILD', raw="y")
         >>> p.add_child(y)
         >>> p
-        {type: 'PARENT', raw: '', children: [('CHILD': 'x'), ('CHILD': 'y')], parent: None}
+        {role: 'PARENT', raw: '', children: [('CHILD': 'x'), ('CHILD': 'y')], parent: None}
         >>> x
-        {type: 'CHILD', raw: 'x', children: [('CHILD': 'a'), ('CHILD': 'b'), ('CHILD': 'c')], parent: ('PARENT')}
+        {role: 'CHILD', raw: 'x', children: [('CHILD': 'a'), ('CHILD': 'b'), ('CHILD': 'c')], parent: ('PARENT')}
         >>> a
-        {type: 'CHILD', raw: 'a', children: [], parent: ('CHILD': 'x')}
+        {role: 'CHILD', raw: 'a', children: [], parent: ('CHILD': 'x')}
         """
         child_repr = ''
         first = True
@@ -264,7 +328,7 @@ class ParseTreeNode(object):
             else:
                 child_repr = str(child)
                 first = False
-        to_repr = ''.join(["{type: '", self.type,\
+        to_repr = ''.join(["{role: '", self.role,\
                             "', raw: '", self.raw,\
                             "', children: [", child_repr,\
                             "], parent: ", str(self.parent), "}"])
@@ -288,7 +352,7 @@ class ParseTreeNode(object):
         >>> print(a)
         ('CHILD': 'a')
         """
-        to_str = ''.join(["('", self.type, "'"])
+        to_str = ''.join(["('", self.role, "'"])
         if not self.raw == "":
             to_str = ''.join([to_str, ": '", self.raw, "'"])
         to_str = ''.join([to_str, ")"])
@@ -339,10 +403,10 @@ class ParseTreeNode(object):
 
     def jsonify(self):
         encoding = {}
-        encoding['type'] = self.type
+        encoding['role'] = self.role
         encoding['raw'] = self.raw
-        encoding['associative'] = self.associative
-        encoding['arg'] = self.arg
+        encoding['is_associative'] = self.is_associative
+        encoding['is_argument'] = self.is_argument
         encoding['children'] = []
         for child in self.children:
             encoding['children'].append(child.jsonify())
@@ -371,7 +435,7 @@ class ParseTreeNode(object):
         value_tokens = self.extract_values()
         for value_token in value_tokens:
             if value_token.raw == "":
-                value_token.raw = value_token.type.lower()
+                value_token.raw = value_token.role.lower()
             present = False
             for f in s.fields:
                 if value_token.raw in f.values:
@@ -388,7 +452,7 @@ class ParseTreeNode(object):
         stack.insert(0, self)
         while len(stack) > 0:
             node = stack.pop()
-            if node.field:
+            if node.role == 'FIELD':
                 fields.append(node)
             if len(node.children) > 0:
                 for c in node.children:
@@ -401,7 +465,7 @@ class ParseTreeNode(object):
         stack.insert(0, self)
         while len(stack) > 0:
             node = stack.pop()
-            if node.value:
+            if node.role == 'VALUE':
                 values.append(node)
             if len(node.children) > 0:
                 for c in node.children:
