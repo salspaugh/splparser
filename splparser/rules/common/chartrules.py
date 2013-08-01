@@ -98,6 +98,24 @@ def p_carg_statsfnexpr_by(p):
     statsfn[0].parent = p[2][0]
     p[0] = p[2]
 
+def p_carg_statsfnexpr_as_by(p):
+    """carg : statsfnexpr as simplefield splitbyclause"""
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([p[1].children[0], p[3]])
+    p[4][0].children.insert(0, asn)
+    asn.parent = p[4][0]
+    p[0] = p[4]
+
+def p_carg_statsfn_as_by(p):
+    """carg : STATS_FN as simplefield splitbyclause"""
+    statsfn = ParseTreeNode('FUNCTION', raw=p[1])
+    asn = ParseTreeNode('FUNCTION', raw='as')
+    asn.add_children([statsfn, p[3]])
+    p[4][0].children.insert(0, asn)
+    asn.parent = p[4][0]
+    p[0] = p[4]
+
+
 def p_splitbyclause(p):
     """splitbyclause : by simplefieldlist"""
     by = ParseTreeNode('FUNCTION', raw='groupby')
