@@ -130,10 +130,23 @@ def p_statscmdcont(p):
     fn_node = ParseTreeNode('FUNCTION', raw=p[2])
     p[0].add_child(fn_node)
 
+def p_statscmdcont_nocomma(p):
+    """statscmdcont : STATS_FN
+                    | COMMON_FN
+                    | EVAL"""
+    p[0] = ParseTreeNode('_STATSCMDCONT')
+    fn_node = ParseTreeNode('FUNCTION', raw=p[1])
+    p[0].add_child(fn_node)
+
 def p_statscmdcont_statsfnexpr(p):
     """statscmdcont : COMMA statsfnexpr"""
     p[0] = ParseTreeNode('_STATSCMDCONT')
     p[0].add_children(p[2].children)
+
+def p_statscmdcont_statsfnexpr_nocomma(p):
+    """statscmdcont : statsfnexpr"""
+    p[0] = ParseTreeNode('_STATSCMDCONT')
+    p[0].add_children(p[1].children)
 
 def p_statsfnexpr_fnas(p):
     """statsfnexpr : STATS_FN as simplefield
