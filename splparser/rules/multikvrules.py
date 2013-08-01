@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from splparser.parsetree import *
+from splparser.exceptions import SPLSyntaxError
 
 from splparser.rules.common.fieldrules import *
 from splparser.rules.common.fieldlistrules import *
