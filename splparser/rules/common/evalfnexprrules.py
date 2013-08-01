@@ -7,7 +7,7 @@ FIELD_TYPES = ['WORD', 'ID']
 NUMBER_TYPES = ['INT', 'FLOAT', 'BIN', 'OCT', 'HEX', 'FUNCTION']
 
 def check_role(node):
-    if node.type in FIELD_TYPES:
+    if node.type in FIELD_TYPES and not node.role.find('FIELD') > -1:
         node.role = 'FIELD'
 
 def match_role(tree, raw, role):

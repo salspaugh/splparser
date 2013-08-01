@@ -6,7 +6,8 @@ from splparser.rules.common.fieldrules import *
 def p_value_times(p):
     """value : field"""
     p[0] = p[1]
-    p[0].role = 'VALUE'
+    if p[0].type != 'SPL_FIELD':
+        p[0].role = 'VALUE'
 
 def p_value_ipv6addr(p):
     """value : IPV6ADDR"""

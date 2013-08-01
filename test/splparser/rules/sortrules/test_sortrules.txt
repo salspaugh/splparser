@@ -30,9 +30,9 @@
     ('STAGE')
         ('COMMAND': 'sort')
             ('FUNCTION': 'ascending')
-                ('FIELD': '_time')
+                ('INTERNAL_FIELD': '_time')
             ('FUNCTION': 'descending')
-                ('FIELD': 'host')
+                ('DEFAULT_FIELD': 'host')
 
 >>> splparser.parse("sort - Time").print_tree()
 ('ROOT')

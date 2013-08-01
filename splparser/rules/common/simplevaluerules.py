@@ -6,7 +6,8 @@ from splparser.rules.common.uminusrules import *
 def p_simplevalue_times(p):
     """simplevalue : simplefield"""
     p[0] = p[1]
-    p[0].role = 'VALUE'
+    if p[0].type != 'SPL_FIELD':
+        p[0].role = 'VALUE'
 
 def p_simplevalue_ipv6addr(p):
     """simplevalue : IPV6ADDR"""

@@ -51,12 +51,12 @@ def p_num_float(p):
 
 def p_simplefield_default_simplefield(p):
     """simplefield : DEFAULT_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_FIELD', raw=p[1], is_argument=True)
+    p[0] = ParseTreeNode('DEFAULT_FIELD', type='SPL_FIELD', raw=p[1], is_argument=True)
 
 def p_simplefield_internal_simplefield(p):
     """simplefield : INTERNAL_FIELD"""
-    p[0] = ParseTreeNode('INTERNAL_FIELD', raw=p[1], is_argument=True)
+    p[0] = ParseTreeNode('INTERNAL_FIELD', type='SPL_FIELD', raw=p[1], is_argument=True)
 
 def p_simplefield_default_datetime_simplefield(p):
     """simplefield : DEFAULT_DATETIME_FIELD"""
-    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', raw=p[1], is_argument=True)
+    p[0] = ParseTreeNode('DEFAULT_DATETIME_FIELD', type='SPL_FIELD', raw=p[1], is_argument=True)
