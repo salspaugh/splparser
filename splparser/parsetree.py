@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 
 import json
 
 from . import schema
-
+from collections import defaultdict
 from itertools import chain
 
 INDENT = '    '
@@ -530,6 +529,14 @@ class ParseTreeNode(object):
                 g.values = [value_token.raw]
                 s.fields.append(g)
         return s
+
+    def datatype(self):
+        if not self.role.find('FIELD') > -1:
+            return self.type
+        d = defaultdict(int)
+        for v in self.values:
+            d[v.type] += 1
+        return max(d)
 
     def extract_fields(self):
         stack = []
