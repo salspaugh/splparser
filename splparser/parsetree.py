@@ -142,7 +142,70 @@ class ParseTreeNode(object):
             for c in node.children:
                 stack.insert(0, c)
         return p
-    
+
+    def drop_options(self):
+        p = self.copy_tree()
+        stack = []
+        stack.insert(0, p)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.role == 'EQ' and node.children[0].role == 'OPTION' or node.role == 'OPTION':
+                return None
+            new_children = []
+            for c in node.children:
+                if not (c.role == 'EQ' and c.children[0].role == 'OPTION'):
+                    new_children.append(c)
+            node.children = []
+            node.add_children(new_children)
+            for c in node.children:
+                stack.insert(0, c)
+        return p
+
+    def drop_rename(self):
+        p = self.copy_tree()
+        stack = []
+        stack.insert(0, p)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.role == 'FUNCTION' and node.raw == 'as':
+                return None
+            new_children = []
+            for c in node.children:
+                if c.raw == 'as' and c.role == 'FUNCTION': 
+                    new_children.append(c.children[0])
+                else:
+                    new_children.append(c)
+            node.children = []
+            node.add_children(new_children)
+            for c in node.children:
+                stack.insert(0, c)
+        return p
+
+    def correct_rename(self):
+        pass
+
+    def descendant_arguments(self):
+        descendants = []
+        stack = []
+        stack.insert(0, self)
+        while len(stack) > 0:
+            node = stack.pop()
+            if node.is_argument:
+                descendants.append(node)
+            for c in node.children:
+                stack.insert(0, c)
+        return descendants
+
+    def correct_groupby(self):
+        pass
+
+    def decompose(self):
+        if self.role == 'COMMAND' or self.role == 'FUNCTION':
+            for c in self.children:
+                if (c.role == 'COMMAND' or c.role == 'FUNCTION'):
+                    pass                  
+
+
     def copy_node(self):
         p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
                             is_associative=self.is_associative, 
