@@ -34,6 +34,12 @@ def p_renameexprlist_renameexprlist(p):
     p[0].add_child(p[1])
     p[0].add_children(p[3].children)
 
+def p_renameexprlist_renameexprlist_nocomma(p):
+    """renameexprlist : renameexpr renameexprlist"""
+    p[0] = ParseTreeNode('_RENAMEEXPRLIST')
+    p[0].add_child(p[1])
+    p[0].add_children(p[2].children)
+
 def p_renameexpr_simplefield(p):
     """renameexpr : simplefield as simplevalue"""
     as_node = ParseTreeNode('FUNCTION', raw='rename')

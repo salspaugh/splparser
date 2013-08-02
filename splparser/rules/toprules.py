@@ -34,7 +34,9 @@ def p_top_fieldlist_by(p):
 
 def p_top_topopt_fieldlist(p):
     """topcmd : TOP topoptlist fieldlist
-              | SITOP topoptlist fieldlist"""
+              | SITOP topoptlist fieldlist
+              | TOP fieldlist topoptlist
+              | SITOP fieldlist topoptlist"""
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[0].add_children(p[2].children)
     p[0].add_children(p[3].children)

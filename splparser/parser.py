@@ -10,23 +10,26 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 class SPLParser(object):
 
-    def __init__(self, lexermod, parsetab_name, parsetab_dir, logname, rulesmod, optimize=False):
+    def __init__(self, lexermod, parsetab_name, parsetab_dir, logname, rulesmod, optimize=True):
         self.lexer = lexermod.lex()
         self.parsetab_name = parsetab_name
         self.parsetab_dir = parsetab_dir
         self.parsetab = self.setup_parsetab()
-        self.log = self.setup_log(logname)
         self.rules = rulesmod
-        self.parser = ply.yacc.yacc(module=self.rules, 
-                                    debug=True,
-                                    debuglog=self.log, 
-                                    tabmodule=self.parsetab_name, 
-                                    outputdir=self.parsetab_dir,
-                                    optimize=optimize)
-        #self.parser = ply.yacc.yacc(module=self.rules, 
-        #                            tabmodule=self.parsetab_name, 
-        #                            outputdir=self.parsetab_dir,
-        #                            optimize=optimize)
+        self.optimize = optimize
+        if not optimize:
+            self.log = self.setup_log(logname)
+            self.parser = ply.yacc.yacc(module=self.rules, 
+                                        debug=True,
+                                        debuglog=self.log, 
+                                        tabmodule=self.parsetab_name, 
+                                        outputdir=self.parsetab_dir,
+                                        optimize=optimize)
+        else:
+            self.parser = ply.yacc.yacc(module=self.rules, 
+                                        tabmodule=self.parsetab_name, 
+                                        outputdir=self.parsetab_dir,
+                                        optimize=optimize)
 
     def setup_parsetab(self):
         
@@ -78,8 +81,10 @@ class SPLParser(object):
     def parse(self, data):
         parsetree = None
         try:
-            parsetree = self.parser.parse(data, lexer=self.lexer, debug=self.log)
-            #parsetree = self.parser.parse(data, lexer=self.lexer)
+            if not self.optimize:
+                parsetree = self.parser.parse(data, lexer=self.lexer, debug=self.log)
+            else:
+                parsetree = self.parser.parse(data, lexer=self.lexer)
         except NotImplementedError:
             raise
         except Exception:
