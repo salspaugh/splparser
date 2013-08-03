@@ -32,6 +32,7 @@ class ParseTreeNode(object):
         self.is_associative = is_associative
         self.is_argument = is_argument
         self.values = []
+        self.corrected = False
 
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
@@ -180,9 +181,6 @@ class ParseTreeNode(object):
                 stack.insert(0, c)
         return p
 
-    def correct_rename(self):
-        pass
-
     def descendant_arguments(self):
         descendants = []
         stack = []
@@ -195,8 +193,58 @@ class ParseTreeNode(object):
                 stack.insert(0, c)
         return descendants
 
-    def correct_groupby(self):
-        pass
+    def ast(self):
+        p = self.copy_tree()
+        p = p.drop_options()
+        outerstack = []
+        outerstack.insert(0, p)
+        corrected = False
+        while not corrected:
+            groupby = None
+            while len(outerstack) > 0:
+                node = outerstack.pop()
+                if node.is_groupby() and not node.corrected:
+                    groupby = node
+                outerstack = node.children + outerstack
+            if not groupby:
+                corrected = True
+            else:
+                groupby.parent.children.remove(groupby)
+                groupby.parent.add_children(filter(lambda x: x.role.find('GROUPING') == -1, groupby.children))
+                groupby.parent = None
+                innerstack = []
+                innerstack.insert(0, p)
+                while len(innerstack) > 0:
+                    node = innerstack.pop()
+                    if node.is_eval_function() or (node.is_argument and node.parent.raw != 'as'):
+                        g = ParseTreeNode('FUNCTION', raw='groupby')
+                        g.corrected = True
+                        node.parent.swap_children(node, g)
+                        g.add_child(node)
+                        #print groupby.children
+                        for c in filter(lambda x: x.role.find('GROUPING') > -1, groupby.children):
+                            print c
+                            d = c.copy_tree()
+                            g.add_child(d) 
+                    else:
+                        innerstack = node.children + innerstack
+        return p
+
+    def swap_children(self, p, q):
+        idx = self.children.index(p)
+        self.children.remove(p)
+        p.parent = None
+        self.children.insert(idx, q)
+        q.parent = self
+
+    def is_eval_function(self):
+        return (self.is_function() and self.raw == 'eval')
+
+    def is_groupby(self):
+        return (self.is_function() and self.raw == 'groupby')
+
+    def is_function(self):
+        return self.role == 'FUNCTION'
 
     def decompose(self):
         if self.role == 'COMMAND' or self.role == 'FUNCTION':
@@ -536,6 +584,8 @@ class ParseTreeNode(object):
         d = defaultdict(int)
         for v in self.values:
             d[v.type] += 1
+        if len(d) == 0:
+            return None
         return max(d)
 
     def extract_fields(self):
