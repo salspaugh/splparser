@@ -3,7 +3,7 @@ import json
 
 from . import schema
 from collections import defaultdict
-from itertools import chain
+from itertools import chain, count
 
 INDENT = '    '
 
@@ -33,6 +33,7 @@ class ParseTreeNode(object):
         self.is_argument = is_argument
         self.values = []
         self.corrected = False
+        self.bound = False
 
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
@@ -105,7 +106,7 @@ class ParseTreeNode(object):
         stack = []
         stack.insert(0, p)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if distinguished_argument and node.raw == distinguished_argument:
                 node.raw = "x"
             elif node.role.find('FIELD') > -1:
@@ -148,7 +149,7 @@ class ParseTreeNode(object):
         stack = []
         stack.insert(0, p)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if node.role == 'EQ' and node.children[0].role == 'OPTION' or node.role == 'OPTION':
                 return None
             new_children = []
@@ -166,7 +167,7 @@ class ParseTreeNode(object):
         stack = []
         stack.insert(0, p)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if node.role == 'FUNCTION' and node.raw == 'as':
                 return None
             new_children = []
@@ -186,7 +187,7 @@ class ParseTreeNode(object):
         stack = []
         stack.insert(0, self)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if node.is_argument:
                 descendants.append(node)
             for c in node.children:
@@ -202,7 +203,7 @@ class ParseTreeNode(object):
         while not corrected:
             groupby = None
             while len(outerstack) > 0:
-                node = outerstack.pop()
+                node = outerstack.pop(0)
                 if node.is_groupby() and not node.corrected:
                     groupby = node
                 outerstack = node.children + outerstack
@@ -215,20 +216,43 @@ class ParseTreeNode(object):
                 innerstack = []
                 innerstack.insert(0, p)
                 while len(innerstack) > 0:
-                    node = innerstack.pop()
+                    node = innerstack.pop(0)
                     if node.is_eval_function() or (node.is_argument and node.parent.raw != 'as'):
                         g = ParseTreeNode('FUNCTION', raw='groupby')
                         g.corrected = True
                         node.parent.swap_children(node, g)
                         g.add_child(node)
-                        #print groupby.children
                         for c in filter(lambda x: x.role.find('GROUPING') > -1, groupby.children):
-                            print c
                             d = c.copy_tree()
                             g.add_child(d) 
                     else:
                         innerstack = node.children + innerstack
         return p
+
+    def compile(self):
+        p = self.copy_tree()
+        p = p.drop_options() # TODO: Incorporate these.
+        p = p.ast()
+        bound = {}
+        var = count()
+        go = True
+        while go:
+            stack = []
+            stack.insert(0, p)
+            while len(stack) > 0:
+                node = stack.pop(0)
+                if not node.bound and all([c.bound for c in node.children]):
+                    if not node.parent:
+                        go = False
+                        break
+                    key = ''.join(['X', str(var.next())])
+                    new = ParseTreeNode('VAR', raw=key)
+                    new.bound = True
+                    node.parent.swap_children(node, new)
+                    bound[key] = node.copy_tree()       
+                else:
+                    stack = node.children + stack
+        return bound 
 
     def swap_children(self, p, q):
         idx = self.children.index(p)
@@ -257,6 +281,8 @@ class ParseTreeNode(object):
         p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
                             is_associative=self.is_associative, 
                             is_argument=self.is_argument)
+        p.corrected = self.corrected
+        p.bound = self.bound
         return p
     
     def copy_tree(self):
@@ -593,7 +619,7 @@ class ParseTreeNode(object):
         fields = []
         stack.insert(0, self)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if node.role == 'FIELD':
                 fields.append(node)
             if len(node.children) > 0:
@@ -606,7 +632,7 @@ class ParseTreeNode(object):
         values = []
         stack.insert(0, self)
         while len(stack) > 0:
-            node = stack.pop()
+            node = stack.pop(0)
             if node.role == 'VALUE':
                 values.append(node)
             if len(node.children) > 0:
