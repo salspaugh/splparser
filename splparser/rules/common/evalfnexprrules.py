@@ -5,6 +5,13 @@ from splparser.rules.common.simplevaluerules import *
 
 FIELD_TYPES = ['WORD', 'ID']
 NUMBER_TYPES = ['INT', 'FLOAT', 'BIN', 'OCT', 'HEX', 'FUNCTION']
+CANONICAL_FUNCTIONS = {"ceil": "ceiling"}
+
+def canonicalize(function):
+    if not type(function) == type("string"):
+        return function
+    f = CANONICAL_FUNCTIONS.get(function, function)
+    return f
 
 def check_role(node):
     if node.type in FIELD_TYPES and not node.role.find('FIELD') > -1:
@@ -40,11 +47,13 @@ def p_opexpr_evalfnexpr(p):
 def p_evalfnexpr_empty(p):
     """evalfnexpr : EVAL_FN LPAREN RPAREN 
                   | COMMON_FN LPAREN RPAREN"""
+    p[1] = canonicalize(p[1])
     p[0] = ParseTreeNode('FUNCTION', raw=p[1])
 
 def p_evalfnexpr_evalfn(p):
     """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
                   | COMMON_FN LPAREN oplist RPAREN"""
+    p[1] = canonicalize(p[1])
     p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_children(p[3].children)
 

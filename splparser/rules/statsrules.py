@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import re
+
 from splparser.parsetree import *
 from splparser.exceptions import SPLSyntaxError
 
@@ -13,7 +15,11 @@ from splparser.lexers.statslexer import precedence, tokens
 
 start = 'cmdexpr'
 
-boolean_options = ["allnum"]
+BOOLEAN_OPTIONS = ["allnum"]
+CANONICAL_FUNCTIONS ={
+    "c": "count",
+    "dc": "distinct_count",
+    }
 
 # NOTE: The strange structure of these rules is because we need to always
 #       associate STATS_FN with another token on the RHS of rules because
@@ -21,6 +27,14 @@ boolean_options = ["allnum"]
 #           simplefield : STATS_FN
 #       since nothing prevents simplefields from having the same name as command
 #       functions.
+
+def canonicalize(function):
+    if not type(function) == type("string"):
+        return function
+    f = CANONICAL_FUNCTIONS.get(function, function)
+    if re.match('p[\d]+', f):
+        f = 'perc' + f[1:]
+    return f
 
 def correct_groupby(command): # HACK
     groupby = None
@@ -65,6 +79,7 @@ def p_statscmdstart(p):
                      | SISTATS statsoptlist STATS_FN
                      | SISTATS statsoptlist COMMON_FN
                      | SISTATS statsoptlist EVAL"""
+    p[2] = canonicalize(p[2]) 
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     fn_idx = 2
     if len(p) > 3:
@@ -89,7 +104,7 @@ def p_statsopt_simplefield(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
-    if opt.raw in boolean_options:
+    if opt.raw in BOOLEAN_OPTIONS:
         p[3].type = 'BOOLEAN'
     opt.values.append(p[3])
     p[0].add_child(opt)
@@ -126,6 +141,7 @@ def p_statscmdcont(p):
     """statscmdcont : COMMA STATS_FN
                     | COMMA COMMON_FN
                     | COMMA EVAL"""
+    p[2] = canonicalize(p[2]) 
     p[0] = ParseTreeNode('_STATSCMDCONT')
     fn_node = ParseTreeNode('FUNCTION', raw=p[2])
     p[0].add_child(fn_node)
@@ -134,6 +150,7 @@ def p_statscmdcont_nocomma(p):
     """statscmdcont : STATS_FN
                     | COMMON_FN
                     | EVAL"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSCMDCONT')
     fn_node = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_child(fn_node)
@@ -151,6 +168,7 @@ def p_statscmdcont_statsfnexpr_nocomma(p):
 def p_statsfnexpr_fnas(p):
     """statsfnexpr : STATS_FN as simplefield
                    | COMMON_FN as simplefield"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     asn = ParseTreeNode('FUNCTION', raw='as')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
@@ -167,6 +185,7 @@ def p_statsfnexpr_fnexpras(p):
 def p_statsfnexpr_fnasby(p):
     """statsfnexpr : STATS_FN as simplefield by simplefieldlist
                    | COMMON_FN as simplefield by simplefieldlist"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     by = ParseTreeNode('FUNCTION', raw='groupby')
     asn = ParseTreeNode('FUNCTION', raw='as')
@@ -191,6 +210,7 @@ def p_statsfnexpr_fnexprasby(p):
 def p_statsfnexpr_fnby(p):
     """statsfnexpr : STATS_FN by simplefieldlist
                    | COMMON_FN by simplefieldlist"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     by = ParseTreeNode('FUNCTION', raw='groupby')
     fn = ParseTreeNode('FUNCTION', raw=p[1])

@@ -1,8 +1,23 @@
 
+import re
+
 from splparser.parsetree import *
 
 from splparser.rules.common.evalfnexprrules import *
 from splparser.rules.common.simplevaluerules import *
+
+CANONICAL_FUNCTIONS ={
+    "c": "count",
+    "dc": "distinct_count",
+    }
+
+def canonicalize(function):
+    if not type(function) == type("string"):
+        return function
+    f = CANONICAL_FUNCTIONS.get(function, function)
+    if re.match('p[\d]+', f):
+        f = 'perc' + f[1:]
+    return f
 
 def convert_eq(node):
     stack = []
@@ -18,6 +33,7 @@ def convert_eq(node):
 def p_statsfnexpr_simplefield(p):
     """statsfnexpr : STATS_FN simplefield
                    | COMMON_FN simplefield"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_child(p[2])
@@ -26,6 +42,7 @@ def p_statsfnexpr_simplefield(p):
 def p_statsfnexpr_parensimplefield(p):
     """statsfnexpr : STATS_FN LPAREN simplefield RPAREN
                    | COMMON_FN LPAREN simplefield RPAREN"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_child(p[3])
@@ -33,6 +50,7 @@ def p_statsfnexpr_parensimplefield(p):
 
 def p_statsfnexpr_empty(p):
     """statsfnexpr : STATS_FN LPAREN RPAREN"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_child(fn)
@@ -40,6 +58,7 @@ def p_statsfnexpr_empty(p):
 def p_statsfnexpr_keqv(p):
     """statsfnexpr : STATS_FN LPAREN simplefield EQ simplevalue RPAREN
                    | COMMON_FN LPAREN simplefield EQ simplevalue RPAREN"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     eq = ParseTreeNode('FUNCTION', raw='eq')
@@ -51,6 +70,7 @@ def p_statsfnexpr_keqv(p):
 def p_statsfnexpr_statsfnexpr_paren(p):
     """statsfnexpr : STATS_FN LPAREN statsfnexpr RPAREN
                    | COMMON_FN LPAREN statsfnexpr RPAREN"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_children(p[3].children)
@@ -59,6 +79,7 @@ def p_statsfnexpr_statsfnexpr_paren(p):
 def p_statsfnexpr_statsfnexpr(p):
     """statsfnexpr : STATS_FN statsfnexpr
                    | COMMON_FN statsfnexpr"""
+    p[1] = canonicalize(p[1]) 
     p[0] = ParseTreeNode('_STATSFNEXPR')
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_children(p[2].children)
