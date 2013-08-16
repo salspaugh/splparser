@@ -16,6 +16,7 @@ start = 'cmdexpr'
 CANONICAL_FUNCTIONS ={
     "c": "count",
     "dc": "distinct_count",
+    "avg": "mean"
     }
 
 def canonicalize(function):

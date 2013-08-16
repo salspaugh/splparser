@@ -19,6 +19,7 @@ BOOLEAN_OPTIONS = ["allnum"]
 CANONICAL_FUNCTIONS ={
     "c": "count",
     "dc": "distinct_count",
+    "avg": "mean"
     }
 
 # NOTE: The strange structure of these rules is because we need to always
