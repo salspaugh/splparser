@@ -9,6 +9,19 @@ from splparser.rules.common.simplefieldrules import *
 from splparser.rules.common.simplefieldlistrules import *
 from splparser.rules.common.statsfnrules import *
 
+CANONICAL_FUNCTIONS ={
+    "c": "count",
+    "dc": "distinct_count",
+    }
+
+def canonicalize(function):
+    if not type(function) == type("string"):
+        return function
+    f = CANONICAL_FUNCTIONS.get(function, function)
+    if re.match('p[\d]+', f):
+        f = 'perc' + f[1:]
+    return f
+
 def check_option_value(option, value):
     log_pattern = r'[\d]*\.?[\d]*log[\d]*\.?[\d]*'
     if option in ("sep", "format", "nullstr", "otherstr"):
@@ -52,6 +65,7 @@ def p_ctoptlist(p):
 def p_copt(p):
     """copt : CHART_OPT EQ simplevalue
             | COMMON_OPT EQ simplevalue"""
+    p[1] = canonicalize(p[1])
     check_option_value(p[1], p[3]) 
     eq = ParseTreeNode('EQ', raw='assign')
     copt = ParseTreeNode('OPTION', raw=p[1])
@@ -61,10 +75,12 @@ def p_copt(p):
 
 def p_carg_statsfn(p):
     """carg : STATS_FN"""
+    p[1] = canonicalize(p[1])
     p[0] = [ParseTreeNode('FUNCTION', raw=p[1])]
 
 def p_carg_statsfn_as(p):
     """carg : STATS_FN as simplefield"""
+    p[1] = canonicalize(p[1])
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     asn = ParseTreeNode('FUNCTION', raw='as')
     asn.add_children([statsfn, p[3]])
@@ -86,6 +102,7 @@ def p_carg_macro(p):
 
 def p_carg_statsfn_by(p):
     """carg : STATS_FN splitbyclause"""
+    p[1] = canonicalize(p[1])
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     p[2][0].children.insert(0, statsfn)
     statsfn.parent = p[2][0]
@@ -108,13 +125,13 @@ def p_carg_statsfnexpr_as_by(p):
 
 def p_carg_statsfn_as_by(p):
     """carg : STATS_FN as simplefield splitbyclause"""
+    p[1] = canonicalize(p[1])
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     asn = ParseTreeNode('FUNCTION', raw='as')
     asn.add_children([statsfn, p[3]])
     p[4][0].children.insert(0, asn)
     asn.parent = p[4][0]
     p[0] = p[4]
-
 
 def p_splitbyclause(p):
     """splitbyclause : by simplefieldlist"""

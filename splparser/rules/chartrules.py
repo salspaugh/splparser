@@ -13,6 +13,19 @@ from splparser.lexers.chartlexer import precedence, tokens
 
 start = 'cmdexpr'
 
+CANONICAL_FUNCTIONS ={
+    "c": "count",
+    "dc": "distinct_count",
+    }
+
+def canonicalize(function):
+    if not type(function) == type("string"):
+        return function
+    f = CANONICAL_FUNCTIONS.get(function, function)
+    if re.match('p[\d]+', f):
+        f = 'perc' + f[1:]
+    return f
+
 def correct_groupby(command): # HACK
     groupby = None
     stack = []
@@ -68,6 +81,7 @@ def p_carg_statsfnexpr_over(p):
 
 def p_carg_statsfn_over(p):
     """carg : STATS_FN OVER simplefield"""
+    p[1] = canonicalize(p[1]) 
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     p[3].role = ''.join(['OVER_', p[3].role])
     over = ParseTreeNode('FUNCTION', raw='over')
@@ -85,6 +99,7 @@ def p_carg_statsfnexpr_over_by(p):
 
 def p_carg_statsfn_over_by(p):
     """carg : STATS_FN OVER simplefield splitbyclause"""
+    p[1] = canonicalize(p[1]) 
     over = ParseTreeNode('FUNCTION', raw='over')
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     p[3].role = ''.join(['OVER_', p[3].role])
@@ -104,6 +119,7 @@ def p_carg_statsfnexpr_as_over(p):
 
 def p_carg_statsfn_as_over(p):
     """carg : STATS_FN as simplefield OVER simplefield"""
+    p[1] = canonicalize(p[1]) 
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])
     over = ParseTreeNode('FUNCTION', raw='over')
     asn = ParseTreeNode('FUNCTION', raw='as')
@@ -125,6 +141,7 @@ def p_carg_statsfnexpr_as_over_by(p):
 
 def p_carg_statsfn_as_over_by(p): # TODO
     """carg : STATS_FN as simplefield OVER simplefield splitbyclause"""
+    p[1] = canonicalize(p[1]) 
     over = ParseTreeNode('FUNCTION', raw='over')
     asn = ParseTreeNode('FUNCTION', raw='as')
     statsfn = ParseTreeNode('FUNCTION', raw=p[1])

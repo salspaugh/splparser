@@ -24,9 +24,11 @@ def p_sort_sortfields_desc(p):
     """sortcmd : SORT sortfields DESC"""
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     for c in p[2]:
-        desc_node = ParseTreeNode('FUNCTION', raw=p[3])
-        desc_node.add_child(c)
-        p[0].add_child(desc_node)
+        desc = ParseTreeNode('FUNCTION', raw='descending')
+        if c.role == 'FUNCTION' and c.raw == 'ascending':
+            c = c.children[0]
+        desc.add_child(c)
+        p[0].add_child(desc)
 
 def p_sort_num_sortfields(p):
     """sortcmd : SORT int sortfields"""
