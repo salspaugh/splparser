@@ -9,6 +9,7 @@ from splparser.rules.common.simplevaluerules import *
 CANONICAL_FUNCTIONS ={
     "c": "count",
     "dc": "distinct_count",
+    "avg": "mean"
     }
 
 def canonicalize(function):

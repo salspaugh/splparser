@@ -12,6 +12,7 @@ from splparser.rules.common.statsfnrules import *
 CANONICAL_FUNCTIONS ={
     "c": "count",
     "dc": "distinct_count",
+    "avg": "mean"
     }
 
 def canonicalize(function):
