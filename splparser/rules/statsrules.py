@@ -15,27 +15,12 @@ from splparser.lexers.statslexer import precedence, tokens
 
 start = 'cmdexpr'
 
-BOOLEAN_OPTIONS = ["allnum"]
-CANONICAL_FUNCTIONS ={
-    "c": "count",
-    "dc": "distinct_count",
-    "avg": "mean"
-    }
-
 # NOTE: The strange structure of these rules is because we need to always
 #       associate STATS_FN with another token on the RHS of rules because
 #       otherwise we get a reduce/reduce conflict from the rule
 #           simplefield : STATS_FN
 #       since nothing prevents simplefields from having the same name as command
 #       functions.
-
-def canonicalize(function):
-    if not type(function) == type("string"):
-        return function
-    f = CANONICAL_FUNCTIONS.get(function, function)
-    if re.match('p[\d]+', f):
-        f = 'perc' + f[1:]
-    return f
 
 def correct_groupby(command): # HACK
     groupby = None

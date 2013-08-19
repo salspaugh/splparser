@@ -15,6 +15,7 @@ DATATYPES = {
     "INT": "NUMERIC",
     "ID": "STRING",
     "WORD": "STRING",
+    "NBSTR": "STRING",
     "BOOLEAN": "BOOLEAN"
 }
 

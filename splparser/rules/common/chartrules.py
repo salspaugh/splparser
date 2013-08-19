@@ -9,20 +9,6 @@ from splparser.rules.common.simplefieldrules import *
 from splparser.rules.common.simplefieldlistrules import *
 from splparser.rules.common.statsfnrules import *
 
-CANONICAL_FUNCTIONS ={
-    "c": "count",
-    "dc": "distinct_count",
-    "avg": "mean"
-    }
-
-def canonicalize(function):
-    if not type(function) == type("string"):
-        return function
-    f = CANONICAL_FUNCTIONS.get(function, function)
-    if re.match('p[\d]+', f):
-        f = 'perc' + f[1:]
-    return f
-
 def check_option_value(option, value):
     log_pattern = r'[\d]*\.?[\d]*log[\d]*\.?[\d]*'
     if option in ("sep", "format", "nullstr", "otherstr"):

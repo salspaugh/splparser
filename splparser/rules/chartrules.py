@@ -13,20 +13,6 @@ from splparser.lexers.chartlexer import precedence, tokens
 
 start = 'cmdexpr'
 
-CANONICAL_FUNCTIONS ={
-    "c": "count",
-    "dc": "distinct_count",
-    "avg": "mean"
-    }
-
-def canonicalize(function):
-    if not type(function) == type("string"):
-        return function
-    f = CANONICAL_FUNCTIONS.get(function, function)
-    if re.match('p[\d]+', f):
-        f = 'perc' + f[1:]
-    return f
-
 def correct_groupby(command): # HACK
     groupby = None
     stack = []

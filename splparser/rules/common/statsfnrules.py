@@ -12,6 +12,39 @@ CANONICAL_FUNCTIONS ={
     "avg": "mean"
     }
 
+ANY_DOMAIN = ["c", "count", "dc", "distinct_count", "earliest", "estdc", "estdc_error", "first", "last", "latest", "list", "max", "min", "median", "mode", "per_day", "per_hour", "per_minute", "per_second", "values"]
+
+ANY_RANGE = ["earliest", "first", "last", "latest", "list", "max", "median", "min", "mode", "values"]
+
+def set_range_datatypes(field, fn):
+    if field.role.find('FIELD') == -1:
+        return
+    if fn.raw not in CONDITIONAL_FUNCTIONS: 
+        field.datatype = function_range_type(fn)
+
+def function_range_type(fn):
+    if fn.raw.lower() not in ANY_RANGE:
+        return 'NUMERIC'
+
+def set_domain_datatypes(fn, args):
+    stack = []
+    if type(args) == type([]):
+        for a in args:
+            stack.insert(0, a)
+    else:
+        stack = [args]
+    while len(stack) > 0:
+        node = stack.pop(0)
+        if node.role == 'FUNCTION':
+            continue
+        if node.role.find('FIELD') > -1:
+            node.datatype = function_domain_type(fn)
+        stack = node.children + stack
+
+def function_domain_type(fn):
+    if fn.raw.lower() not in ANY_DOMAIN:
+        return 'NUMERIC'
+
 def canonicalize(function):
     if not type(function) == type("string"):
         return function
@@ -39,6 +72,7 @@ def p_statsfnexpr_simplefield(p):
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_child(p[2])
     p[0].add_child(fn)
+    set_domain_datatypes(fn, p[2])
 
 def p_statsfnexpr_parensimplefield(p):
     """statsfnexpr : STATS_FN LPAREN simplefield RPAREN
@@ -48,6 +82,7 @@ def p_statsfnexpr_parensimplefield(p):
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_child(p[3])
     p[0].add_child(fn)
+    set_domain_datatypes(fn, p[3])
 
 def p_statsfnexpr_empty(p):
     """statsfnexpr : STATS_FN LPAREN RPAREN"""
@@ -67,6 +102,7 @@ def p_statsfnexpr_keqv(p):
     p[3].values.append(p[5])
     fn.add_child(eq)
     p[0].add_child(fn)
+    set_domain_datatypes(fn, p[3])
 
 def p_statsfnexpr_statsfnexpr_paren(p):
     """statsfnexpr : STATS_FN LPAREN statsfnexpr RPAREN
@@ -76,6 +112,7 @@ def p_statsfnexpr_statsfnexpr_paren(p):
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_children(p[3].children)
     p[0].add_child(fn)
+    set_domain_datatypes(fn, p[3])
 
 def p_statsfnexpr_statsfnexpr(p):
     """statsfnexpr : STATS_FN statsfnexpr
@@ -85,6 +122,7 @@ def p_statsfnexpr_statsfnexpr(p):
     fn = ParseTreeNode('FUNCTION', raw=p[1])
     fn.add_children(p[2].children)
     p[0].add_child(fn)
+    set_domain_datatypes(fn, p[2])
 
 def p_statsfnexpr_sparkline(p):
     """statsfnexpr : SPARKLINE"""
