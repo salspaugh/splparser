@@ -559,6 +559,13 @@ class ParseTreeNode(object):
         """
         print self.str_tree(recursive=recursive)
 
+    def itertree(self):
+        stack = [self]
+        while len(stack) > 0:
+            node = stack.pop(0)
+            stack = node.children + stack
+            yield node
+
     def jsonify(self):
         encoding = {}
         encoding['role'] = self.role
