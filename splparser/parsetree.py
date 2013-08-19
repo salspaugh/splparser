@@ -34,6 +34,7 @@ class ParseTreeNode(object):
         self.values = []
         self.corrected = False
         self.bound = False
+        self.datatype = None
 
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
@@ -611,7 +612,7 @@ class ParseTreeNode(object):
                 s.fields.append(g)
         return s
 
-    def datatype(self):
+    def get_datatype(self):
         if not self.role.find('FIELD') > -1:
             return self.type
         d = defaultdict(int)
