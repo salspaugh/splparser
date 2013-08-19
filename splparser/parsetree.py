@@ -7,6 +7,17 @@ from itertools import chain, count
 
 INDENT = '    '
 
+DATATYPES = {
+    "INT": "NUMERIC",
+    "FLOAT": "NUMERIC",
+    "BIN": "NUMERIC",
+    "OCT": "NUMERIC",
+    "INT": "NUMERIC",
+    "ID": "STRING",
+    "WORD": "STRING",
+    "BOOLEAN": "BOOLEAN"
+}
+
 class ParseTreeNode(object):
     
     def __init__(self, role, type="SPL", raw="", is_associative=False, is_argument=False):
@@ -613,6 +624,8 @@ class ParseTreeNode(object):
         return s
 
     def get_datatype(self):
+        if self.datatype:
+            return self.datatype
         if not self.role.find('FIELD') > -1:
             return self.type
         d = defaultdict(int)
@@ -620,7 +633,8 @@ class ParseTreeNode(object):
             d[v.type] += 1
         if len(d) == 0:
             return None
-        return max(d)
+        vote = max(d)
+        return DATATYPES.get(vote, vote)
 
     def extract_fields(self):
         stack = []
