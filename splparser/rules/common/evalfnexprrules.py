@@ -7,17 +7,20 @@ FIELD_TYPES = ['WORD', 'ID']
 NUMBER_TYPES = ['INT', 'FLOAT', 'BIN', 'OCT', 'HEX', 'FUNCTION']
 CANONICAL_FUNCTIONS = {"ceil": "ceiling"}
 
-NUMERIC_DOMAIN = ["abs", "case", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
-STRING_DOMAIN = ["case", "cidrmatch", "coalesce", "commands", "exact", "len", "like", "lower", "ltrim", "match", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "concat"]
+NUMERIC_DOMAIN = ["abs", "case", "ceil", "ceiling",  "exact", "exp", "floor", "len", "ln", "log", "mvrange", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
+STRING_DOMAIN = ["case", "commands", "len", "like", "lower", "ltrim", "match", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "concat"]
+IPADDR_DOMAIN = ["cidrmatch"]
 TIME_DOMAIN = ["now", "relative_time", "strftime", "strptime"]
-MV_DOMAIN = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
+MV_DOMAIN = ["mvindex", "mvfilter", "mvfind", "mvjoin", "mvzip"]
+URL_DOMAIN = ["urldecode"]
 BOOLEAN_DOMAIN = ["and", "or", "not", "xor"]
 
-NUMERIC_RANGE = ["abs", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
-STRING_RANGE = ["coalesce", "commands", "exact", "lower", "ltrim", "md5", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "urldecode", "validate"]
-TIME_RANGE = ["now", "relative_time", "time", "urldecode", "validate"]
-MV_RANGE = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
-BOOLEAN_RANGE = ["cidrmatch", "coalesce", "commands", "exact", "isbool", "isint", "isnotnull", "isnull", "isnum", "isstr", "like", "searchmatch", "validate", "and", "or", "not", "xor"]
+NUMERIC_RANGE = ["abs", "ceil", "ceiling", "exact", "exp", "floor", "len", "ln", "log", "mvcount", "mvfind", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
+STRING_RANGE = ["commands", "exact", "lower", "ltrim", "md5", "mvjoin", "replace", "rtrim", "spath", "split", "substr", "tostring", "typeof", "trim", "upper", "validate"]
+TIME_RANGE = ["now", "relative_time", "strftime", "strptime", "time"]
+MV_RANGE = ["mvappend", "mvindex", "mvfilter", "mvrange", "mvzip"]
+URL_RANGE = ["urldecode"]
+BOOLEAN_RANGE = ["cidrmatch", "exact", "isbool", "isint", "isnotnull", "isnull", "isnum", "isstr", "like", "searchmatch", "and", "or", "not", "xor"]
 
 CONDITIONAL_FUNCTIONS = ["case", "if", "ifnull"]
 
@@ -33,6 +36,8 @@ def set_range_datatypes(field, fn):
 def function_range_type(fn):
     if fn.raw.lower() in NUMERIC_RANGE:
         return 'NUMERIC'
+    if fn.raw.lower() in URL_RANGE:
+        return 'URL'
     if fn.raw.lower() in STRING_RANGE:
         return 'STRING'
     if fn.raw.lower() in TIME_RANGE:
@@ -60,6 +65,10 @@ def set_domain_datatypes(fn, args):
 def function_domain_type(fn):
     if fn.raw.lower() in NUMERIC_DOMAIN:
         return 'NUMERIC'
+    if fn.raw.lower() in URL_RANGE:
+        return 'URL'
+    if fn.raw.lower() in IPADDR_DOMAIN:
+        return 'IPADDR'
     if fn.raw.lower() in STRING_DOMAIN:
         return 'STRING'
     if fn.raw.lower() in TIME_DOMAIN:
