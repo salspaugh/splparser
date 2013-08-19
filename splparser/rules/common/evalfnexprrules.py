@@ -7,6 +7,65 @@ FIELD_TYPES = ['WORD', 'ID']
 NUMBER_TYPES = ['INT', 'FLOAT', 'BIN', 'OCT', 'HEX', 'FUNCTION']
 CANONICAL_FUNCTIONS = {"ceil": "ceiling"}
 
+NUMERIC_DOMAIN = ["abs", "case", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
+STRING_DOMAIN = ["case", "cidrmatch", "coalesce", "commands", "exact", "len", "like", "lower", "ltrim", "match", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "concat"]
+TIME_DOMAIN = ["now", "relative_time", "strftime", "strptime"]
+MV_DOMAIN = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
+BOOLEAN_DOMAIN = ["and", "or", "not", "xor"]
+
+NUMERIC_RANGE = ["abs", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate"]
+STRING_RANGE = ["coalesce", "commands", "exact", "lower", "ltrim", "md5", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "urldecode", "validate"]
+TIME_RANGE = ["now", "relative_time", "time", "urldecode", "validate"]
+MV_RANGE = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
+BOOLEAN_RANGE = ["cidrmatch", "coalesce", "commands", "exact", "isbool", "isint", "isnotnull", "isnull", "isnum", "isstr", "like", "searchmatch", "validate"]
+
+CONDITIONAL_FUNCTIONS = ["case", "if", "ifnull"]
+
+def set_range_datatypes(field, fn):
+    if fn.raw not in CONDITIONAL_FUNCTIONS: 
+        field.datatype = function_range_type(fn)
+    else:
+        pass
+        #TODO: something smarter on case and if functions
+
+def function_range_type(fn):
+    if fn.raw.lower() in NUMERIC_RANGE:
+        return 'NUMERIC'
+    if fn.raw.lower() in STRING_RANGE:
+        return 'STRING'
+    if fn.raw.lower() in TIME_RANGE:
+        return 'TIME'
+    if fn.raw.lower() in MV_RANGE:
+        return 'MV'
+    if fn.raw.lower() in BOOLEAN_RANGE:
+        return 'BOOLEAN'
+
+def set_domain_datatypes(fn, args):
+    stack = []
+    if type(args) == type([]):
+        stack = args
+    else:
+        stack.insert(0, args)
+    while len(stack) > 0:
+        node = stack.pop(0)
+        if node.role == 'FUNCTION':
+            continue
+        c.datatype = function_domain_type(fn)
+        for c in node.children:
+            stack.insert(0, c)
+
+def function_domain_type(fn):
+    if fn.raw.lower() in NUMERIC_DOMAIN:
+        return 'NUMERIC'
+    if fn.raw.lower() in STRING_DOMAIN:
+        return 'STRING'
+    if fn.raw.lower() in TIME_DOMAIN:
+        return 'TIME'
+    if fn.raw.lower() in MV_DOMAIN:
+        return 'MV'
+    if fn.raw.lower() in BOOLEAN_DOMAIN:
+        return 'BOOLEAN'
+
 def canonicalize(function):
     if not type(function) == type("string"):
         return function
@@ -21,7 +80,7 @@ def match_role(tree, raw, role):
     stack = []
     stack.insert(0, tree)
     while len(stack) > 0:
-        node = stack.pop()
+        node = stack.pop(0)
         if node.raw == raw:
             node.role = role
         if len(node.children) > 0:
@@ -54,6 +113,7 @@ def p_evalfnexpr_evalfn(p):
     """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
                   | COMMON_FN LPAREN oplist RPAREN"""
     p[1] = canonicalize(p[1])
+    set_domain_datatypes(p[1], p[3])
     p[0] = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_children(p[3].children)
 
@@ -108,6 +168,7 @@ def p_opexpr_divides(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_modulus(p):
     """opexpr : opexpr MODULUS opexpr"""
@@ -122,6 +183,7 @@ def p_opexpr_modulus(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_xor(p):
     """opexpr : opexpr XOR opexpr"""
@@ -134,6 +196,7 @@ def p_opexpr_xor(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_like(p):
     """opexpr : opexpr LIKE opexpr"""
@@ -147,6 +210,7 @@ def p_opexpr_like(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 # TODO: Figure out how to include these in the schema extraction.
 def p_opexpr_comparator(p):
@@ -167,6 +231,9 @@ def p_opexpr_comparator(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
+    if p[2].role == 'EQ' and p[1].type == 'FIELD':
+        set_range_datatypes(p[1], p[3])
 
 def p_comparator_lt(p):
     """comparator : LT"""
@@ -209,6 +276,7 @@ def p_opexpr_concat(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_plus(p):
     """opexpr : opexpr PLUS opexpr"""
@@ -226,6 +294,7 @@ def p_opexpr_plus(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_times(p):
     """opexpr : opexpr TIMES opexpr"""
@@ -240,6 +309,7 @@ def p_opexpr_times(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_opexpr_boolean_op(p):
     """opexpr : opexpr boolean_op opexpr %prec COMMA"""
@@ -252,6 +322,7 @@ def p_opexpr_boolean_op(p):
         p[0].add_children(p[3].children)
     else:
         p[0].add_child(p[3])
+    set_domain_datatypes(p[0], p[0].children)
 
 def p_boolean_op_and(p):
     """boolean_op : AND"""
