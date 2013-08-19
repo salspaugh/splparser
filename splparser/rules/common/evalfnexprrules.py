@@ -13,15 +13,17 @@ TIME_DOMAIN = ["now", "relative_time", "strftime", "strptime"]
 MV_DOMAIN = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
 BOOLEAN_DOMAIN = ["and", "or", "not", "xor"]
 
-NUMERIC_RANGE = ["abs", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate"]
+NUMERIC_RANGE = ["abs", "ceil", "ceiling", "coalesce", "commands", "exact", "exp", "floor", "len", "ln", "log", "pi", "pow", "random", "round", "sigfig", "sqrt", "tonumber", "validate", "modulus", "divides", "times", "plus", "minus", "lt", "le", "ge", "gt"]
 STRING_RANGE = ["coalesce", "commands", "exact", "lower", "ltrim", "md5", "replace", "rtrim", "searchmatch", "spath", "split", "substr", "tostring", "trim", "upper", "urldecode", "validate"]
 TIME_RANGE = ["now", "relative_time", "time", "urldecode", "validate"]
 MV_RANGE = ["mvappend", "mvcount", "mvindex", "mvfilter", "mvjoin", "mvrange", "mvzip"]
-BOOLEAN_RANGE = ["cidrmatch", "coalesce", "commands", "exact", "isbool", "isint", "isnotnull", "isnull", "isnum", "isstr", "like", "searchmatch", "validate"]
+BOOLEAN_RANGE = ["cidrmatch", "coalesce", "commands", "exact", "isbool", "isint", "isnotnull", "isnull", "isnum", "isstr", "like", "searchmatch", "validate", "and", "or", "not", "xor"]
 
 CONDITIONAL_FUNCTIONS = ["case", "if", "ifnull"]
 
 def set_range_datatypes(field, fn):
+    if field.role.find('FIELD') == -1:
+        return
     if fn.raw not in CONDITIONAL_FUNCTIONS: 
         field.datatype = function_range_type(fn)
     else:
@@ -43,16 +45,17 @@ def function_range_type(fn):
 def set_domain_datatypes(fn, args):
     stack = []
     if type(args) == type([]):
-        stack = args
+        for a in args:
+            stack.insert(0, a)
     else:
-        stack.insert(0, args)
+        stack = [args]
     while len(stack) > 0:
         node = stack.pop(0)
         if node.role == 'FUNCTION':
             continue
-        c.datatype = function_domain_type(fn)
-        for c in node.children:
-            stack.insert(0, c)
+        if node.role.find('FIELD') > -1:
+            node.datatype = function_domain_type(fn)
+        stack = node.children + stack
 
 def function_domain_type(fn):
     if fn.raw.lower() in NUMERIC_DOMAIN:
@@ -232,7 +235,7 @@ def p_opexpr_comparator(p):
     else:
         p[0].add_child(p[3])
     set_domain_datatypes(p[0], p[0].children)
-    if p[2].role == 'EQ' and p[1].type == 'FIELD':
+    if p[2].role == 'EQ' and p[1].role == 'FIELD':
         set_range_datatypes(p[1], p[3])
 
 def p_comparator_lt(p):
