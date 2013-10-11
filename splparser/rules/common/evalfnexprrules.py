@@ -125,8 +125,8 @@ def p_evalfnexpr_evalfn(p):
     """evalfnexpr : EVAL_FN LPAREN oplist RPAREN 
                   | COMMON_FN LPAREN oplist RPAREN"""
     p[1] = canonicalize(p[1])
-    set_domain_datatypes(p[1], p[3])
     p[0] = ParseTreeNode('FUNCTION', raw=p[1])
+    set_domain_datatypes(p[0], p[3])
     p[0].add_children(p[3].children)
 
 def p_opexpr_simplevalue(p):

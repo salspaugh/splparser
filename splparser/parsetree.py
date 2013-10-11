@@ -63,10 +63,10 @@ class ParseTreeNode(object):
     def flatten(self):
         s = ""
         paren = False
-        if len(self.raw) > 0:
-            s = ''.join([s, self.raw])
+        if len(str(self.raw)) > 0:
+            s = ''.join([s, str(self.raw)])
         if len(self.children) > 0:
-            if len(s) > 0 and len(''.join([c.raw for c in self.children])) > 0: 
+            if len(s) > 0 and len(''.join([str(c.raw) for c in self.children])) > 0: 
                 s = ''.join([s, '('])
                 paren = True
             for c in self.children[:-1]:
@@ -157,6 +157,14 @@ class ParseTreeNode(object):
                 stack.insert(0, c)
         return p
 
+    def get_parent_stage(self):
+        node = self
+        while node:
+            if node.role == 'STAGE':
+                return node
+            node = node.parent
+        return None # TODO: Throw error here?
+
     def drop_options(self):
         p = self.copy_tree()
         stack = []
@@ -223,11 +231,12 @@ class ParseTreeNode(object):
             if not groupby:
                 corrected = True
             else:
+                stage = groupby.get_parent_stage()
                 groupby.parent.children.remove(groupby)
                 groupby.parent.add_children(filter(lambda x: x.role.find('GROUPING') == -1, groupby.children))
                 groupby.parent = None
                 innerstack = []
-                innerstack.insert(0, p)
+                innerstack.insert(0, stage)
                 while len(innerstack) > 0:
                     node = innerstack.pop(0)
                     if node.is_eval_function() or (node.is_argument and node.parent.raw != 'as'):
@@ -246,26 +255,30 @@ class ParseTreeNode(object):
         p = self.copy_tree()
         p = p.drop_options() # TODO: Incorporate these.
         p = p.ast()
+        exl = {}
         bound = {}
         var = count()
-        go = True
-        while go:
-            stack = []
-            stack.insert(0, p)
-            while len(stack) > 0:
-                node = stack.pop(0)
-                if not node.bound and all([c.bound for c in node.children]):
-                    if not node.parent:
-                        go = False
-                        break
-                    key = ''.join(['X', str(var.next())])
-                    new = ParseTreeNode('VAR', raw=key)
-                    new.bound = True
-                    node.parent.swap_children(node, new)
-                    bound[key] = node.copy_tree()       
-                else:
-                    stack = node.children + stack
-        return bound 
+        stages = p._stage_subtrees()
+        for stage in stages:
+            keepgoing = True
+            while keepgoing:
+                stack = []
+                stack.insert(0, stage)
+                while len(stack) > 0:
+                    node = stack.pop(0)
+                    if not node.exl and all([c.exl for c in node.children]):
+                        if not node.parent:
+                            keepgoing = False
+                            break
+                        #key = ''.join(['X', str(var.next())])
+                        key = var.next()
+                        new = ParseTreeNode('VAR', raw=key)
+                        new.exl = True
+                        node.parent.swap_children(node, new)
+                        exl[key] = node.copy_tree()       
+                    else:
+                        stack = node.children + stack
+        return exl 
 
     def swap_children(self, p, q):
         idx = self.children.index(p)
