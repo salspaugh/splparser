@@ -31,10 +31,6 @@ class ParseTreeNode(object):
         >>> p.children
         []
         >>> p.parent
-        >>> p = ParseTreeNode()
-        Traceback (most recent call last):
-          File "<stdin>", line 1, in <module>
-        TypeError: __init__() takes at least 2 is_arguments (1 given)
         """
         self.role = role
         self.type = type

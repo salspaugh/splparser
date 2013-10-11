@@ -55,7 +55,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('OPTION': 'span')
                 ('VALUE': 'log2')
             ('FUNCTION': 'groupby')
-                ('FUNCTION': 'avg')
+                ('FUNCTION': 'mean')
                     ('FIELD': 'eventcount')
                 ('GROUPING_FIELD': 'duration')
 
@@ -103,7 +103,7 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('FUNCTION': 'as')
                     ('FUNCTION': 'eval')
                         ('FUNCTION': 'divides')
-                            ('FUNCTION': 'avg')
+                            ('FUNCTION': 'mean')
                                 ('FIELD': 'size')
                             ('FUNCTION': 'max')
                                 ('FIELD': 'delay')

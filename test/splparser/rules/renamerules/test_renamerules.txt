@@ -85,11 +85,11 @@ Below are clips from an interactive session in which I test various aspects of t
     ('STAGE')
         ('COMMAND': 'rename')
             ('FUNCTION': 'rename')
-                ('FUNCTION': 'avg')
+                ('FUNCTION': 'mean')
                     ('FIELD': 'memUsedPct')
                 ('FIELD': '"Used Mem"')
             ('FUNCTION': 'rename')
-                ('FUNCTION': 'avg')
+                ('FUNCTION': 'mean')
                     ('FIELD': 'memFreePct')
                 ('FIELD': 'Free_Mem')
 
