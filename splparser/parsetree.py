@@ -44,6 +44,50 @@ class ParseTreeNode(object):
         self.bound = False
         self.datatype = None
 
+    def jsonify(self):
+        encoding = {}
+        encoding['role'] = self.role
+        encoding['type'] = self.type
+        encoding['raw'] = self.raw
+        encoding['is_associative'] = self.is_associative
+        encoding['is_argument'] = self.is_argument
+        encoding['values'] = self.values
+        encoding['corrected'] = self.corrected
+        encoding['bound'] = self.bound
+        encoding['datatype'] = self.datatype
+        encoding['children'] = []
+        for child in self.children:
+            encoding['children'].append(child.jsonify())
+        return encoding
+    
+    @staticmethod
+    def from_dict(d):
+        p = ParseTreeNode('')
+        p.role = d['role']
+        p.type = d['type']
+        p.raw = d['raw']
+        p.is_associative = bool(d['is_associative'])
+        p.is_argument = bool(d['is_argument'])
+        p.values = d['values']
+        p.corrected = bool(d['corrected'])
+        p.bound = bool(d['bound'])
+        p.datatype = d['datatype']
+        p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
+        return p
+
+    @staticmethod
+    def loads(jsonstr):
+        return ParseTreeNode.from_dict(json.loads(jsonstr))
+
+    class ParseTreeNodeEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, ParseTreeNode):
+                return obj.jsonify()
+            return json.JSONEncoder.default(self, obj)
+    
+    def dumps(self, **kwargs):
+        return json.dumps(self, cls=self.ParseTreeNodeEncoder, **kwargs)
+
     def __eq__(self, other):
         if len(self.children) == 0 and len(other.children) == 0:
             eq = self._node_eq(other)
@@ -95,16 +139,6 @@ class ParseTreeNode(object):
             if len(other.children) > ocidx + 1:
                 return False
             return self._node_eq(other) and children_eq
-
-    @staticmethod
-    def from_dict(d):
-        p = ParseTreeNode('')
-        p.role = str(d['role'])
-        p.raw = str(d['raw'])
-        p.is_associative = bool(d['is_associative'])
-        p.is_argument = bool(d['is_argument'])
-        p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
-        return p
 
     def template(self, drop_options=False, drop_rename=False, distinguished_argument=None):
         p = self.copy_tree()
@@ -587,26 +621,6 @@ class ParseTreeNode(object):
             node = stack.pop(0)
             stack = node.children + stack
             yield node
-
-    def jsonify(self):
-        encoding = {}
-        encoding['role'] = self.role
-        encoding['raw'] = self.raw
-        encoding['is_associative'] = self.is_associative
-        encoding['is_argument'] = self.is_argument
-        encoding['children'] = []
-        for child in self.children:
-            encoding['children'].append(child.jsonify())
-        return encoding
-
-    class ParseTreeNodeEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, ParseTreeNode):
-                return obj.jsonify()
-            return json.JSONEncoder.default(self, obj)
-    
-    def dumps(self, **kwargs):
-        return json.dumps(self, cls=self.ParseTreeNodeEncoder, **kwargs)
 
     def schema(self):
         field_tokens = self.extract_fields()
