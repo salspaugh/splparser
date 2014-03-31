@@ -16,7 +16,8 @@ def p_cmdexpr_bucket(p):
     p[0] = p[1]
 
 def p_bucketcmd(p):
-    """bucketcmd : BUCKET bucketargs"""
+    """bucketcmd : BUCKET bucketargs
+                 | BIN_CMD bucketargs"""
     p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_child(p[2])
 
@@ -31,13 +32,15 @@ def p_bucketargs_as(p):
     p[0].add_child(p[3])
 
 def p_bucketcmd_bucketopts_bucketargs(p):
-    """bucketcmd : BUCKET bucketoptlist bucketargs"""
+    """bucketcmd : BUCKET bucketoptlist bucketargs
+                 | BIN_CMD bucketoptlist bucketargs"""
     p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_children(p[2].children)
     p[0].add_child(p[3])
 
 def p_bucketcmd_bucketargs_bucketopts(p):
-    """bucketcmd : BUCKET bucketargs bucketoptlist"""
+    """bucketcmd : BUCKET bucketargs bucketoptlist
+                 | BIN_CMD bucketargs bucketoptlist"""
     p[0] = ParseTreeNode('COMMAND', raw='bucket')
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)

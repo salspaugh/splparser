@@ -25,6 +25,7 @@ tokens = [
 
 reserved = {
     'bucket' : 'BUCKET', 
+    'bin' : 'BIN_CMD', # TODO: Rename BIN above to BINARY 
     'as' : 'ASLC',
     'AS' : 'ASUC',
 }

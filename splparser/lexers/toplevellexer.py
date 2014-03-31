@@ -26,6 +26,7 @@ reserved = {
     'audit': 'AUDIT',
     'autoregress': 'AUTOREGRESS',
     'bucket': 'BUCKET',
+    'bin': 'BIN_CMD',
     'bucketdir': 'BUCKETDIR',
     'chart': 'CHART',
     'cluster': 'CLUSTER',

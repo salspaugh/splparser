@@ -71,6 +71,24 @@ Below are clips from an interactive session in which I test various aspects of t
                 ('VALUE': '10')
             ('FIELD': 'cache_kbytes')
 
+>>> splparser.parse("bin _time span=10log2").print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'bucket')
+            ('INTERNAL_FIELD': '_time')
+            ('EQ': 'assign')
+                ('OPTION': 'span')
+                ('VALUE': '10log2')
+
+>>> splparser.parse("bin size end=10").print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'bucket')
+            ('FIELD': 'size')
+            ('EQ': 'assign')
+                ('OPTION': 'end')
+                ('VALUE': '10')
+
 NOTE(salspaugh): These are erroneous but appeared in the logs:
     splparser.parse("bucket -time=5m").print_tree()
     splparser.parse("bucket (userId count) span=100").print_tree()

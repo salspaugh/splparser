@@ -75,7 +75,9 @@ def p_cmdexpr_autoregress(p):
 @splcommandrule
 def p_cmdexpr_bucket(p):
     """cmdexpr : BUCKET arglist
-               | BUCKET MACRO"""
+               | BUCKET MACRO
+               | BIN_CMD arglist
+               | BIN_CMD MACRO"""
 
 @notimplemented
 def p_cmdexpr_bucketdir(p):
