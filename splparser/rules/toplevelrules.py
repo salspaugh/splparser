@@ -55,6 +55,10 @@ def p_args_fields(p):
     """args : FIELDS"""
     p[0] = p[1]
 
+def p_args_where(p):
+    """args : WHERE"""
+    p[0] = p[1]
+
 def p_arglist_arg(p):
     """arglist : arglist args"""
     p[0] = ' '.join(p[1:])

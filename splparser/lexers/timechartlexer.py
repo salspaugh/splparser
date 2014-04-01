@@ -305,7 +305,7 @@ def t_error(t):
     badchar = t.value[0]
     t.lexer.skip(1)
     t.lexer.begin('ipunchecked')
-    raise SPLSyntaxError("Illegal character in eval lexer '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in timechart lexer '%s'" % badchar)
 
 def lex():
     return ply.lex.lex()

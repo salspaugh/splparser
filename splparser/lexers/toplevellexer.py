@@ -131,6 +131,7 @@ reserved = {
     'transpose': 'TRANSPOSE',
     'trendline': 'TRENDLINE',
     'tscollect': 'TSCOLLECT',
+    'tstats': 'TSTATS',
     'typeahead': 'TYPEAHEAD',
     'typelearner': 'TYPELEARNER',
     'typer': 'TYPER',

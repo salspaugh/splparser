@@ -20,19 +20,31 @@ tokens = [
     'LITERAL', # in quotes
     'EVAL_FN',
     'COMMON_FN',
+    'STATS_FN',
+    'TSTATS_OPT',
     'INTERNAL_FIELD',
     'DEFAULT_FIELD',
     'DEFAULT_DATETIME_FIELD'
 ]
 
 reserved = {
-    'fieldformat' : 'FIELDFORMAT',
+    'tstats' : 'TSTATS', 
+    'sparkline' : 'SPARKLINE',
+    'as' : 'ASLC',
+    'by' : 'BYLC',
+    'AS' : 'ASUC',
+    'BY' : 'BYUC',
     'AND' : 'AND',
     'OR' : 'OR',
     'NOT' : 'NOT',
     'XOR' : 'XOR',
     'LIKE' : 'LIKE',
     'eval' : 'EVAL', 
+    'FROM' : 'FROMUC',
+    'from' : 'FROMLC',
+    'WHERE' : 'WHEREUC',
+    'where' : 'WHERELC'
+
 }
 
 tokens = tokens + list(reserved.values())
@@ -103,10 +115,14 @@ def is_ipv6addr(addr):
     return True
 
 def type_if_reserved(t, default):
-    if re.match(eval_fn, t.value):
+    if re.match(stats_fn, t.value):
+        return 'STATS_FN'
+    elif re.match(eval_fn, t.value):
         return 'EVAL_FN'
     elif re.match(common_fn, t.value):
         return 'COMMON_FN'
+    elif re.match(tstats_opt, t.value):
+        return 'TSTATS_OPT'
     elif re.match(internal_field, t.value):
         return 'INTERNAL_FIELD'
     elif re.match(default_field, t.value):
@@ -158,6 +174,11 @@ def t_COMMON_FN(t):
 
 @TOKEN(eval_fn)
 def t_EVAL_FN(t):
+    t.lexer.begin('ipunchecked')
+    return(t)
+
+@TOKEN(stats_opt)
+def t_STATS_OPT(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
@@ -248,7 +269,7 @@ def t_error(t):
     badchar = t.value[0]
     t.lexer.skip(1)
     t.lexer.begin('ipunchecked')
-    raise SPLSyntaxError("Illegal character in fieldformat lexer '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in tstats lexer '%s'" % badchar)
 
 def lex():
     return ply.lex.lex()
