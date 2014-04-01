@@ -19,6 +19,8 @@ stats_opt = r'(?:allnum|delim)' + end_of_token
 
 eventstats_opt = r'(?:allnum)' + end_of_token
 
+streamstats_opt = r'(?:current|window|global|allnum)' + end_of_token
+
 eval_fn = r'(?:abs|case|ceil|ceiling|cidrmatch|coalesce|commands|exact|exp|floor|if|ifnull|isbool|isint|isnotnull|isnull|isnum|isstr|len|like|ln|log|lower|ltrim|match|md5|mvappend|mvcount|mvindex|mvfilter|mvjoin|mvrange|mvzip|now|null|nullif|pi|pow|random|relative_time|replace|round|rtrim|searchmatch|sigfig|spath|split|sqrt|strftime|strptime|substr|time|tonumber|tostring|trim|typeof|upper|urldecode|validate)' + end_of_token
 
 common_fn = r'(?:max|min|sum)' + end_of_token

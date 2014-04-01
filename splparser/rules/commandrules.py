@@ -584,7 +584,7 @@ def p_cmdexpr_strcat(p):
     """cmdexpr : STRCAT arglist
                | STRCAT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_streamstats(p):
     """cmdexpr : STREAMSTATS arglist
                | STREAMSTATS MACRO"""
