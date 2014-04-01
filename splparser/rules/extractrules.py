@@ -23,12 +23,12 @@ def p_cmdexpr_extractkv(p):
 def p_cmdexpr_extractkv_single(p):
     """extractkvcmd : EXTRACT
                     | KV"""
-    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0] = ParseTreeNode('COMMAND', raw="extract")
 
 def p_cmdexpr_extractkv_both(p):
     """extractkvcmd : EXTRACT wc_stringlist field
                     | KV wc_stringlist field"""
-    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0] = ParseTreeNode('COMMAND', raw="extract")
     p[0].add_children(p[2].children)
     p[3].role = 'EXTRACTOR_NAME'
     p[0].add_child(p[3])
@@ -36,14 +36,14 @@ def p_cmdexpr_extractkv_both(p):
 def p_extractkvcmd_extractkv_field(p):
     """extractkvcmd : EXTRACT field
                     | KV field"""
-    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0] = ParseTreeNode('COMMAND', raw="extract")
     p[2].role = 'EXTRACTOR_NAME'
     p[0].add_child(p[2])
 
 def p_extractkvcmd_extractkv_opts(p):
     """extractkvcmd : EXTRACT wc_stringlist
                     | KV wc_stringlist"""
-    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[0] = ParseTreeNode('COMMAND', raw="extract")
     p[0].add_children(p[2].children)
 
 def p_extractkv_opt(p):
