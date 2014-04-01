@@ -165,7 +165,7 @@ def p_cmdexpr_eventcount(p):
     """cmdexpr : EVENTCOUNT arglist
                | EVENTCOUNT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_eventstats(p):
     """cmdexpr : EVENTSTATS arglist
                | EVENTSTATS MACRO"""

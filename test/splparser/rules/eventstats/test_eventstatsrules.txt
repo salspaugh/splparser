@@ -1,0 +1,36 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse("eventstats avg(duration) as avgdur").print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'eventstats')
+            ('FUNCTION': 'as')
+                ('FUNCTION': 'mean')
+                    ('FIELD': 'duration')
+                ('FIELD': 'avgdur')
+
+>>> splparser.parse("eventstats avg(duration) as avgdur by date_hour").print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'eventstats')
+            ('FUNCTION': 'groupby')
+                ('FUNCTION': 'as')
+                    ('FUNCTION': 'mean')
+                        ('FIELD': 'duration')
+                    ('FIELD': 'avgdur')
+                ('GROUPING_DEFAULT_DATETIME_FIELD': 'date_hour')
+
+>>> splparser.parse("eventstats allnum=true avg(foo) as avg").print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'eventstats')
+            ('EQ': 'assign')
+                ('OPTION': 'allnum')
+                ('VALUE': 'true')
+            ('FUNCTION': 'as')
+                ('FUNCTION': 'mean')
+                    ('FIELD': 'foo')
+                ('FIELD': 'avg')

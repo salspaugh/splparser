@@ -11,7 +11,7 @@ from splparser.rules.common.simplefieldrules import *
 from splparser.rules.common.simplefieldlistrules import *
 from splparser.rules.common.statsfnrules import *
 
-from splparser.lexers.statslexer import precedence, tokens
+from splparser.lexers.eventstatslexer import precedence, tokens
 
 BOOLEAN_OPTIONS = ["allnum"]
 
@@ -55,18 +55,12 @@ def p_statscmd_cont(p):
     correct_groupby(p[0])
 
 def p_statscmdstart(p):
-    """statscmdstart : STATS STATS_FN
-                     | STATS COMMON_FN  
-                     | STATS EVAL
-                     | STATS statsoptlist STATS_FN
-                     | STATS statsoptlist COMMON_FN
-                     | STATS statsoptlist EVAL
-                     | SISTATS STATS_FN
-                     | SISTATS COMMON_FN  
-                     | SISTATS EVAL
-                     | SISTATS statsoptlist STATS_FN
-                     | SISTATS statsoptlist COMMON_FN
-                     | SISTATS statsoptlist EVAL"""
+    """statscmdstart : EVENTSTATS STATS_FN
+                     | EVENTSTATS COMMON_FN  
+                     | EVENTSTATS EVAL
+                     | EVENTSTATS statsoptlist STATS_FN
+                     | EVENTSTATS statsoptlist COMMON_FN
+                     | EVENTSTATS statsoptlist EVAL"""
     p[2] = canonicalize(p[2]) 
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     fn_idx = 2
@@ -78,17 +72,17 @@ def p_statscmdstart(p):
 
 def p_statsoptlist(p):
     """statsoptlist : statsopt"""
-    p[0] = ParseTreeNode('_STATS_OPT_LIST')
+    p[0] = ParseTreeNode('_EVENTSTATS_OPT_LIST')
     p[0].add_child(p[1])
 
 def p_statsoptlist_statsopt(p):
     """statsoptlist : statsopt statsoptlist"""
-    p[0] = ParseTreeNode('_STATS_OPT_LIST')
+    p[0] = ParseTreeNode('_EVENTSTATS_OPT_LIST')
     p[0].add_child(p[1])
     p[0].add_children(p[2].children)
 
 def p_statsopt_simplefield(p):
-    """statsopt : STATS_OPT EQ simplefield"""
+    """statsopt : EVENTSTATS_OPT EQ simplefield"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
@@ -99,7 +93,7 @@ def p_statsopt_simplefield(p):
     p[0].add_child(p[3])
 
 def p_statsopt_delimiter(p):
-    """statsopt : STATS_OPT EQ COMMA"""
+    """statsopt : EVENTSTATS_OPT EQ COMMA"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw=p[1])
     comma = ParseTreeNode('VALUE', type="NBSTR", raw=p[3])
@@ -108,10 +102,8 @@ def p_statsopt_delimiter(p):
     p[0].add_child(comma)
 
 def p_statscmdstart_statsfnexpr(p):
-    """statscmdstart : STATS statsfnexpr
-                     | STATS statsoptlist statsfnexpr
-                     | SISTATS statsfnexpr
-                     | SISTATS statsoptlist statsfnexpr"""
+    """statscmdstart : EVENTSTATS statsfnexpr
+                     | EVENTSTATS statsoptlist statsfnexpr"""
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     fn_idx = 2
     if len(p) > 3:
@@ -138,7 +130,7 @@ def p_statscmdcont_nocomma(p):
     """statscmdcont : STATS_FN
                     | COMMON_FN
                     | EVAL"""
-    p[1] = canonicalize(p[1]) 
+    p[1] = canonicalize(p[1])
     p[0] = ParseTreeNode('_STATSCMDCONT')
     fn_node = ParseTreeNode('FUNCTION', raw=p[1])
     p[0].add_child(fn_node)
