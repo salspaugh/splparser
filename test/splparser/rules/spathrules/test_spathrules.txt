@@ -1,0 +1,39 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('spath output=repository path=repository.url').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'spath')
+            ('EQ': 'assign')
+                ('OPTION': 'output')
+                ('FIELD': 'repository')
+            ('EQ': 'assign')
+                ('OPTION': 'path')
+                ('VALUE': 'repository.url')
+
+>>> splparser.parse('spath input=commit_author path=commits.author.name').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'spath')
+            ('EQ': 'assign')
+                ('OPTION': 'input')
+                ('FIELD': 'commit_author')
+            ('EQ': 'assign')
+                ('OPTION': 'path')
+                ('VALUE': 'commits.author.name')
+
+>>> splparser.parse('spath path=vendorProductSet.product.desc.locDesc{4}{@locale}').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'spath')
+            ('EQ': 'assign')
+                ('OPTION': 'path')
+                ('VALUE': 'vendorProductSet.product.desc.locDesc{4}{@locale}')
+
+>>> splparser.parse('spath').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'spath')

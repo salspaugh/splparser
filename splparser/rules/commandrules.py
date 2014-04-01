@@ -508,9 +508,10 @@ def p_cmdexpr_sort(p):
     """cmdexpr : SORT arglist
                | SORT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_spath(p):
-    """cmdexpr : SPATH arglist
+    """cmdexpr : SPATH
+               | SPATH arglist 
                | SPATH MACRO"""
 
 @splcommandrule

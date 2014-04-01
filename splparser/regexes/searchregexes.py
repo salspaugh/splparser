@@ -36,6 +36,8 @@ abstract_opt = r'(?:maxterms|maxlines)' + end_of_token
 
 xpath_opt = r'(?:outfield|field|default)' + end_of_token
 
+spath_opt = r'(?:input|output|path)' + end_of_token
+
 xmlkv_opt = r'(?:maxinputs|id)'
 
 extractkv_opt = r'(?:auto|clean_keys|kvdelim|limit|maxchars|mv_add|pairdelim|reload|segment)'
