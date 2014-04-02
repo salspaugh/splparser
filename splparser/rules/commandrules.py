@@ -576,7 +576,7 @@ def p_cmdexpr_trendline(p):
     """cmdexpr : TRENDLINE arglist
                | TRENDLINE MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_typeahead(p):
     """cmdexpr : TYPEAHEAD arglist
                | TYPEAHEAD MACRO"""

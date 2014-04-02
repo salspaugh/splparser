@@ -46,6 +46,8 @@ outlier_opt = r'(?:param|action|type|uselower)'
 
 loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)'
 
+typeahead_opt = r'(?:max_time|starttimeu|endtimeu|collapse|prefix|count)' + end_of_token
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token
