@@ -326,7 +326,7 @@ def p_cmdexpr_map(p):
     """cmdexpr : MAP arglist
                | MAP MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_metadata(p):
     """cmdexpr : METADATA arglist
                | METADATA MACRO"""

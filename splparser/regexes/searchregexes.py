@@ -48,6 +48,8 @@ loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearc
 
 typeahead_opt = r'(?:max_time|starttimeu|endtimeu|collapse|prefix|count)' + end_of_token
 
+metadata_opt = r'(?:type)'
+
 convert_fn=r'(?:auto|ctime|dur2sec|memk|mktime|mstime|none|num|rmcomma|rmunit)' + end_of_token
 
 plus = r'\+' + end_of_token
