@@ -368,7 +368,7 @@ def p_cmdexpr_outlier(p):
                | OUTLIER arglist
                | OUTLIER MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_outputcsv(p):
     """cmdexpr : OUTPUTCSV arglist
                | OUTPUTCSV MACRO"""

@@ -38,13 +38,15 @@ xpath_opt = r'(?:outfield|field|default)' + end_of_token
 
 spath_opt = r'(?:input|output|path)' + end_of_token
 
-xmlkv_opt = r'(?:maxinputs|id)'
+xmlkv_opt = r'(?:maxinputs|id)' + end_of_token
 
-extractkv_opt = r'(?:auto|clean_keys|kvdelim|limit|maxchars|mv_add|pairdelim|reload|segment)'
+extractkv_opt = r'(?:auto|clean_keys|kvdelim|limit|maxchars|mv_add|pairdelim|reload|segment)' + end_of_token
 
-outlier_opt = r'(?:param|action|type|uselower)'
+outlier_opt = r'(?:param|action|type|uselower)' + end_of_token
 
-loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)'
+loadjob_opt = r'(?:events|job_delegate|artifact_offset|ignore_running|savedsearch)' + end_of_token
+
+outputcsv_opt = r'(?:append|create_empty|dispatch|singlefile|usexml)' + end_of_token
 
 typeahead_opt = r'(?:max_time|starttimeu|endtimeu|collapse|prefix|count)' + end_of_token
 
