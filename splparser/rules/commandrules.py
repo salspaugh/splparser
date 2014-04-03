@@ -245,9 +245,10 @@ def p_cmdexpr_highlight(p):
     """cmdexpr : HIGHLIGHT arglist
                | HIGHLIGHT MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_history(p):
-    """cmdexpr : HISTORY arglist
+    """cmdexpr : HISTORY
+               | HISTORY arglist
                | HISTORY MACRO"""
 
 @notimplemented
