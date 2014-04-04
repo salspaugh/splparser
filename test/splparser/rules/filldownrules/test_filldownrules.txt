@@ -1,0 +1,17 @@
+
+Below are clips from an interactive session in which I test various aspects of the parser.
+
+>>> import splparser.parser
+
+>>> splparser.parse('filldown count').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'filldown')
+            ('FIELD': 'count')
+
+>>> splparser.parse('filldown count score*').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'filldown')
+            ('FIELD': 'count')
+            ('FIELD': 'score*')

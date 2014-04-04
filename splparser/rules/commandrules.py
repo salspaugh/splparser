@@ -224,9 +224,9 @@ def p_cmdexpr_fieldsummary(p):
                | FIELDSUMMARY arglist
                | FIELDSUMMARY MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_filldown(p):
-    """cmdexpr : FILLDOWN 
+    """cmdexpr : FILLDOWN
                | FILLDOWN arglist
                | FILLDOWN MACRO"""
 
