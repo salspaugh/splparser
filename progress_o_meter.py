@@ -1,49 +1,100 @@
 #!/usr/bin/python
 
-import queryutils
+from argparse import ArgumentParser
 from splparser import parse
-from sys import stdout
-
-BYTES_IN_MB = 1048576
-MBS = 800
+from splparser.exceptions import *
+from sqlite3 import connect
+from sys import stdout, stderr
 
 MONITOR = 'monitor.tmp'
 
-def print_status(success, total):
+def check_number_parseable(database):
+    print "starting..."
+    last_queries = []
+    notimplemented = {}
+    error = {}
+    total = 0.
+    success = 0.
+    for query in read_queries(database):
+        try:
+            query = str(query)
+        except UnicodeEncodeError as e:
+            continue # TODO: something better here
+        m = open(MONITOR, 'w')
+        m.write(query)
+        m.write('\n')
+        m.flush()
+        try:
+            parse(query)
+            success += 1.
+        except NotImplementedError as e:
+            cmd = e.args[0].split()[0]
+            if not cmd in notimplemented:
+                notimplemented[cmd] = 0.
+            notimplemented[cmd] += 1.
+        except SPLSyntaxError as e: # TODO: something different here
+            args = e.args[0] # TODO: fix the args here to be consistent
+            if type(args) == type(tuple()):
+                args = args[0]
+            args = args.split()
+            if len(args) > 3:
+                cmd = args[3]
+                if not cmd in error:
+                    error[cmd] = 0.
+                error[cmd] += 1.
+            stderr.write(str(e.args) + "\n")
+            stderr.write(query + "\n")
+        except TerminatingSPLSyntaxError as e: # TODO: something different here
+            args = e.args[0]
+            if type(args) == type(tuple()):
+                args = args[0]
+            args = args.split()
+            if len(args) > 3:
+                cmd = args[3]
+                if not cmd in error:
+                    error[cmd] = 0.
+                error[cmd] += 1.
+            stderr.write(str(e.args) + "\n")
+            stderr.write(query + "\n")
+        except Exception as e:
+            stderr.write(str(e.args) + "\n")
+            stderr.write(query + "\n")
+        total += 1.
+        if total % 100. == 0:
+            stdout.write('.')
+            stdout.flush()
+        if total % 1000. == 0:
+            stdout.write('\n')
+            stdout.flush()
+        if total % 100000. == 0.:
+            print_status(success, total)
+
+    print "DONE"
+    print_status(success, total, notimplemented, error)
+
+def read_queries(database):
+    db = connect(database)
+    cursor = db.execute("SELECT DISTINCT text FROM queries")
+    for (text, ) in cursor.fetchall():
+        yield text
+    db.close()
+
+def print_status(success, total, notimplemented, error):
     print "successes: ", success
     print "total: ", total
     print "percent: ", float(success) / float(total) * 100.
+    notimplemented = sorted(notimplemented.iteritems(), key=lambda x: x[1], reverse=True)
+    print "implementation priorities:"
+    for (command, nqueries) in notimplemented:
+        print "\t", command, nqueries
+    error = sorted(error.iteritems(), key=lambda x: x[1], reverse=True)
+    print "error priorities:"
+    for (command, nqueries) in error:
+        print "\t", command, nqueries
 
-def main():
-    print "starting..."
-    last_queries = []
-    seen = {}
-    total = 0.
-    success = 0.
-    for queries in queryutils.get_queries(limit=MBS*BYTES_IN_MB):
-        for query in queries:
-            if not query.text in seen:
-                m = open(MONITOR, 'w')
-                m.write(query.text)
-                m.write('\n')
-                m.flush()
-                try:
-                    parse(query.text)
-                    seen[query.text] = 1.
-                except:
-                    seen[query.text] = 0.
-            total += 1.
-            success += seen[query.text] # 1 if parseable, 0 otherwise
-            if total % 100. == 0:
-                stdout.write('.')
-                stdout.flush()
-            if total % 1000. == 0:
-                stdout.write('\n')
-                stdout.flush()
-            if total % 100000. == 0.:
-                print_status(success, total)
-
-    print "DONE"
-    print_status(success, total)
-
-main()
+if __name__ == "__main__":
+    parser = ArgumentParser("Checks how many queries are parseable and what commands need to be implemented.") 
+    parser.add_argument("database", metavar="DATABASE", 
+                        help="The database containing a queries table with a 'text' column to be parsed.")
+    args = parser.parse_args()
+    check_number_parseable(args.database)

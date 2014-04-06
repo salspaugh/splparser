@@ -21,7 +21,7 @@ def p_searchexpr_parentheses(p):
     
 def p_searchexpr_macro(p):
     """searchexpr : MACRO"""
-    p[0] = ParseTreeNode('MACRO', raw=p[1], arg=True)
+    p[0] = ParseTreeNode('MACRO', raw=p[1], is_argument=True)
 
 #def p_searchexpr_subsearch(p):
 #    """searchexpr : subsearch"""
