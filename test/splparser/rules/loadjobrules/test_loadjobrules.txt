@@ -19,3 +19,9 @@ Below are clips from an interactive session in which I test various aspects of t
             ('EQ': 'assign')
                 ('OPTION': 'events')
                 ('VALUE': 't')
+
+>>> splparser.parse('loadjob scheduler__nbkc4hu__search__RMD5fa85d2265071f5bb_at_1393957800_932').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'loadjob')
+            ('VALUE': 'scheduler__nbkc4hu__search__RMD5fa85d2265071f5bb_at_1393957800_932')
