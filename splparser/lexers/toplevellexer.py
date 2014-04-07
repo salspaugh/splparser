@@ -7,7 +7,8 @@ tokens = [
     'LBRACKET',
     'RBRACKET',
     'MACRO',
-    'ARGS'
+    'ARGS',
+    'USER_DEFINED_COMMAND'
     ]
 
 reserved = {
@@ -26,7 +27,7 @@ reserved = {
     'audit': 'AUDIT',
     'autoregress': 'AUTOREGRESS',
     'bucket': 'BUCKET',
-    'bin': 'BIN_CMD',
+    'bin': 'BIN_CMD', # TODO: Change binary token so this can be "BIN"
     'bucketdir': 'BUCKETDIR',
     'chart': 'CHART',
     'cluster': 'CLUSTER',
@@ -147,10 +148,10 @@ reserved = {
 
 tokens = tokens + list(reserved.values())
 
-whitespace = ' \t\n\r\f\v'
+WHITESPACE = ' \t\n\r\f\v'
 
 def nonbreaking_char(c):
-    return c not in whitespace and c != '|' and c != '`' and c != '"' and c != "'" and c!= "[" and c!= "]"
+    return c not in WHITESPACE and c not in ['|', '`', '"', "'", "[", "]"]
 
 class SPLToken(object):
 
@@ -184,6 +185,8 @@ class SPLLexer(object):
     def __init__(self):
         self.data = None
         self.lexpos = -1
+        self.pipe = False # True if last token was a pipe
+        self.first = True
 
     def input(self, data):
         self.data = data
@@ -194,7 +197,7 @@ class SPLLexer(object):
         if not self.data: return
         if len(self.data) == 0: return
         
-        while self.data[0] in whitespace:
+        while self.data[0] in WHITESPACE:
             self.data = self.data[1:]
             if len(self.data) == 0: return
             self.lexpos += 1 
@@ -202,22 +205,30 @@ class SPLLexer(object):
         if self.data[0] == '|':
             self.data = self.data[1:]
             self.lexpos += 1 
+            self.pipe = True
+            self.first = False
             return SPLToken('PIPE', '|')
 
         if self.data[0] == '[':
             self.data = self.data[1:]
             self.lexpos += 1 
+            self.pipe = False
+            self.first = True # subsearch
             return SPLToken('LBRACKET', '[')
 
         if self.data[0] == ']':
             self.data = self.data[1:]
             self.lexpos += 1 
+            self.pipe = False
+            self.first = False
             return SPLToken('RBRACKET', ']')
 
         for k in reserved.iterkeys():
             if self.data.find(k + ' ') == 0 or self.data == k:
                 self.data = self.data[len(k)+1:]
                 self.lexpos += len(k) + 1 
+                self.pipe = False
+                self.first = False
                 return SPLToken(reserved[k], k)
         
         if self.data[0] == '`':
@@ -225,6 +236,8 @@ class SPLLexer(object):
             macro = self.data[:end+1]
             self.data = self.data[len(macro):]
             self.lexpos += len(macro)
+            self.pipe = False
+            self.first = False
             return SPLToken('MACRO', macro)
         
         args = ''
@@ -234,6 +247,12 @@ class SPLLexer(object):
             if len(self.data) == 0: break
             self.lexpos += 1 
         if args:
+            if self.pipe or self.first:
+                self.pipe = False
+                self.first = False
+                return SPLToken('USER_DEFINED_COMMAND', args)
+            self.pipe = False
+            self.first = False
             return SPLToken('ARGS', args)
         if len(self.data) == 0: return
         
@@ -242,8 +261,11 @@ class SPLLexer(object):
             quotes = extract_quote(self.data)
             self.data = self.data[len(quotes):]
             self.lexpos += len(quotes) 
+            self.pipe = False
+            self.first = False
             return SPLToken('ARGS', quotes)
 
+        self.pipe = False
         return None
 
 def lex():

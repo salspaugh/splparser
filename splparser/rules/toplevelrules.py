@@ -14,6 +14,11 @@ def p_pipeline_start(p):
     p[0] = ParseTreeNode('ROOT')
     p[0].add_children(p[1].children)
 
+def p_pipeline_generator(p):
+    """start : PIPE pipeline"""
+    p[0] = ParseTreeNode('ROOT')
+    p[0].add_children(p[2].children)
+
 def p_pipeline_stage(p):
     """pipeline : stage"""
     p[0] = ParseTreeNode('_PIPELINE')
@@ -70,6 +75,14 @@ def p_arglist_macro(p):
 def p_macro_arglist(p):
     """arglist : MACRO arglist"""
     p[0] = ' '.join(p[1:])
+
+def p_cmdexpr_userdefinedcommand(p):
+    """cmdexpr : USER_DEFINED_COMMAND 
+               | USER_DEFINED_COMMAND arglist"""
+    p[0] = ParseTreeNode('USER_DEFINED_COMMAND', type='USER_DEFINED', raw=p[1])
+    if len(p) > 2:
+        args = ParseTreeNode('ARGS', type='UNKNOWN', raw=p[2], is_argument=True)
+        p[0].add_child(args)
 
 def p_error(p):
     msg = "Syntax error in top-level parser input: " + str(p)
