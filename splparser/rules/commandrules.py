@@ -646,7 +646,7 @@ def p_cmdexpr_tstats(p):
     """cmdexpr : TSTATS arglist
                | TSTATS MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_typeahead(p):
     """cmdexpr : TYPEAHEAD arglist
                | TYPEAHEAD MACRO"""
