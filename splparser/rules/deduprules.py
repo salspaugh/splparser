@@ -39,10 +39,6 @@ def p_dedup_args_option(p):
     """args : fieldlist optionlist"""
     p[0] = p[1].children + p[2]
 
-def p_dedup_option_args(p):
-    """args : optionlist fieldlist"""
-    p[0] = p[1] + p[2].children
-
 def p_dedup_args_sort(p):
     """args : fieldlist sort"""
     p[0] = p[1].children + [p[2]]

@@ -26,6 +26,11 @@ def p_fieldlist(p):
     p[0].add_child(p[2])
     p[0].add_children(p[3].children)
 
+def p_fillvalue(p):
+    """fillnullcmd : FILLNULL fillvalue"""
+    p[0] = ParseTreeNode('COMMAND', raw='fillnull')
+    p[0].add_child(p[2])
+
 def p_fillnull_macro(p):
     """fillnullcmd : FILLNULL MACRO"""
     p[0] = ParseTreeNode('COMMAND', raw='fillnull')
