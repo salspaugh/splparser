@@ -69,7 +69,7 @@ def p_topopt(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     if p[1] in ['showcount', 'showperc', 'useother']:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])
@@ -79,7 +79,7 @@ def p_topopt_commonopt(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     if p[1] == 'limit':
-        p[3].type = 'INT'
+        p[3].nodetype = 'INT'
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])

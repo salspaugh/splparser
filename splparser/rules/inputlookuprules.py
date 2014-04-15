@@ -39,7 +39,7 @@ def p_optionlist_single(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     eq.add_children([opt, p[3]])
     p[0] = [eq]
@@ -50,7 +50,7 @@ def p_optionlist(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     eq.add_children([opt, p[3]])
     p[0] = [eq] + p[4]

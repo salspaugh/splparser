@@ -49,7 +49,7 @@ def p_rare_weird(p):
     p[0].add_child(eq_node)
     p[0].add_children(p[3].children)
     limit_node = ParseTreeNode('OPTION', raw='limit')
-    int_node = ParseTreeNode('VALUE', type='INT', raw=p[2], is_argument=True)
+    int_node = ParseTreeNode('VALUE', nodetype='INT', raw=p[2], is_argument=True)
     eq_node.add_children([limit_node, int_node])
     limit_node.values.append(int_node)
 
@@ -81,7 +81,7 @@ def p_rareopt(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     if opt_node.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
     p[0].add_child(p[3])

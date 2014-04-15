@@ -1,6 +1,8 @@
-import re
+from string import whitespace as WHITESPACE
 
-from splparser.exceptions import SPLSyntaxError
+QUOTES = ['"', "'", "`"]
+ESCAPE = "\\"
+SPECIAL = "|[]"
 
 tokens = [
     'PIPE',
@@ -148,128 +150,180 @@ reserved = {
 
 tokens = tokens + list(reserved.values())
 
-WHITESPACE = ' \t\n\r\f\v'
-
-def nonbreaking_char(c):
-    return c not in WHITESPACE and c not in ['|', '`', '"', "'", "[", "]"]
 
 class SPLToken(object):
 
+    
     def __init__(self, type, value):
         self.type = type
         self.value = value
 
+    
     def __repr__(self):
         return "LexToken(" + str(self.type) + ", '" + str(self.value) + "')"
 
+    
     def __str__(self):
         return self.__repr__()
 
-def extract_quote(data):
-    escaped_slash_holder = "~#$slash$#~"
-    escaped_quote_holder = "~#$quote$#~"
-    quote_char = data[0]
-    data.encode('string-escape')
-    escaped_quote = r'\"'
-    if quote_char == "'":
-        escaped_quote = r"\'"
-    tmp_data = data.replace(r'\\', escaped_slash_holder)
-    tmp_data = tmp_data.replace(escaped_quote, escaped_quote_holder)
-    next_quote_pos = tmp_data[1:].find(quote_char) + 1
-    if next_quote_pos == -1:
-        raise SPLSyntaxError("Unclosed quote.")
-    return data[:next_quote_pos+1] 
+
 
 class SPLLexer(object):
     
+
     def __init__(self):
         self.data = None
         self.lexpos = -1
-        self.pipe = False # True if last token was a pipe
         self.first = True
 
     def input(self, data):
         self.data = data
         self.lexpos = 0
+        
+        tokens = []
+        stack = []
+        escaped = False
+        quoted = False
+        quotechar = ""
+
+        for char in data:
+
+            if not quoted:
+
+                if char in SPECIAL:
+                    if escaped:
+                        escaped = False
+                        stack.append(char)
+                        continue
+                    else:
+                        if stack: tokens.append("".join(stack))
+                        tokens.append(char)
+                        stack = []
+                        escaped = False
+                        continue
+
+                if char in QUOTES:
+                    if escaped:
+                        escaped = False
+                        stack.append(char)
+                        continue
+                    else:
+                        escaped = False
+                        quoted = True
+                        quotechar = char
+                        stack.append(char)
+                        continue
+
+                if char in WHITESPACE:
+                    if stack:
+                        tokens.append("".join(stack))
+                        stack = []
+                    escaped = False
+                    continue
+
+                if char == ESCAPE:
+                    if not escaped:
+                        escaped = True
+                        stack.append(char)
+                        continue
+                    else: # the last character escaped this one
+                        escaped = False
+                        stack.append(char)
+                        continue
+
+                # not special, whitespace, quotechar, or escape
+                if escaped: escaped = False
+                stack.append(char)
+                continue
+
+            if quoted:
+
+                if char in QUOTES:
+                    if escaped:
+                        escaped = False
+                        stack.append(char)
+                        continue
+                    else:
+                        if char == quotechar:
+                            escaped = False
+                            quoted = False
+                            quotechar = ""
+                            stack.append(char)
+                            tokens.append("".join(stack))
+                            stack = []
+                            continue
+                        else:
+                            escaped = False
+                            stack.append(char)
+                            continue
+
+                if char == ESCAPE:
+                    if not escaped:
+                        escaped = True
+                        stack.append(char)
+                        continue
+                    else: # the last character escaped this one
+                        escaped = False
+                        stack.append(char)
+                        continue
+
+                # not a quote or an escape character
+                if escaped: escaped = False
+                stack.append(char)
+                continue
+
+        if stack: tokens.append("".join(stack))
+    
+        self.tokens = tokens
+
+
+    def is_macro(self, token):
+        return token[0] == "`" and len(token) > 1 and token[-1] == "`"
+    
+
+    def is_single_quoted(self, token):
+        return token[0] == "'" and len(token) > 1 and token[-1] == "'"
+    
+
+    def is_double_quoted(self, token):
+        return token[0] == '"' and len(token) > 1 and token[-1] == '"'
+
 
     def token(self):
-
-        if not self.data: return
-        if len(self.data) == 0: return
-        
-        while self.data[0] in WHITESPACE:
-            self.data = self.data[1:]
-            if len(self.data) == 0: return
-            self.lexpos += 1 
-        
-        if self.data[0] == '|':
-            self.data = self.data[1:]
-            self.lexpos += 1 
-            self.pipe = True
+        if not self.tokens: return
+        tok = self.tokens.pop(0)
+        self.lexpos += len(tok)
+        if self.is_macro(tok):     
             self.first = False
-            return SPLToken('PIPE', '|')
-
-        if self.data[0] == '[':
-            self.data = self.data[1:]
-            self.lexpos += 1 
-            self.pipe = False
-            self.first = True # subsearch
-            return SPLToken('LBRACKET', '[')
-
-        if self.data[0] == ']':
-            self.data = self.data[1:]
-            self.lexpos += 1 
-            self.pipe = False
+            return SPLToken("MACRO", tok)
+        if self.is_single_quoted(tok) or self.is_double_quoted(tok):
             self.first = False
-            return SPLToken('RBRACKET', ']')
-
-        for k in reserved.iterkeys():
-            if self.data.find(k + ' ') == 0 or self.data == k:
-                self.data = self.data[len(k)+1:]
-                self.lexpos += len(k) + 1 
-                self.pipe = False
+            return SPLToken("ARGS", tok)
+        if tok in reserved:
+            if self.first:
                 self.first = False
-                return SPLToken(reserved[k], k)
-        
-        if self.data[0] == '`':
-            end = self.data[1:].find('`') + 1
-            macro = self.data[:end+1]
-            self.data = self.data[len(macro):]
-            self.lexpos += len(macro)
-            self.pipe = False
-            self.first = False
-            return SPLToken('MACRO', macro)
-        
-        args = ''
-        while nonbreaking_char(self.data[0]):
-            args = ''.join([args, self.data[0]])
-            self.data = self.data[1:]
-            if len(self.data) == 0: break
-            self.lexpos += 1 
-        if args:
-            if self.pipe or self.first:
-                self.pipe = False
+                return SPLToken(reserved[tok], tok)
+            else:
                 self.first = False
-                return SPLToken('USER_DEFINED_COMMAND', args)
-            self.pipe = False
+                return SPLToken("ARGS", tok)
+        if tok == "[":
+            self.first = True
+            return SPLToken("LBRACKET", tok)
+        if tok == "]":
             self.first = False
-            return SPLToken('ARGS', args)
-        if len(self.data) == 0: return
-        
-        quotes = ''
-        if self.data[0] == '"' or self.data[0] == "'":
-            quotes = extract_quote(self.data)
-            self.data = self.data[len(quotes):]
-            self.lexpos += len(quotes) 
-            self.pipe = False
+            return SPLToken("RBRACKET", tok)
+        if tok == "|":
+            self.first = True
+            return SPLToken("PIPE", tok)
+        if self.first:
             self.first = False
-            return SPLToken('ARGS', quotes)
+            return SPLToken("USER_DEFINED_COMMAND", tok)
+        return SPLToken("ARGS", tok)
 
-        self.pipe = False
-        return None
 
 def lex():
     return SPLLexer()
+
 
 def tokenize(data, debug=False, debuglog=None):
     lexer = SPLLexer()
@@ -281,6 +335,7 @@ def tokenize(data, debug=False, debuglog=None):
             break
         tokens.append(tok)
     return tokens
+
 
 if __name__ == '__main__':
     import sys

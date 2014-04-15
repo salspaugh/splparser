@@ -21,7 +21,7 @@ DATATYPES = {
 
 class ParseTreeNode(object):
     
-    def __init__(self, role, type="SPL", raw="", is_associative=False, is_argument=False):
+    def __init__(self, role, nodetype="SPL", raw="", is_associative=False, is_argument=False):
         """
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.role
@@ -32,9 +32,10 @@ class ParseTreeNode(object):
         []
         >>> p.parent
         """
-        self.role = role
-        self.type = type
-        self.raw = raw
+        # TODO: Use property decorator for the three strings here.
+        self.role = str(role.encode("utf8")) if type(role) == unicode else str(role.decode("utf8").encode("utf8"))
+        self.nodetype = str(nodetype.encode("utf8")) if type(nodetype) == unicode else str(nodetype.decode("utf8").encode("utf8"))
+        self.raw = str(raw.encode("utf8")) if type(raw) == unicode else str(raw.decode("utf8").encode("utf8"))
         self.parent = None
         self.children = []
         self.is_associative = is_associative
@@ -47,7 +48,7 @@ class ParseTreeNode(object):
     def jsonify(self):
         encoding = {}
         encoding['role'] = self.role
-        encoding['type'] = self.type
+        encoding['nodetype'] = self.nodetype
         encoding['raw'] = self.raw
         encoding['is_associative'] = self.is_associative
         encoding['is_argument'] = self.is_argument
@@ -63,9 +64,12 @@ class ParseTreeNode(object):
     @staticmethod
     def from_dict(d):
         p = ParseTreeNode('')
-        p.role = d['role']
-        p.type = d['type']
-        p.raw = d['raw']
+        role = d['role']
+        nodetype = d.get('nodetype', None)
+        if nodetype is None:
+            nodetype = d.get('type', None) # assbackward-compatability
+        raw = d['raw']
+        p = ParseTreeNode(role, raw=raw, nodetype=nodetype)
         p.is_associative = bool(d['is_associative'])
         p.is_argument = bool(d['is_argument'])
         p.values = d['values']
@@ -157,7 +161,7 @@ class ParseTreeNode(object):
                     keyvars[node.raw] = ''.join(["k", str(keynum)])
                     keynum += 1
                 node.raw = keyvars[node.raw]
-            elif node.type != 'SPL':
+            elif node.nodetype != 'SPL':
                 if not node.raw in valvars:
                     valvars[node.raw] = ''.join(["v", str(valnum)])
                     valnum += 1
@@ -334,7 +338,7 @@ class ParseTreeNode(object):
 
 
     def copy_node(self):
-        p = ParseTreeNode(self.role, type=self.type, raw=self.raw, 
+        p = ParseTreeNode(self.role, nodetype=self.nodetype, raw=self.raw, 
                             is_associative=self.is_associative, 
                             is_argument=self.is_argument)
         p.corrected = self.corrected
@@ -384,7 +388,7 @@ class ParseTreeNode(object):
         if self.is_argument:
             p = ParseTreeNode('', is_argument=True)
         else:
-            p = ParseTreeNode(self.role, type=self.type, raw=self.raw, is_associative=self.is_associative) 
+            p = ParseTreeNode(self.role, nodetype=self.nodetype, raw=self.raw, is_associative=self.is_associative) 
         p.add_children(children)
         return p
 
@@ -566,9 +570,10 @@ class ParseTreeNode(object):
         >>> print(a)
         ('CHILD': 'a')
         """
+        raw = self.raw
         to_str = ''.join(["('", self.role, "'"])
-        if not self.raw == "":
-            to_str = ''.join([to_str, ": '", self.raw, "'"])
+        if not raw == "":
+            to_str = ''.join([to_str, ": '", raw, "'"])
         to_str = ''.join([to_str, ")"])
         return to_str
 
@@ -651,10 +656,10 @@ class ParseTreeNode(object):
         if self.datatype:
             return self.datatype
         if not self.role.find('FIELD') > -1:
-            return self.type
+            return self.nodetype
         d = defaultdict(int)
         for v in self.values:
-            d[v.type] += 1
+            d[v.nodetype] += 1
         if len(d) == 0:
             return None
         vote = max(d)

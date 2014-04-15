@@ -93,7 +93,7 @@ def p_statsopt_simplefield(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in BOOLEAN_OPTIONS:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     p[0].add_child(opt)
     p[0].add_child(p[3])
@@ -102,7 +102,7 @@ def p_statsopt_delimiter(p):
     """statsopt : STREAMSTATS_OPT EQ COMMA"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw=p[1])
-    comma = ParseTreeNode('VALUE', type="NBSTR", raw=p[3])
+    comma = ParseTreeNode('VALUE', nodetype="NBSTR", raw=p[3])
     opt.values.append(comma)
     p[0].add_child(opt)
     p[0].add_child(comma)

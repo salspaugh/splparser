@@ -53,7 +53,7 @@ def p_option(p):
     eq_node = ParseTreeNode('EQ', raw='assign')
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     if p[1] in ["addtime", "spool", "testmode", "run-in-preview"]:
-        opt_node.type = 'BOOLEAN'
+        opt_node.nodetype = 'BOOLEAN'
     opt_node.values.append(p[3])
     eq_node.add_children([opt_node, p[3]])
     p[0] = eq_node

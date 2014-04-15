@@ -72,7 +72,7 @@ def p_sortfunc(p):
 def p_sortfunc_sortfunc(p):
     """sortfunc : SORT_FN LPAREN SORT_FN RPAREN"""
     p[0] = ParseTreeNode('FUNCTION', raw=p[1])
-    field_node = ParseTreeNode('FIELD', type='WORD', raw=p[3])
+    field_node = ParseTreeNode('FIELD', nodetype='WORD', raw=p[3])
     p[0].add_child(field_node)
 
 def p_error(p):

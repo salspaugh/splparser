@@ -38,7 +38,7 @@ def p_outputcsvarg_opt(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw=p[1])
     if opt.raw in BOOLEAN_OPTIONS:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     p[0].add_children([opt, p[3]])
 

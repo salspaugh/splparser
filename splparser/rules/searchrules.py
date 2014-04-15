@@ -85,5 +85,21 @@ def p_field_search_opt(p):
     """field : SEARCH_OPT"""
     p[0] = ParseTreeNode('OPTION', raw=p[1])
 
+def p_searchexpr_field_search(p):
+    """searchexpr : SEARCH EQ value
+                  | SEARCH NE value
+                  | SEARCH LE value
+                  | SEARCH GE value
+                  | SEARCH GT value
+                  | SEARCH LT value"""
+    p[0] = ParseTreeNode('FUNCTION', raw=p[2].lower())
+    search = ParseTreeNode('FIELD', raw=p[1])
+    search.values.append(p[3])
+    p[0].add_children([search, p[3]])    
+
+def p_search_value(p):
+    """value : SEARCH"""
+    p[0] = ParseTreeNode('VALUE', nodetype='WORD', raw=p[1], is_argument=True)
+
 def p_error(p):
     raise SPLSyntaxError("Syntax error in search parser input!") 

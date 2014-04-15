@@ -25,7 +25,7 @@ def p_gaugecmd_gauge(p):
     """gaugecmd : GAUGE fieldlist"""
     p[0] = ParseTreeNode('COMMAND', raw='gauge')
     for c in p[2].children:
-        if c.type == 'INT':
+        if c.nodetype == 'INT':
             c.role = 'VALUE'
     p[0].add_children(p[2].children)
 

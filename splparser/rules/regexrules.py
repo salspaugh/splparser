@@ -24,7 +24,7 @@ def p_regex(p):
     """regex_nofield : regex"""
     p[0] = ParseTreeNode('_REGEX_ARGS')
     match = ParseTreeNode('MATCH')
-    field = ParseTreeNode('INTERNAL_FIELD', type='ID', raw='_raw') 
+    field = ParseTreeNode('INTERNAL_FIELD', nodetype='ID', raw='_raw') 
     p[0].add_children([field, p[1], match])
 
 def p_regex_eq(p):

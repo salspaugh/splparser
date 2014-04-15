@@ -31,17 +31,13 @@ def p_dedup_args_field(p):
     """args : INT fieldlist"""
     eq = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw='n')
-    int = ParseTreeNode('VALUE', type='INT', raw=p[1], is_argument=True)
+    int = ParseTreeNode('VALUE', nodetype='INT', raw=p[1], is_argument=True)
     eq.add_children([opt, int])
     p[0] = [eq] + p[2].children
 
 def p_dedup_args_option(p):
     """args : fieldlist optionlist"""
     p[0] = p[1].children + p[2]
-
-def p_dedup_option_args(p):
-    """args : optionlist fieldlist"""
-    p[0] = p[1] + p[2].children
 
 def p_dedup_args_sort(p):
     """args : fieldlist sort"""
@@ -51,7 +47,7 @@ def p_dedup_args_field_option(p):
     """args : INT fieldlist optionlist"""
     eq = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw='n')
-    int = ParseTreeNode('VALUE', type='INT', raw=p[1], is_argument=True)
+    int = ParseTreeNode('VALUE', nodetype='INT', raw=p[1], is_argument=True)
     eq.add_children([opt, int])
     p[0] = [eq] + p[2].children + p[3]
 
@@ -59,7 +55,7 @@ def p_dedup_args_field_sort(p):
     """args : INT fieldlist sort"""
     eq = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw='n')
-    int = ParseTreeNode('VALUE', type='INT', raw=p[1], is_argument=True)
+    int = ParseTreeNode('VALUE', nodetype='INT', raw=p[1], is_argument=True)
     eq.add_children([opt, int])
     p[0] = [eq] + p[2].children + [p[3]]
 
@@ -71,7 +67,7 @@ def p_dedup_args_field_option_sort(p):
     """args : INT fieldlist optionlist sort"""
     eq = ParseTreeNode('EQ', raw='assign')
     opt = ParseTreeNode('OPTION', raw='n')
-    int = ParseTreeNode('VALUE', type='INT', raw=p[1], is_argument=True)
+    int = ParseTreeNode('VALUE', nodetype='INT', raw=p[1], is_argument=True)
     eq.add_children([opt, int])
     p[0] = [eq] + p[2].children + p[3] + [p[4]]
 
@@ -81,7 +77,7 @@ def p_optionlist(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     eq.add_children([opt, p[3]])
     p[0] = [eq] + p[4]
@@ -92,7 +88,7 @@ def p_optionlist_comma(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     eq.add_children([opt, p[3]])
     p[0] = [eq] + p[5]
@@ -103,7 +99,7 @@ def p_optionlist_one(p):
     opt = ParseTreeNode('OPTION', raw=p[1])
     p[3].role = 'VALUE'
     if opt.raw in boolean_options:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     opt.values.append(p[3])
     eq.add_children([opt, p[3]])
     p[0] = [eq]
