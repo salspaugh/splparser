@@ -12,15 +12,6 @@ def run_all_tests(tests_dir=TESTS_DIR):
     for test in find_tests("", descend=True):
         run_test(test)
 
-def is_test(f):
-    return (f[0:5] == TESTS_PREFIX and f[-3:] == TESTS_SUFFIX)
-
-def run_test(test):
-    print "Running test:"
-    print "\t"+ test
-    subprocess.call(test)
-    print
-
 def run_tests_in(module, descend=False):
     for test in find_tests(module, descend=descend):
         run_test(test)
@@ -34,6 +25,15 @@ def find_tests(module, descend=False):
                 yield dirpath + '/' + filename
         if not descend:
             break
+
+def is_test(f):
+    return (f[0:5] == TESTS_PREFIX and f[-3:] == TESTS_SUFFIX)
+
+def run_test(test):
+    print "Running test:"
+    print "\t"+ test
+    subprocess.call(test)
+    print
 
 if __name__ == "__main__":
     from optparse import OptionParser
