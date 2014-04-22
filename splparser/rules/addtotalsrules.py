@@ -39,7 +39,7 @@ def p_addtotals_opt(p):
     p[1] = ParseTreeNode('OPTION', raw=p[1])
     if p[1].raw in ['row', 'col']:
         p[3].role = 'VALUE'
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     if p[1].raw in ['fieldname', 'labelfield']:
         p[3].role = 'FIELD'
     p[1].values.append(p[3])

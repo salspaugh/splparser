@@ -36,7 +36,7 @@ def p_comma(p):
     """m_delim : DELIM EQ COMMA"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode('OPTION', raw=p[1])
-    p[3] = ParseTreeNode('VALUE', type='LITERAL', raw=p[3])
+    p[3] = ParseTreeNode('VALUE', nodetype='LITERAL', raw=p[3])
     p[0].add_children([p[1], p[3]])
 
 def p_error(p):

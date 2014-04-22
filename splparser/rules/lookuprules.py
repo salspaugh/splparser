@@ -27,7 +27,7 @@ def p_lookup_options_tablename(p):
     """lookupcmd :  LOOKUP field EQ value field table"""
     p[0] = ParseTreeNode('COMMAND', raw='lookup')
     if p[2].raw in boolean_options:
-        p[4].type = 'BOOLEAN'
+        p[4].nodetype = 'BOOLEAN'
     lookup_node = ParseTreeNode('LOOKUP_TABLE', raw=p[5].raw)
     eq_node = ParseTreeNode('EQ', raw='assign')
     option = ParseTreeNode('OPTION', raw=p[2].raw)

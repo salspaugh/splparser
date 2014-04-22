@@ -38,7 +38,7 @@ def p_makemv_opt_comma(p):
     """wc_string : MAKEMV_OPT EQ COMMA"""
     p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode('OPTION', raw=p[1])
-    p[3] = ParseTreeNode('VALUE', type='LITERAL', raw=p[3])
+    p[3] = ParseTreeNode('VALUE', nodetype='LITERAL', raw=p[3])
     p[1].values.append(p[3])
     p[0].add_children([p[1], p[3]])
 
@@ -48,7 +48,7 @@ def p_makemv_opt(p):
     p[1] = ParseTreeNode('OPTION', raw=p[1])
     p[1].values.append(p[3])
     if p[3].raw in boolean_options:
-        p[3].type = "BOOLEAN"
+        p[3].nodetype = "BOOLEAN"
     p[0].add_children([p[1], p[3]])
 
 def p_makemv_opt_list(p):

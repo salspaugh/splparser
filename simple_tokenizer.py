@@ -10,12 +10,15 @@ def tokenize(query):
     quotechars = ['"', "'", "`"]
     quote = ""
     pipe = "|"
+    lbrack = "["
+    rbrack = "]"
+    special = [pipe, lbrack, rbrack]
 
     for char in query:
 
         if not quoted:
 
-            if char == pipe:
+            if char in special:
                 if escaped:
                     escaped = False
                     stack.append(char)
@@ -56,7 +59,7 @@ def tokenize(query):
                     stack.append(char)
                     continue
 
-            # not pipe, whitespace, quote, or escape
+            # not special, whitespace, quote, or escape
             if escaped: escaped = False
             stack.append(char)
             continue
@@ -127,3 +130,15 @@ print tokenize(r"here '|' is a '`tricky` quote' situation")
 
 print r"\n"
 print tokenize(r"\n")
+
+print u'search eapm_application_name="12374 \u2013 Shared Data Services"'
+print tokenize(u'search eapm_application_name="12374 \u2013 Shared Data Services"')
+
+print r"search [subsearch stuff | yea] | and stuff"
+print tokenize(r"search [subsearch stuff | yea] | and stuff")
+
+print r"search '[quotes - does not count]'"
+print tokenize(r"search '[quotes - does not count]'")
+
+print r"ok \[ quoted but not [] this \]"
+print tokenize(r"ok \[ quoted but not [] this \]")

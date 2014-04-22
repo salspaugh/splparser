@@ -18,7 +18,7 @@ def p_tailcmd_tail(p):
 def p_tailcmd_tail_int(p):
     """tailcmd : TAIL INT"""
     p[0] = ParseTreeNode('COMMAND', raw='tail')
-    int_node = ParseTreeNode('VALUE', type='INT', raw=p[2], is_argument=True)
+    int_node = ParseTreeNode('VALUE', nodetype='INT', raw=p[2], is_argument=True)
     p[0].add_child(int_node)
 
 def p_error(p):

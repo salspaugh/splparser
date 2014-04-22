@@ -45,7 +45,7 @@ def p_deltaopt(p):
     opt_node = ParseTreeNode('OPTION', raw=p[1])
     opt_node.values.append(p[3])
     p[0].add_child(opt_node)
-    int_node = ParseTreeNode('VALUE', type='INT', raw=p[3], is_argument=True)
+    int_node = ParseTreeNode('VALUE', nodetype='INT', raw=p[3], is_argument=True)
     p[0].add_child(int_node)
 
 def p_error(p):

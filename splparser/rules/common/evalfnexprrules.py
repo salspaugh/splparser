@@ -85,7 +85,7 @@ def canonicalize(function):
     return f
 
 def check_role(node):
-    if node.type in FIELD_TYPES and not node.role.find('FIELD') > -1:
+    if node.nodetype in FIELD_TYPES and not node.role.find('FIELD') > -1:
         node.role = 'FIELD'
 
 def match_role(tree, raw, role):
@@ -228,10 +228,10 @@ def p_opexpr_like(p):
 def p_opexpr_comparator(p):
     """opexpr : opexpr comparator opexpr %prec EQ"""
     if p[2] != 'EQ':
-        p[0] = ParseTreeNode('FUNCTION', raw=p[2])
+        p[0] = ParseTreeNode('FUNCTION', raw=p[2].raw)
     check_role(p[1])
     check_role(p[3])
-    if p[1].type != 'SPL':
+    if p[1].nodetype != 'SPL':
         p[1].role = 'FIELD'
         match_role(p[3], p[1].raw, 'FIELD') 
     p[0] = p[2]
@@ -295,8 +295,8 @@ def p_opexpr_plus(p):
     check_role(p[1])
     check_role(p[3])
     p[0] = ParseTreeNode('FUNCTION', raw='plus', is_associative=True)
-    if not (p[1].type in NUMBER_TYPES or p[1].role == 'FIELD' or p[1].role == '_STATSFNEXPR') or \
-        not (p[3].type in NUMBER_TYPES or p[3].role == 'FIELD' or p[3].role == '_STATSFNEXPR'):
+    if not (p[1].nodetype in NUMBER_TYPES or p[1].role == 'FIELD' or p[1].role == '_STATSFNEXPR') or \
+        not (p[3].nodetype in NUMBER_TYPES or p[3].role == 'FIELD' or p[3].role == '_STATSFNEXPR'):
         p[0] = ParseTreeNode('FUNCTION', raw='concat', is_associative=True)
     if p[1].role[0] == '_':
         p[0].add_children(p[1].children)

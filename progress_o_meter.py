@@ -16,12 +16,8 @@ def check_number_parseable(database):
     total = 0.
     success = 0.
     for query in read_queries(database):
-        try:
-            query = str(query)
-        except UnicodeEncodeError as e:
-            continue # TODO: something better here
         m = open(MONITOR, 'w')
-        m.write(query)
+        m.write(query.encode("utf8"))
         m.write('\n')
         m.flush()
         try:
@@ -43,7 +39,7 @@ def check_number_parseable(database):
                     error[cmd] = 0.
                 error[cmd] += 1.
             stderr.write(str(e.args) + "\n")
-            stderr.write(query + "\n")
+            stderr.write(query.encode("utf8") + "\n")
         except TerminatingSPLSyntaxError as e: # TODO: something different here
             args = e.args[0]
             if type(args) == type(tuple()):
@@ -55,10 +51,10 @@ def check_number_parseable(database):
                     error[cmd] = 0.
                 error[cmd] += 1.
             stderr.write(str(e.args) + "\n")
-            stderr.write(query + "\n")
+            stderr.write(query.encode("utf8") + "\n")
         except Exception as e:
             stderr.write(str(e.args) + "\n")
-            stderr.write(query + "\n")
+            stderr.write(query.encode("utf8") + "\n")
         total += 1.
         if total % 100. == 0:
             stdout.write('.')

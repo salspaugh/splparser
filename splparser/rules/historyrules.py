@@ -32,7 +32,7 @@ def p_history_opt(p):
     p[0] = ParseTreeNode('EQ', raw='assign')
     p[1] = ParseTreeNode('OPTION', raw=p[1])
     if p[1].raw in BOOLEAN_OPTIONS:
-        p[3].type = 'BOOLEAN'
+        p[3].nodetype = 'BOOLEAN'
     p[1].values.append(p[3])
     p[0].add_children([p[1],p[3]])
 

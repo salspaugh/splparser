@@ -12,18 +12,18 @@ from splparser.rules.common.statsfnrules import *
 def check_option_value(option, value):
     log_pattern = r'[\d]*\.?[\d]*log[\d]*\.?[\d]*'
     if option in ("sep", "format", "nullstr", "otherstr"):
-        if not value.type in ['WORD', 'ID', 'NBSTR', 'LITERAL']:
-            value.type = 'NBSTR'
+        if not value.nodetype in ['WORD', 'ID', 'NBSTR', 'LITERAL']:
+            value.nodetype = 'NBSTR'
     if option in ("limit", "bins", "span", "start", "end"):
-        if not value.type in ['INT', 'FLOAT']:
-            value.type = 'INT'
+        if not value.nodetype in ['INT', 'FLOAT']:
+            value.nodetype = 'INT'
         if len(re.findall(log_pattern, value.raw)) == 1:
-            value.type = 'LOG'
+            value.nodetype = 'LOG'
     if option in ("cont", "usenull", "useother"):
-        value.type = 'BOOLEAN'
+        value.nodetype = 'BOOLEAN'
     if option in ("agg"):
         value.role = value.raw.upper()
-        value.type = "SPL"
+        value.nodetype = "SPL"
 
 def p_carglist_carg(p):
     """carglist : carg"""

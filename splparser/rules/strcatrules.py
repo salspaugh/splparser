@@ -14,7 +14,7 @@ start = 'cmdexpr'
 def p_strcat(p):
     """cmdexpr : STRCAT fieldlist"""
     for field_node in p[2].children:
-        if field_node.type == 'LITERAL':
+        if field_node.nodetype == 'LITERAL':
             field_node.role = 'VALUE'
     p[0] = ParseTreeNode('COMMAND', raw='strcat')
     p[0].add_children(p[2].children)
@@ -23,7 +23,7 @@ def p_strcat_opt(p):
     """cmdexpr : STRCAT STRCAT_OPT EQ value fieldlist"""
     p[4].value = 'BOOLEAN'
     for field_node in p[2].children:
-        if field_node.type == 'LITERAL':
+        if field_node.nodetype == 'LITERAL':
             field_node.role = 'VALUE'
     p[0] = ParseTreeNode('COMMAND', raw='strcat')
     eq_node = ParseTreeNode('EQ', raw='assign')
