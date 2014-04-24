@@ -29,5 +29,5 @@ setuptools.setup(
         'splparser.rules',
         'splparser.rules.common', 
         'test'],
-    requires=["ply"],
+    requires=["ply", "nose"],
 )
