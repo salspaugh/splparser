@@ -125,6 +125,7 @@ reserved = {
     'stats': 'STATS',
     'strcat': 'STRCAT',
     'streamstats': 'STREAMSTATS',
+    'summaryindex': 'SUMMARYINDEX',
     'table': 'TABLE',
     'tags': 'TAGS',
     'tail': 'TAIL',

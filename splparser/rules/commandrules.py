@@ -589,6 +589,12 @@ def p_cmdexpr_streamstats(p):
     """cmdexpr : STREAMSTATS arglist
                | STREAMSTATS MACRO"""
 
+@notimplemented
+def p_cmdexpr_summaryindex(p):
+    """cmdexpr : SUMMARYINDEX arglist
+               | SUMMARYINDEX MACRO"""
+
+
 @splcommandrule
 def p_cmdexpr_table(p):
     """cmdexpr : TABLE arglist
