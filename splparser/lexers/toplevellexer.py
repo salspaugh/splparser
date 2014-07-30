@@ -299,10 +299,10 @@ class SPLLexer(object):
         if self.is_single_quoted(tok) or self.is_double_quoted(tok):
             self.first = False
             return SPLToken("ARGS", tok)
-        if tok in reserved:
+        if tok.lower() in reserved:
             if self.first:
                 self.first = False
-                return SPLToken(reserved[tok], tok)
+                return SPLToken(reserved[tok.lower()], tok)
             else:
                 self.first = False
                 return SPLToken("ARGS", tok)
