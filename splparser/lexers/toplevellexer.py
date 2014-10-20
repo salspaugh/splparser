@@ -10,7 +10,7 @@ tokens = [
     'RBRACKET',
     'MACRO',
     'ARGS',
-    'USER_DEFINED_COMMAND'
+    'EXTERNAL_COMMAND'
     ]
 
 reserved = {
@@ -36,6 +36,7 @@ reserved = {
     'collect': 'COLLECT',
     'concurrency': 'CONCURRENCY',
     'contingency': 'CONTINGENCY',
+    'counttable': 'CONTINGENCY',
     'convert': 'CONVERT',
     'correlate': 'CORRELATE',
     'crawl': 'CRAWL',
@@ -318,7 +319,7 @@ class SPLLexer(object):
             return SPLToken("PIPE", tok)
         if self.first:
             self.first = False
-            return SPLToken("USER_DEFINED_COMMAND", tok)
+            return SPLToken("EXTERNAL_COMMAND", tok)
         return SPLToken("ARGS", tok)
 
 
