@@ -1,4 +1,3 @@
-
 import json
 
 from . import schema
@@ -20,9 +19,30 @@ DATATYPES = {
 }
 
 class ParseTreeNode(object):
-    
+    """A node in a parse tree representing a single parsed element.
+
+    The parse function in splparser returns a ParseTreeNode representing the root node of a parse tree.
+    """
+
+    # TODO: Reorder functions in this module to be in logical groupings.
+
     def __init__(self, role, nodetype="SPL", raw="", is_associative=False, is_argument=False):
-        """
+        """The constructor for ParseTreeNode
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param role: The 'type' of node represented; e.g., ROOT, STAGE, COMMAND, FUNCTION, FIELD
+        :type role: str
+        :param nodetype: The data type of the node value; only applies to FIELD and VALUE roles
+        :type nodetype: str
+        :param raw: The value of the parsed element
+        :type raw: str
+        :param is_associative: Whether the node value is an associative operator; only applies to FUNCTION roles
+        :type is_associative: bool
+        :param is_argument: Whether the node value is an argument versus part of the SPL language
+        :type is_argument: bool
+        :rtype: ParseTreeNode
+
         >>> p = ParseTreeNode('TYPE', raw="raw")
         >>> p.role
         'TYPE'
@@ -46,6 +66,18 @@ class ParseTreeNode(object):
         self.datatype = None
 
     def jsonify(self):
+        """Recursively convert the ParseTreeNode to types directly convertible to JSON.
+
+        This function creates a dict that stores all of the attributes of the given
+        ParseTreeNode as dict, list, str, int, etc. types. It recursively 
+        performs this operation on the children ParseTreeNode objects.
+
+        This is the inverse function of the function from_dict.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: dict
+        """
         encoding = {}
         encoding['role'] = self.role
         encoding['nodetype'] = self.nodetype
@@ -63,6 +95,18 @@ class ParseTreeNode(object):
     
     @staticmethod
     def from_dict(d):
+        """Recursively convert a dict representing a ParseTreeNode to a ParseTreeNode.
+
+        This function creates a ParseTreeNode from a dict whose contents are the
+        attributes and values of the object. It recursively performs this operation
+        on the "children" key.
+
+        This is the inverse function of the function jsonify.
+
+        :param d: A dictionary that corresponds to a ParseTreeNode object
+        :type d: dict
+        :rtype: ParseTreeNode
+        """
         p = ParseTreeNode('')
         role = d['role']
         nodetype = d.get('nodetype', None)
@@ -77,22 +121,47 @@ class ParseTreeNode(object):
         p.bound = bool(d['bound'])
         p.datatype = d['datatype']
         p.add_children([ParseTreeNode.from_dict(c) for c in d['children']])
+        # TODO: Add code to make sure all keys are set as attributes.
         return p
 
     @staticmethod
     def loads(jsonstr):
+        """Convert a JSON string that corresponds to a ParseTreeNode to a ParseTreeNode.
+
+        This converts a str object to a ParseTreeNode if it represents a valid
+        ParseTreeNode.
+
+        :param jsonstr: A string that encodes a ParseTreeNode in JSON format
+        :type jsonstr: str
+        :rtype: ParseTreeNode
+        """
         return ParseTreeNode.from_dict(json.loads(jsonstr))
 
     class ParseTreeNodeEncoder(json.JSONEncoder):
+        """An object that knows how to decode a JSON string representing a ParseTreeNode.
+
+        This needs to be passed to the json module load or loads functions to
+        tell it how to decode a ParseTreeNode object.
+        """
         def default(self, obj):
+            """Method that must be implemented to decode the JSON string.
+            """
             if isinstance(obj, ParseTreeNode):
                 return obj.jsonify()
             return json.JSONEncoder.default(self, obj)
     
     def dumps(self, **kwargs):
+        """Convert the current object to a JSON-encoded string.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param kwargs: Keyword arguments that are passed to json.dumps
+        :rtype: str
+        """
         return json.dumps(self, cls=self.ParseTreeNodeEncoder, **kwargs)
 
     def __eq__(self, other):
+        # TODO: Add check to see that other is a ParseTreeNode.
         if len(self.children) == 0 and len(other.children) == 0:
             eq = self._node_eq(other)
             return eq
@@ -102,9 +171,23 @@ class ParseTreeNode(object):
         return all([self_child == other_child for (self_child, other_child) in zip(self.children, other.children)])
 
     def _node_eq(self, other):
+        """Test whether a ParseTreeNode is equal to another one.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param other: The object to compare to
+        :type other: ParseTreeNode
+        :rtype: bool
+        """
         return self.role == other.role and self.raw == other.raw
 
     def flatten(self):
+        """Convert a ParseTreeNode to a flattened string representation.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: str
+        """
         s = ""
         paren = False
         if len(str(self.raw)) > 0:
@@ -122,6 +205,14 @@ class ParseTreeNode(object):
         return s
 
     def is_supertree_of(self, other):
+        """Tests whether one tree is a supertree of the other node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param other: The object to compare to
+        :type other: ParseTreeNode
+        :rtype: bool
+        """
         if other is None:
             return True
         if len(self.children) >= 0 and len(other.children) == 0:
@@ -145,6 +236,23 @@ class ParseTreeNode(object):
             return self._node_eq(other) and children_eq
 
     def template(self, drop_options=False, drop_rename=False, distinguished_argument=None):
+        """Replaces all parameters in a ParseTreeNode tree with generic symbols.
+
+        This function takes a ParseTreeNode tree representing a specific query
+        and converts it to a "template" -- the same query with parameters
+        replaced with generic symbols.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param drop_options: Whether or not to remove options
+        :type drop_options: bool
+        :param drop_rename: Whether or not to drop rename clauses
+        :type drop_rename: bool
+        :param distinguished_argument: If there is an argument to name 
+            differently from other variables
+        :type distinguished_argument: str
+        :rtype: str
+        """
         p = self.copy_tree()
         keynum = 0
         valnum = 0
@@ -192,6 +300,16 @@ class ParseTreeNode(object):
         return p
 
     def get_parent_stage(self):
+        """Return the first node that is an ancestor of this one that has role="STAGE".
+
+        This function traverses up the tree from the current node until it 
+        finds a node whose role is "STAGE" and then returns that node. If 
+        there is no such node then the function returns None.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         node = self
         while node:
             if node.role == 'STAGE':
@@ -200,6 +318,23 @@ class ParseTreeNode(object):
         return None # TODO: Throw error here?
 
     def drop_options(self):
+        """Return a new tree with the subtrees of the current node that represent option parameters removed.
+
+        This function traverses a copy of the subtree starting at the current node and
+        removes all subtrees that represent option clauses. It does this by
+        removing nodes whose role is "OPTION" or whose role is "EQ" and whose
+        first child is "OPTION". The reasoning for why one might want to 
+        remove option clauses is that often these are not very important to 
+        the functioning of the query so if you wanted to count how many queries
+        of a certain type there are you might want to ignore the options when
+        doing this accounting.
+
+        This is similar to the drop_rename function.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         p = self.copy_tree()
         stack = []
         stack.insert(0, p)
@@ -218,6 +353,23 @@ class ParseTreeNode(object):
         return p
 
     def drop_rename(self):
+        """Return a new tree with the subtrees of the current node that represent rename clauses removed.
+
+        This function creates a copy of the tree starting at the current node
+        and removes all subtrees from that copy that represent rename clauses.
+        This includes nodes whose role is "FUNCTION" and whose raw value is "as".
+        The reasoning for why one might want to do this is that renaming is
+        something that is often done for asthetic reasons and thus is not
+        integral to the transformations the query is applying to the data. So if
+        you wanted to tally similarity across a set of queries you might want
+        to ignore rename operations.
+
+        This is similar to the drop_options function.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         p = self.copy_tree()
         stack = []
         stack.insert(0, p)
@@ -238,6 +390,15 @@ class ParseTreeNode(object):
         return p
 
     def descendant_arguments(self):
+        """Return all argument nodes from the subtree of the current node.
+
+        This function traverses the subtree starting from the current node and
+        returns a list of nodes that have is_argument set to True.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: list
+        """
         descendants = []
         stack = []
         stack.insert(0, self)
@@ -250,6 +411,19 @@ class ParseTreeNode(object):
         return descendants
 
     def ast(self):
+        """Return a copy of the tree rearranged to correspond to the order operations would be executed in.
+
+        This function creates a copy of the tree starting at the current node
+        and rearranges the subtrees so that the operations are in an order
+        that more closely corresponds to the order in which they should be
+        applied to the data.
+
+        This is an experimental function.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         p = self.copy_tree()
         p = p.drop_options()
         outerstack = []
@@ -286,6 +460,20 @@ class ParseTreeNode(object):
         return p
 
     def compile(self):
+        """Produce a list of operations to apply to execute the given query.
+
+        This function takes a ParseTreeNode representing a query and "compiles"
+        it into a list of single transformations to apply to the arguments in 
+        the query. It actually returns a dictionary whose keys represent the
+        variable to compute and whose values represent the operations needed to
+        compute that variable.
+
+        This is an experimental function.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: dict
+        """
         p = self.copy_tree()
         p = p.drop_options() # TODO: Incorporate these.
         p = p.ast()
@@ -315,6 +503,18 @@ class ParseTreeNode(object):
         return exl 
 
     def swap_children(self, p, q):
+        """Replace a given child node in a tree with another node.
+
+        This function replaces the given child node p with the other node q.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param p: The child node to remove and replace with another
+        :type p: ParseTreeNode
+        :param q: The child node to add in place of the other
+        :type q: ParseTreeNode
+        :rtype: None
+        """
         idx = self.children.index(p)
         self.children.remove(p)
         p.parent = None
@@ -322,30 +522,54 @@ class ParseTreeNode(object):
         q.parent = self
 
     def is_eval_function(self):
+        """Returns True if the current node is the start of an eval function.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: bool
+        """
         return (self.is_function() and self.raw == 'eval')
 
     def is_groupby(self):
+        """Returns True if the current node is the start of a group by clause.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: bool
+        """
         return (self.is_function() and self.raw == 'groupby')
 
     def is_function(self):
+        """Returns True if the current node's role is "FUNCTION".
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: bool
+        """
         return self.role == 'FUNCTION'
 
-    def decompose(self):
-        if self.role == 'COMMAND' or self.role == 'FUNCTION':
-            for c in self.children:
-                if (c.role == 'COMMAND' or c.role == 'FUNCTION'):
-                    pass                  
-
-
     def copy_node(self):
+        """Make a copy of the current node but not its children.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         p = ParseTreeNode(self.role, nodetype=self.nodetype, raw=self.raw, 
                             is_associative=self.is_associative, 
                             is_argument=self.is_argument)
         p.corrected = self.corrected
         p.bound = self.bound
+        # TODO: Check that all attributes are copied using inspect or the __dict__.
         return p
     
     def copy_tree(self):
+        """Recursively copy the entire tree.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         children = map(lambda x: x.copy_tree(), self.children) 
         p = self.copy_node()
         p.values = self.values
@@ -353,6 +577,16 @@ class ParseTreeNode(object):
         return p
 
     def ancestral_branch(self):
+        """Return a copy of all the nodes along the current branch above the current node.
+
+        This function traverses up the tree from the current node, while making
+        a copy of the nodes along the path, finally returning the top-most node
+        on the branch.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         children = map(lambda x: x.copy_tree(), self.children) 
         p = self.copy_node()
         p.values = self.values
@@ -367,6 +601,12 @@ class ParseTreeNode(object):
         return t
 
     def ancestral_command(self):
+        """Return the first node that is an ancestor of the current one and has role="COMMAND".
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         up = self.parent
         while up:
             if up.role == 'COMMAND':
@@ -375,6 +615,12 @@ class ParseTreeNode(object):
         return None
 
     def ancestral_function(self):
+        """Return the first node that is an ancestor of the current one and has role="COMMAND" or role="FUNCTION".
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode or None
+        """
         up = self.parent
         while up:
             if up.role == 'FUNCTION' or up.role == 'COMMAND':
@@ -384,6 +630,17 @@ class ParseTreeNode(object):
         
 
     def skeleton(self):
+        """Return a recursive copy of the tree at the current node with all raw argument values set to blank.
+
+        This function recursively traverses the tree starting at the current 
+        node and copies it, while setting all argument values to blank.
+        This makes it possible to compare two queries to see if they are the
+        same except for their arguments.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         children = map(lambda x: x.skeleton(), self.children) 
         if self.is_argument:
             p = ParseTreeNode('', is_argument=True)
@@ -393,6 +650,15 @@ class ParseTreeNode(object):
         return p
 
     def inverse_skeleton(self):
+        """Return a recursive copy of the tree at the current node with all raw values except argument values set to blank.
+
+        This function recursively traverses the tree starting at the current 
+        node and copies it, while setting all non-argument values to blank.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         children = map(lambda x: x.inverse_skeleton(), self.children) 
         if not self.is_argument:
             p = ParseTreeNode('', is_argument=False)
@@ -402,9 +668,19 @@ class ParseTreeNode(object):
         return p
 
     def command_argument_tuple_list(self):
+        """Return a list of (command, arguments) pairs from the subtree starting at the current node.
+
+        Traverse the subtree starting at the current node and extract the
+        arguments for each Splunk command, returning a list of
+        (command, argument) tuples.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: ParseTreeNode
+        """
         stages = self._stage_subtrees()
-        command_and_is_arguments = [stage._command_argument_tuple_from_stage() for stage in stages]
-        return command_and_is_arguments
+        command_and_arguments = [stage._command_argument_tuple_from_stage() for stage in stages]
+        return command_and_arguments
 
     def _stage_subtrees(self):
         if not self.role == 'ROOT':
@@ -415,8 +691,8 @@ class ParseTreeNode(object):
         if not self.role == 'STAGE':
             raise ValueError("This must be 'STAGE' node for this to work properly.\n")
         command = self.children[0].skeleton()._flatten_roles_to_string()
-        is_arguments = self.children[0].inverse_skeleton()._flatten_to_list()
-        return (command, is_arguments)
+        arguments = self.children[0].inverse_skeleton()._flatten_to_list()
+        return (command, arguments)
 
     def _flatten_roles_to_string(self):
         flattened_children = [child._flatten_roles_to_string() for child in self.children]
@@ -437,6 +713,14 @@ class ParseTreeNode(object):
         return [(self.raw, field)] + children_list
 
     def add_child(self, child):
+        """Add the given ParseTreeNode as a child to the current node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param child: The node to add as a child of the current node
+        :type child: ParseTreeNode
+        :rtype: None
+        """
         if self.is_associative and child.raw == self.raw and len(child.children) > 0:
             self.add_children(child.children)
         else:
@@ -445,7 +729,14 @@ class ParseTreeNode(object):
             child.parent = self
     
     def add_children(self, children):
-        """
+        """Add each of the ParseTreeNodes in the given list as a child of the current node.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param children: The nodes to add as children of the current node
+        :type children: list
+        :rtype: None
+
         >>> p = ParseTreeNode('PARENT')
         >>> x = ParseTreeNode('CHILD', raw="x")
         >>> p.add_child(x)
@@ -464,11 +755,26 @@ class ParseTreeNode(object):
             self.add_child(child)
     
     def remove_child(self, child):
+        """Remove the given ParseTreeNode from the children of the current node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param child: The node to remove from the children of the current node
+        :type child: ParseTreeNode
+        :rtype: None
+        """
         self.children.remove(child)
         child.parent = None
 
     def remove_children(self, children):
-        """
+        """Remove the given list of ParseTreeNodes from the children of the current node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param children: The nodes to remove from the children of the current node
+        :type children: list
+        :rtype: None
+        
         >>> p = ParseTreeNode('PARENT')
         >>> x = ParseTreeNode('CHILD', raw="x")
         >>> p.add_child(x)
@@ -518,10 +824,20 @@ class ParseTreeNode(object):
         self.children = tmp        
 
     def clear_children(self):
+        """Remove all children from the current node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: None
+        """
         self.children = []
 
     def __repr__(self):
-        """
+        """Return a string representation of the current node for debugging purposes.
+
+        Doesn't conform to the recommended guidelines for __repr__ functions.
+        This should be fixed.
+
         >>> p = ParseTreeNode('PARENT')
         >>> x = ParseTreeNode('CHILD', raw="x")
         >>> p.add_child(x)
@@ -538,6 +854,7 @@ class ParseTreeNode(object):
         >>> a
         {role: 'CHILD', raw: 'a', children: [], parent: ('CHILD': 'x')}
         """
+        # TODO: Ensure that the output of this function conforms to the recommended guidelines for __repr__ functions.
         child_repr = ''
         first = True
         for child in self.children:
@@ -553,7 +870,8 @@ class ParseTreeNode(object):
         return to_repr
 
     def __str__(self):
-        """
+        """Return a human-friendly string representation of the current node only.
+       
         >>> p = ParseTreeNode('PARENT')
         >>> x = ParseTreeNode('CHILD', raw="x")
         >>> p.add_child(x)
@@ -586,10 +904,31 @@ class ParseTreeNode(object):
         return to_str
 
     def str_tree(self, recursive=True):
+        """Recursively create the string representation of the tree starting at the current node.
+
+        This function recurses through the tree starting at the current node
+        and creates a string representation of the tree. Optionally you can
+        choose to not have the function recurse into the subtree of the node.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param recursive: Whether or not to recurse
+        :type recursive: bool
+        :rtype: str
+        """
         return self._str_tree(recursive=recursive)
 
     def print_tree(self, recursive=True):
-        """
+        """Print a string representation of the whole tree starting at the current node.
+        
+        If recursive is set to False, only the current node is printed.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :param recursive: Whether or not to recurse
+        :type recursive: bool
+        :rtype: None
+
         >>> p = ParseTreeNode('PARENT')
         >>> x = ParseTreeNode('CHILD', raw="x")
         >>> p.add_child(x)
@@ -621,6 +960,12 @@ class ParseTreeNode(object):
         print self.str_tree(recursive=recursive)
 
     def itertree(self):
+        """Iterate through the entire tree depth-first, yielding nodes along the way.
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: generator
+        """
         stack = [self]
         while len(stack) > 0:
             node = stack.pop(0)
@@ -628,6 +973,14 @@ class ParseTreeNode(object):
             yield node
 
     def schema(self):
+        """Return the schema inferred from the query in the subtree starting at the current node.
+
+        This is an experimental function.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: Schema
+        """
         field_tokens = self.extract_fields()
         fields = {}
         for field_token in field_tokens:
@@ -653,6 +1006,12 @@ class ParseTreeNode(object):
         return s
 
     def get_datatype(self):
+        """Return the estimated data type of the raw value of the current node.
+        
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: str
+        """
         if self.datatype:
             return self.datatype
         if not self.role.find('FIELD') > -1:
@@ -666,6 +1025,12 @@ class ParseTreeNode(object):
         return DATATYPES.get(vote, vote)
 
     def extract_fields(self):
+        """Return a list of nodes in the subtree starting at the current node that have role="FIELD".
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: list
+        """
         stack = []
         fields = []
         stack.insert(0, self)
@@ -679,6 +1044,12 @@ class ParseTreeNode(object):
         return fields
     
     def extract_values(self):
+        """Return a list of nodes in the subtree starting at the current node that have role="VALUE".
+
+        :param self: The current object
+        :type self: ParseTreeNode
+        :rtype: list
+        """
         stack = []
         values = []
         stack.insert(0, self)

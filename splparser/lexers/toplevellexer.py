@@ -154,9 +154,22 @@ tokens = tokens + list(reserved.values())
 
 
 class SPLToken(object):
-
+    """Represents the basic unit of a string split into parts for parsing.
+    
+    Returned by the lexer after it tokenizes a string.
+    """
     
     def __init__(self, type, value):
+        """Create an SPLToken object.
+
+        :param self: The object being created
+        :type self: SPLToken
+        :param type: The type of token
+        :type type: str
+        :param value: The raw value of the corresponding tokenized portion
+        :type value: str
+        :rtype: SPLToken
+        """
         self.type = type
         self.value = value
 
@@ -171,14 +184,32 @@ class SPLToken(object):
 
 
 class SPLLexer(object):
-    
+    """Represents a lexer object that can tokenize SPL strings.
+
+    You should not need to create this object. You can simply
+    call lex on the module.
+    """
 
     def __init__(self):
+        """Creates an SPLLexer object
+
+        :param self: The object being created
+        :type self: SPLLexer
+        :rtype: SPLLexer
+        """
         self.data = None
         self.lexpos = -1
         self.first = True
 
     def input(self, data):
+        """Tokenize the given input and save it but don't return it.
+
+        :param self: The current lexer
+        :type self: SPLLexer
+        :param data: The string to tokenize
+        :type data: str
+        :rtype: None
+        """
         self.data = data
         self.lexpos = 0
         
@@ -280,18 +311,48 @@ class SPLLexer(object):
 
 
     def is_macro(self, token):
+        """Return True if the given string represents a macro.
+
+        :param self: The current lexer
+        :type self: SPLLexer
+        :param token: The string to test
+        :type token: str
+        :rtype: bool
+        """
         return token[0] == "`" and len(token) > 1 and token[-1] == "`"
     
 
     def is_single_quoted(self, token):
+        """Return True if the given string is quoted with single quotes.
+
+        :param self: The current lexer
+        :type self: SPLLexer
+        :param token: The string to test
+        :type token: str
+        :rtype: bool
+        """
         return token[0] == "'" and len(token) > 1 and token[-1] == "'"
     
 
     def is_double_quoted(self, token):
+        """Return True if the given string is quoted with double quotes.
+
+        :param self: The current lexer
+        :type self: SPLLexer
+        :param token: The string to test
+        :type token: str
+        :rtype: bool
+        """
         return token[0] == '"' and len(token) > 1 and token[-1] == '"'
 
 
     def token(self):
+        """Return the next token that was last input to the lexer.
+
+        :param self: The current lexer
+        :type self: SPLLexer
+        :rtype: SPLToken
+        """
         if not self.tokens: return
         tok = self.tokens.pop(0)
         self.lexpos += len(tok)
@@ -324,10 +385,24 @@ class SPLLexer(object):
 
 
 def lex():
+    """Return an SPLLexer instance.
+
+    :rtype: SPLLexer
+    """
     return SPLLexer()
 
 
 def tokenize(data, debug=False, debuglog=None):
+    """Tokenize the given string.
+
+    :param data: The string to tokenize
+    :type data: str
+    :param debug: Whether or not to output debug information to the log
+    :type debug: bool
+    :param debuglog: The log to write debugging information to
+    :type debuglog: str
+    :rtype: list
+    """
     lexer = SPLLexer()
     lexer.input(data)
     tokens = []
