@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>splparser.parser &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="index.html" />
+    <link rel="up" title="API documentation" href="documentation.html" />
+    <link rel="next" title="splparser.lexer.toplevellexer" href="splparser.lexers.html" />
+    <link rel="prev" title="splparser.parsetree" href="splparser.parsetree.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="splparser.lexers.html" title="splparser.lexer.toplevellexer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="splparser.parsetree.html" title="splparser.parsetree"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">splparser 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="documentation.html" accesskey="U">API documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-splparser.parser">
+<span id="splparser-parser"></span><h1>splparser.parser<a class="headerlink" href="#module-splparser.parser" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="splparser.parser.SPLParser.__init__">
+<tt class="descclassname">SPLParser.</tt><tt class="descname">__init__</tt><big>(</big><em>lexermod</em>, <em>parsetab_name</em>, <em>parsetab_dir</em>, <em>logname</em>, <em>rulesmod</em>, <em>optimize=True</em><big>)</big><a class="headerlink" href="#splparser.parser.SPLParser.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an SPLParser object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLParser</em>) &#8211; The object being created</li>
+<li><strong>lexermod</strong> (<em>module</em>) &#8211; The corresponding lexer module</li>
+<li><strong>parsetab_name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the toplevel parse table file</li>
+<li><strong>parsetab_dir</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The directory in which to store parse tables</li>
+<li><strong>logname</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the log</li>
+<li><strong>rulesmod</strong> (<em>module</em>) &#8211; The module containing the top-level rules</li>
+<li><strong>optimize</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#dir" title="(in Python v2.7)"><em>dir</em></a>) &#8211; Whether or not to write a log (it slows performance and can cause the parser to sometimes fail due to too many open file handles &#8211; one for each command parsed as they have separate log files)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">SPLParser</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="splparser.parser.SPLParser">
+<em class="property">class </em><tt class="descclassname">splparser.parser.</tt><tt class="descname">SPLParser</tt><big>(</big><em>lexermod</em>, <em>parsetab_name</em>, <em>parsetab_dir</em>, <em>logname</em>, <em>rulesmod</em>, <em>optimize=True</em><big>)</big><a class="headerlink" href="#splparser.parser.SPLParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a parser object that can parse SPL queries.</p>
+<p>You should not need to create one of these. Simply import
+parse from the splparser module.</p>
+<dl class="method">
+<dt id="splparser.parser.SPLParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#splparser.parser.SPLParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the given string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLParser</em>) &#8211; The current SPLParser object</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to parse</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ParseTreeNode</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.parser.SPLParser.setup_log">
+<tt class="descname">setup_log</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#splparser.parser.SPLParser.setup_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the log so that parsing info can be written out.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLParser</em>) &#8211; The current SPLParser object</li>
+<li><strong>name</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The name of the log file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">logging.Logger</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.parser.SPLParser.setup_parsetab">
+<tt class="descname">setup_parsetab</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parser.SPLParser.setup_parsetab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the parse tables in the install location.</p>
+<p>Writes the parse tables to the installation location so that parse
+tables aren&#8217;t created in every directory in which the parser is run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<em>SPLParser</em>) &#8211; The current SPLParser object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing code</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="documentation.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="splparser.parsetree.html">splparser.parsetree</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">splparser.parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="splparser.lexers.html">splparser.lexer.toplevellexer</a></li>
+</ul>
+</li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+      |
+      <a href="_sources/splparser.parser.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="index.html" />
+    <link rel="next" title="Downloading" href="downloading.html" />
+    <link rel="prev" title="splparser: Python Splunk query parser" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="downloading.html" title="Downloading"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="splparser: Python Splunk query parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">splparser 0.3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>splparser is a Python parser for <a class="reference external" href="http://docs.splunk.com/Documentation/Splunk/6.2.0/SearchReference/ListOfSearchCommands">Splunk Processing Language</a> queries.</p>
+<p>It does not parse all commands in the language but it can parse the sixty or so most commonly used commands.</p>
+<p>The parser is not tied to a particular version of the language and may break for some versions.</p>
+<p>Please <a class="reference external" href="https://github.com/salspaugh/splparser/issues">submit an issue</a> if you run into any problems.</p>
+<p>Use <a class="reference external" href="mailto:saraalspaugh&#37;&#52;&#48;gmail&#46;com">this link</a> to send feedback.</p>
+</div>
+<div class="section" id="supported-commands">
+<h1>Supported commands<a class="headerlink" href="#supported-commands" title="Permalink to this headline">¶</a></h1>
+<p>The SPL commands currently capable of being parsed are:</p>
+<ul class="simple">
+<li>abstract</li>
+<li>addinfo</li>
+<li>addtotals</li>
+<li>append</li>
+<li>appendcols</li>
+<li>audit</li>
+<li>bucket</li>
+<li>chart</li>
+<li>collect</li>
+<li>convert</li>
+<li>dedup</li>
+<li>delete</li>
+<li>delta</li>
+<li>eval</li>
+<li>eventstats</li>
+<li>export</li>
+<li>extractkv</li>
+<li>fieldformat</li>
+<li>fields</li>
+<li>filldown</li>
+<li>fillnull</li>
+<li>gauge</li>
+<li>head</li>
+<li>history</li>
+<li>inputcsv</li>
+<li>inputlookup</li>
+<li>join</li>
+<li>loadjob</li>
+<li>localop</li>
+<li>lookup</li>
+<li>makemv</li>
+<li>metadata</li>
+<li>multikv</li>
+<li>mvcombine</li>
+<li>mvexpand</li>
+<li>nomv</li>
+<li>outlier</li>
+<li>outputcsv</li>
+<li>outputlookup</li>
+<li>overlap</li>
+<li>rare</li>
+<li>regex</li>
+<li>relevancy</li>
+<li>rename</li>
+<li>replace</li>
+<li>reverse</li>
+<li>rex</li>
+<li>search</li>
+<li>sort</li>
+<li>spath</li>
+<li>stats</li>
+<li>strcat</li>
+<li>streamstats</li>
+<li>table</li>
+<li>tags</li>
+<li>tail</li>
+<li>timechart</li>
+<li>top</li>
+<li>transaction</li>
+<li>transpose</li>
+<li>tstats</li>
+<li>typeahead</li>
+<li>uniq</li>
+<li>where</li>
+<li>xmlkv</li>
+<li>xpath</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">API documentation</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+      |
+      <a href="_sources/overview.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

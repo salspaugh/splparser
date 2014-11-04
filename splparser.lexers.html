@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>splparser.lexer.toplevellexer &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="index.html" />
+    <link rel="up" title="API documentation" href="documentation.html" />
+    <link rel="prev" title="splparser.parser" href="splparser.parser.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="splparser.parser.html" title="splparser.parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">splparser 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="documentation.html" accesskey="U">API documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-splparser.lexers.toplevellexer">
+<span id="splparser-lexer-toplevellexer"></span><h1>splparser.lexer.toplevellexer<a class="headerlink" href="#module-splparser.lexers.toplevellexer" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="splparser.lexers.toplevellexer.SPLLexer">
+<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLLexer</tt><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a lexer object that can tokenize SPL strings.</p>
+<p>You should not need to create this object. You can simply
+call lex on the module.</p>
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.input">
+<tt class="descname">input</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenize the given input and save it but don&#8217;t return it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLLexer</em>) &#8211; The current lexer</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to tokenize</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.is_double_quoted">
+<tt class="descname">is_double_quoted</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_double_quoted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the given string is quoted with double quotes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLLexer</em>) &#8211; The current lexer</li>
+<li><strong>token</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to test</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.is_macro">
+<tt class="descname">is_macro</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_macro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the given string represents a macro.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLLexer</em>) &#8211; The current lexer</li>
+<li><strong>token</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to test</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.is_single_quoted">
+<tt class="descname">is_single_quoted</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_single_quoted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the given string is quoted with single quotes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>self</strong> (<em>SPLLexer</em>) &#8211; The current lexer</li>
+<li><strong>token</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to test</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.token">
+<tt class="descname">token</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the next token that was last input to the lexer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<em>SPLLexer</em>) &#8211; The current lexer</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">SPLToken</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="splparser.lexers.toplevellexer.SPLToken">
+<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLToken</tt><big>(</big><em>type</em>, <em>value</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the basic unit of a string split into parts for parsing.</p>
+<p>Returned by the lexer after it tokenizes a string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="splparser.lexers.toplevellexer.lex">
+<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">lex</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.lex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an SPLLexer instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">SPLLexer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="splparser.lexers.toplevellexer.tokenize">
+<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">tokenize</tt><big>(</big><em>data</em>, <em>debug=False</em>, <em>debuglog=None</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenize the given string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The string to tokenize</li>
+<li><strong>debug</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Whether or not to output debug information to the log</li>
+<li><strong>debuglog</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The log to write debugging information to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing code</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="documentation.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="splparser.parsetree.html">splparser.parsetree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="splparser.parser.html">splparser.parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">splparser.lexer.toplevellexer</a></li>
+</ul>
+</li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+      |
+      <a href="_sources/splparser.lexers.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

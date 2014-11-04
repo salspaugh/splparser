@@ -1,0 +1,5 @@
+splparser.parse
+===============
+
+.. automodule:: splparser.parse
+   :members:
