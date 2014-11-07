@@ -1,0 +1,536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>splparser.lexers.toplevellexer &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">splparser 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for splparser.lexers.toplevellexer</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">whitespace</span> <span class="k">as</span> <span class="n">WHITESPACE</span>
+
+<span class="n">QUOTES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s">&quot;`&quot;</span><span class="p">]</span>
+<span class="n">ESCAPE</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span>
+<span class="n">SPECIAL</span> <span class="o">=</span> <span class="s">&quot;|[]&quot;</span>
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;PIPE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;LBRACKET&#39;</span><span class="p">,</span>
+    <span class="s">&#39;RBRACKET&#39;</span><span class="p">,</span>
+    <span class="s">&#39;MACRO&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ARGS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;EXTERNAL_COMMAND&#39;</span>
+    <span class="p">]</span>
+
+<span class="n">reserved</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;abstract&#39;</span><span class="p">:</span> <span class="s">&#39;ABSTRACT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;accum&#39;</span><span class="p">:</span> <span class="s">&#39;ACCUM&#39;</span><span class="p">,</span>
+    <span class="s">&#39;addcoltotals&#39;</span><span class="p">:</span> <span class="s">&#39;ADDCOLTOTALS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;addinfo&#39;</span><span class="p">:</span> <span class="s">&#39;ADDINFO&#39;</span><span class="p">,</span>
+    <span class="s">&#39;addtotals&#39;</span><span class="p">:</span> <span class="s">&#39;ADDTOTALS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;analyzefields&#39;</span><span class="p">:</span> <span class="s">&#39;ANALYZEFIELDS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;anomalies&#39;</span><span class="p">:</span> <span class="s">&#39;ANOMALIES&#39;</span><span class="p">,</span>
+    <span class="s">&#39;anomalousvalue&#39;</span><span class="p">:</span> <span class="s">&#39;ANOMALOUSVALUE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;append&#39;</span><span class="p">:</span> <span class="s">&#39;APPEND&#39;</span><span class="p">,</span>
+    <span class="s">&#39;appendcols&#39;</span><span class="p">:</span> <span class="s">&#39;APPENDCOLS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;appendpipe&#39;</span><span class="p">:</span> <span class="s">&#39;APPENDPIPE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;associate&#39;</span><span class="p">:</span> <span class="s">&#39;ASSOCIATE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;audit&#39;</span><span class="p">:</span> <span class="s">&#39;AUDIT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;autoregress&#39;</span><span class="p">:</span> <span class="s">&#39;AUTOREGRESS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;bucket&#39;</span><span class="p">:</span> <span class="s">&#39;BUCKET&#39;</span><span class="p">,</span>
+    <span class="s">&#39;bin&#39;</span><span class="p">:</span> <span class="s">&#39;BIN_CMD&#39;</span><span class="p">,</span> <span class="c"># TODO: Change binary token so this can be &quot;BIN&quot;</span>
+    <span class="s">&#39;bucketdir&#39;</span><span class="p">:</span> <span class="s">&#39;BUCKETDIR&#39;</span><span class="p">,</span>
+    <span class="s">&#39;chart&#39;</span><span class="p">:</span> <span class="s">&#39;CHART&#39;</span><span class="p">,</span>
+    <span class="s">&#39;cluster&#39;</span><span class="p">:</span> <span class="s">&#39;CLUSTER&#39;</span><span class="p">,</span>
+    <span class="s">&#39;collect&#39;</span><span class="p">:</span> <span class="s">&#39;COLLECT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;concurrency&#39;</span><span class="p">:</span> <span class="s">&#39;CONCURRENCY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;contingency&#39;</span><span class="p">:</span> <span class="s">&#39;CONTINGENCY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;counttable&#39;</span><span class="p">:</span> <span class="s">&#39;CONTINGENCY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;convert&#39;</span><span class="p">:</span> <span class="s">&#39;CONVERT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;correlate&#39;</span><span class="p">:</span> <span class="s">&#39;CORRELATE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;crawl&#39;</span><span class="p">:</span> <span class="s">&#39;CRAWL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;datamodel&#39;</span><span class="p">:</span> <span class="s">&#39;DATAMODEL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;dbinspect&#39;</span><span class="p">:</span> <span class="s">&#39;DBINSPECT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;dedup&#39;</span><span class="p">:</span> <span class="s">&#39;DEDUP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;delete&#39;</span><span class="p">:</span> <span class="s">&#39;DELETE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;delta&#39;</span><span class="p">:</span> <span class="s">&#39;DELTA&#39;</span><span class="p">,</span>
+    <span class="s">&#39;diff&#39;</span><span class="p">:</span> <span class="s">&#39;DIFF&#39;</span><span class="p">,</span>
+    <span class="s">&#39;erex&#39;</span><span class="p">:</span> <span class="s">&#39;EREX&#39;</span><span class="p">,</span>
+    <span class="s">&#39;eval&#39;</span><span class="p">:</span> <span class="s">&#39;EVAL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;eventcount&#39;</span><span class="p">:</span> <span class="s">&#39;EVENTCOUNT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;eventstats&#39;</span><span class="p">:</span> <span class="s">&#39;EVENTSTATS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;export&#39;</span> <span class="p">:</span> <span class="s">&#39;EXPORT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;extract&#39;</span><span class="p">:</span> <span class="s">&#39;EXTRACT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;kv&#39;</span><span class="p">:</span> <span class="s">&#39;KV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fieldformat&#39;</span><span class="p">:</span> <span class="s">&#39;FIELDFORMAT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fields&#39;</span><span class="p">:</span> <span class="s">&#39;FIELDS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fieldsummary&#39;</span><span class="p">:</span> <span class="s">&#39;FIELDSUMMARY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;filldown&#39;</span><span class="p">:</span> <span class="s">&#39;FILLDOWN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;fillnull&#39;</span><span class="p">:</span> <span class="s">&#39;FILLNULL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;findtypes&#39;</span><span class="p">:</span> <span class="s">&#39;FINDTYPES&#39;</span><span class="p">,</span>
+    <span class="s">&#39;folderize&#39;</span><span class="p">:</span> <span class="s">&#39;FOLDERIZE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">&#39;FORMAT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;gauge&#39;</span><span class="p">:</span> <span class="s">&#39;GAUGE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;gentimes&#39;</span><span class="p">:</span> <span class="s">&#39;GENTIMES&#39;</span><span class="p">,</span>
+    <span class="s">&#39;head&#39;</span><span class="p">:</span> <span class="s">&#39;HEAD&#39;</span><span class="p">,</span>
+    <span class="s">&#39;highlight&#39;</span><span class="p">:</span> <span class="s">&#39;HIGHLIGHT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;history&#39;</span><span class="p">:</span> <span class="s">&#39;HISTORY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;iconify&#39;</span><span class="p">:</span> <span class="s">&#39;ICONIFY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;input&#39;</span><span class="p">:</span> <span class="s">&#39;INPUT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;inputcsv&#39;</span><span class="p">:</span> <span class="s">&#39;INPUTCSV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;inputlookup&#39;</span><span class="p">:</span> <span class="s">&#39;INPUTLOOKUP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;iplocation&#39;</span><span class="p">:</span> <span class="s">&#39;IPLOCATION&#39;</span><span class="p">,</span>
+    <span class="s">&#39;join&#39;</span><span class="p">:</span> <span class="s">&#39;JOIN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;kmeans&#39;</span><span class="p">:</span> <span class="s">&#39;KMEANS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;kvform&#39;</span><span class="p">:</span> <span class="s">&#39;KVFORM&#39;</span><span class="p">,</span>
+    <span class="s">&#39;loadjob&#39;</span><span class="p">:</span> <span class="s">&#39;LOADJOB&#39;</span><span class="p">,</span>
+    <span class="s">&#39;localize&#39;</span><span class="p">:</span> <span class="s">&#39;LOCALIZE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;localop&#39;</span><span class="p">:</span> <span class="s">&#39;LOCALOP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;lookup&#39;</span><span class="p">:</span> <span class="s">&#39;LOOKUP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;makecontinuous&#39;</span><span class="p">:</span> <span class="s">&#39;MAKECONTINUOUS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;makemv&#39;</span><span class="p">:</span> <span class="s">&#39;MAKEMV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;map&#39;</span><span class="p">:</span> <span class="s">&#39;MAP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;metadata&#39;</span><span class="p">:</span> <span class="s">&#39;METADATA&#39;</span><span class="p">,</span>
+    <span class="s">&#39;metasearch&#39;</span><span class="p">:</span> <span class="s">&#39;METASEARCH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;multikv&#39;</span><span class="p">:</span> <span class="s">&#39;MULTIKV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;multisearch&#39;</span><span class="p">:</span> <span class="s">&#39;MULTISEARCH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;mvcombine&#39;</span><span class="p">:</span> <span class="s">&#39;MVCOMBINE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;mvexpand&#39;</span><span class="p">:</span> <span class="s">&#39;MVEXPAND&#39;</span><span class="p">,</span>
+    <span class="s">&#39;nomv&#39;</span><span class="p">:</span> <span class="s">&#39;NOMV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outlier&#39;</span><span class="p">:</span> <span class="s">&#39;OUTLIER&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outputcsv&#39;</span><span class="p">:</span> <span class="s">&#39;OUTPUTCSV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outputlookup&#39;</span><span class="p">:</span> <span class="s">&#39;OUTPUTLOOKUP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outputtext&#39;</span><span class="p">:</span> <span class="s">&#39;OUTPUTTEXT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;overlap&#39;</span><span class="p">:</span> <span class="s">&#39;OVERLAP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;predict&#39;</span><span class="p">:</span> <span class="s">&#39;PREDICT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rangemap&#39;</span><span class="p">:</span> <span class="s">&#39;RANGEMAP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rare&#39;</span><span class="p">:</span> <span class="s">&#39;RARE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;regex&#39;</span><span class="p">:</span> <span class="s">&#39;REGEX&#39;</span><span class="p">,</span>
+    <span class="s">&#39;relevancy&#39;</span><span class="p">:</span> <span class="s">&#39;RELEVANCY&#39;</span><span class="p">,</span>
+    <span class="s">&#39;reltime&#39;</span><span class="p">:</span> <span class="s">&#39;RELTIME&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rename&#39;</span><span class="p">:</span> <span class="s">&#39;RENAME&#39;</span><span class="p">,</span>
+    <span class="s">&#39;replace&#39;</span><span class="p">:</span> <span class="s">&#39;REPLACE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rest&#39;</span><span class="p">:</span> <span class="s">&#39;REST&#39;</span><span class="p">,</span>
+    <span class="s">&#39;return&#39;</span><span class="p">:</span> <span class="s">&#39;RETURN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;reverse&#39;</span><span class="p">:</span> <span class="s">&#39;REVERSE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rex&#39;</span><span class="p">:</span> <span class="s">&#39;REX&#39;</span><span class="p">,</span>
+    <span class="s">&#39;rtorder&#39;</span><span class="p">:</span> <span class="s">&#39;RTORDER&#39;</span><span class="p">,</span>
+    <span class="s">&#39;run&#39;</span><span class="p">:</span> <span class="s">&#39;RUN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;savedsearch&#39;</span><span class="p">:</span> <span class="s">&#39;SAVEDSEARCH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="s">&#39;SCRIPT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;scrub&#39;</span><span class="p">:</span> <span class="s">&#39;SCRUB&#39;</span><span class="p">,</span>
+    <span class="s">&#39;search&#39;</span><span class="p">:</span> <span class="s">&#39;SEARCH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;searchtxn&#39;</span><span class="p">:</span> <span class="s">&#39;SEARCHTXN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;selfjoin&#39;</span><span class="p">:</span> <span class="s">&#39;SELFJOIN&#39;</span><span class="p">,</span>
+    <span class="s">&#39;set&#39;</span><span class="p">:</span> <span class="s">&#39;SET&#39;</span><span class="p">,</span>
+    <span class="s">&#39;setfields&#39;</span><span class="p">:</span> <span class="s">&#39;SETFIELDS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sendemail&#39;</span><span class="p">:</span> <span class="s">&#39;SENDEMAIL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sichart&#39;</span><span class="p">:</span> <span class="s">&#39;SICHART&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sirare&#39;</span><span class="p">:</span> <span class="s">&#39;SIRARE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sistats&#39;</span><span class="p">:</span> <span class="s">&#39;SISTATS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sitimechart&#39;</span><span class="p">:</span> <span class="s">&#39;SITIMECHART&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sitop&#39;</span><span class="p">:</span> <span class="s">&#39;SITOP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sort&#39;</span><span class="p">:</span> <span class="s">&#39;SORT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;spath&#39;</span><span class="p">:</span> <span class="s">&#39;SPATH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;stats&#39;</span><span class="p">:</span> <span class="s">&#39;STATS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;strcat&#39;</span><span class="p">:</span> <span class="s">&#39;STRCAT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;streamstats&#39;</span><span class="p">:</span> <span class="s">&#39;STREAMSTATS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;summaryindex&#39;</span><span class="p">:</span> <span class="s">&#39;SUMMARYINDEX&#39;</span><span class="p">,</span>
+    <span class="s">&#39;table&#39;</span><span class="p">:</span> <span class="s">&#39;TABLE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;tags&#39;</span><span class="p">:</span> <span class="s">&#39;TAGS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;tail&#39;</span><span class="p">:</span> <span class="s">&#39;TAIL&#39;</span><span class="p">,</span>
+    <span class="s">&#39;timechart&#39;</span><span class="p">:</span> <span class="s">&#39;TIMECHART&#39;</span><span class="p">,</span>
+    <span class="s">&#39;top&#39;</span><span class="p">:</span> <span class="s">&#39;TOP&#39;</span><span class="p">,</span>
+    <span class="s">&#39;transaction&#39;</span><span class="p">:</span> <span class="s">&#39;TRANSACTION&#39;</span><span class="p">,</span>
+    <span class="s">&#39;transpose&#39;</span><span class="p">:</span> <span class="s">&#39;TRANSPOSE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;trendline&#39;</span><span class="p">:</span> <span class="s">&#39;TRENDLINE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;tscollect&#39;</span><span class="p">:</span> <span class="s">&#39;TSCOLLECT&#39;</span><span class="p">,</span>
+    <span class="s">&#39;tstats&#39;</span><span class="p">:</span> <span class="s">&#39;TSTATS&#39;</span><span class="p">,</span>
+    <span class="s">&#39;typeahead&#39;</span><span class="p">:</span> <span class="s">&#39;TYPEAHEAD&#39;</span><span class="p">,</span>
+    <span class="s">&#39;typelearner&#39;</span><span class="p">:</span> <span class="s">&#39;TYPELEARNER&#39;</span><span class="p">,</span>
+    <span class="s">&#39;typer&#39;</span><span class="p">:</span> <span class="s">&#39;TYPER&#39;</span><span class="p">,</span>
+    <span class="s">&#39;uniq&#39;</span><span class="p">:</span> <span class="s">&#39;UNIQ&#39;</span><span class="p">,</span>
+    <span class="s">&#39;untable&#39;</span><span class="p">:</span> <span class="s">&#39;UNTABLE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;where&#39;</span><span class="p">:</span> <span class="s">&#39;WHERE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;x11&#39;</span><span class="p">:</span> <span class="s">&#39;X11&#39;</span><span class="p">,</span>
+    <span class="s">&#39;xmlkv&#39;</span><span class="p">:</span> <span class="s">&#39;XMLKV&#39;</span><span class="p">,</span>
+    <span class="s">&#39;xmlunescape&#39;</span><span class="p">:</span> <span class="s">&#39;XMLUNESCAPE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;xpath&#39;</span><span class="p">:</span> <span class="s">&#39;XPATH&#39;</span><span class="p">,</span>
+    <span class="s">&#39;xyseries&#39;</span><span class="p">:</span> <span class="s">&#39;XYSERIES&#39;</span>
+<span class="p">}</span>
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">reserved</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="SPLToken"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLToken">[docs]</a><span class="k">class</span> <span class="nc">SPLToken</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents the basic unit of a string split into parts for parsing.</span>
+<span class="sd">    </span>
+<span class="sd">    Returned by the lexer after it tokenizes a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an SPLToken object.</span>
+
+<span class="sd">        :param self: The object being created</span>
+<span class="sd">        :type self: SPLToken</span>
+<span class="sd">        :param type: The type of token</span>
+<span class="sd">        :type type: str</span>
+<span class="sd">        :param value: The raw value of the corresponding tokenized portion</span>
+<span class="sd">        :type value: str</span>
+<span class="sd">        :rtype: SPLToken</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;LexToken(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;&#39;)&quot;</span>
+
+    
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
+
+
+</div>
+<div class="viewcode-block" id="SPLLexer"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer">[docs]</a><span class="k">class</span> <span class="nc">SPLLexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a lexer object that can tokenize SPL strings.</span>
+
+<span class="sd">    You should not need to create this object. You can simply</span>
+<span class="sd">    call lex on the module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SPLLexer.__init__"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates an SPLLexer object</span>
+
+<span class="sd">        :param self: The object being created</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :rtype: SPLLexer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="SPLLexer.input"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.input">[docs]</a>    <span class="k">def</span> <span class="nf">input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tokenize the given input and save it but don&#39;t return it.</span>
+
+<span class="sd">        :param self: The current lexer</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :param data: The string to tokenize</span>
+<span class="sd">        :type data: str</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">quoted</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">quotechar</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">quoted</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">SPECIAL</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">stack</span><span class="p">:</span> <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stack</span><span class="p">))</span>
+                        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">QUOTES</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">quoted</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">quotechar</span> <span class="o">=</span> <span class="n">char</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">WHITESPACE</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">stack</span><span class="p">:</span>
+                        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stack</span><span class="p">))</span>
+                        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="n">ESCAPE</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">escaped</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span> <span class="c"># the last character escaped this one</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="c"># not special, whitespace, quotechar, or escape</span>
+                <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span> <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">quoted</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">QUOTES</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="n">quotechar</span><span class="p">:</span>
+                            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                            <span class="n">quoted</span> <span class="o">=</span> <span class="bp">False</span>
+                            <span class="n">quotechar</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+                            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                            <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stack</span><span class="p">))</span>
+                            <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">continue</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                            <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="n">ESCAPE</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">escaped</span><span class="p">:</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span> <span class="c"># the last character escaped this one</span>
+                        <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="c"># not a quote or an escape character</span>
+                <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span> <span class="n">escaped</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">stack</span><span class="p">:</span> <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stack</span><span class="p">))</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span>
+
+</div>
+<div class="viewcode-block" id="SPLLexer.is_macro"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.is_macro">[docs]</a>    <span class="k">def</span> <span class="nf">is_macro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the given string represents a macro.</span>
+
+<span class="sd">        :param self: The current lexer</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :param token: The string to test</span>
+<span class="sd">        :type token: str</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;`&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">token</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;`&quot;</span>
+    
+</div>
+<div class="viewcode-block" id="SPLLexer.is_single_quoted"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.is_single_quoted">[docs]</a>    <span class="k">def</span> <span class="nf">is_single_quoted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the given string is quoted with single quotes.</span>
+
+<span class="sd">        :param self: The current lexer</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :param token: The string to test</span>
+<span class="sd">        :type token: str</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&#39;&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">token</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&#39;&quot;</span>
+    
+</div>
+<div class="viewcode-block" id="SPLLexer.is_double_quoted"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.is_double_quoted">[docs]</a>    <span class="k">def</span> <span class="nf">is_double_quoted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if the given string is quoted with double quotes.</span>
+
+<span class="sd">        :param self: The current lexer</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :param token: The string to test</span>
+<span class="sd">        :type token: str</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&quot;&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">token</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;&quot;&#39;</span>
+
+</div>
+<div class="viewcode-block" id="SPLLexer.token"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.SPLLexer.token">[docs]</a>    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the next token that was last input to the lexer.</span>
+
+<span class="sd">        :param self: The current lexer</span>
+<span class="sd">        :type self: SPLLexer</span>
+<span class="sd">        :rtype: SPLToken</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">tok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lexpos</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_macro</span><span class="p">(</span><span class="n">tok</span><span class="p">):</span>     
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;MACRO&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_single_quoted</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_double_quoted</span><span class="p">(</span><span class="n">tok</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;ARGS&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tok</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">reserved</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="n">reserved</span><span class="p">[</span><span class="n">tok</span><span class="o">.</span><span class="n">lower</span><span class="p">()],</span> <span class="n">tok</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;ARGS&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tok</span> <span class="o">==</span> <span class="s">&quot;[&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;LBRACKET&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tok</span> <span class="o">==</span> <span class="s">&quot;]&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;RBRACKET&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tok</span> <span class="o">==</span> <span class="s">&quot;|&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;PIPE&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;EXTERNAL_COMMAND&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SPLToken</span><span class="p">(</span><span class="s">&quot;ARGS&quot;</span><span class="p">,</span> <span class="n">tok</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="lex"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.lex">[docs]</a><span class="k">def</span> <span class="nf">lex</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Return an SPLLexer instance.</span>
+
+<span class="sd">    :rtype: SPLLexer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">SPLLexer</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="tokenize"><a class="viewcode-back" href="../../../splparser.lexers.html#splparser.lexers.toplevellexer.tokenize">[docs]</a><span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">debuglog</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tokenize the given string.</span>
+
+<span class="sd">    :param data: The string to tokenize</span>
+<span class="sd">    :type data: str</span>
+<span class="sd">    :param debug: Whether or not to output debug information to the log</span>
+<span class="sd">    :type debug: bool</span>
+<span class="sd">    :param debuglog: The log to write debugging information to</span>
+<span class="sd">    :type debuglog: str</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lexer</span> <span class="o">=</span> <span class="n">SPLLexer</span><span class="p">()</span>
+    <span class="n">lexer</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">tok</span> <span class="o">=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tok</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tokens</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="k">print</span> <span class="n">tokenize</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span> 
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation.html">API documentation</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -56,15 +56,31 @@
             
   <div class="section" id="module-splparser.lexers.toplevellexer">
 <span id="splparser-lexer-toplevellexer"></span><h1>splparser.lexer.toplevellexer<a class="headerlink" href="#module-splparser.lexers.toplevellexer" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="splparser.lexers.toplevellexer.SPLLexer.__init__">
+<tt class="descclassname">SPLLexer.</tt><tt class="descname">__init__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an SPLLexer object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<em>SPLLexer</em>) &#8211; The object being created</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">SPLLexer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="splparser.lexers.toplevellexer.SPLLexer">
-<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLLexer</tt><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLLexer</tt><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a lexer object that can tokenize SPL strings.</p>
 <p>You should not need to create this object. You can simply
 call lex on the module.</p>
 <dl class="method">
 <dt id="splparser.lexers.toplevellexer.SPLLexer.input">
-<tt class="descname">input</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.input" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">input</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tokenize the given input and save it but don&#8217;t return it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -85,7 +101,7 @@ call lex on the module.</p>
 
 <dl class="method">
 <dt id="splparser.lexers.toplevellexer.SPLLexer.is_double_quoted">
-<tt class="descname">is_double_quoted</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_double_quoted" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">is_double_quoted</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.is_double_quoted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_double_quoted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if the given string is quoted with double quotes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -106,7 +122,7 @@ call lex on the module.</p>
 
 <dl class="method">
 <dt id="splparser.lexers.toplevellexer.SPLLexer.is_macro">
-<tt class="descname">is_macro</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_macro" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">is_macro</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.is_macro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_macro" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if the given string represents a macro.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -127,7 +143,7 @@ call lex on the module.</p>
 
 <dl class="method">
 <dt id="splparser.lexers.toplevellexer.SPLLexer.is_single_quoted">
-<tt class="descname">is_single_quoted</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_single_quoted" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">is_single_quoted</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.is_single_quoted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.is_single_quoted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if the given string is quoted with single quotes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -148,7 +164,7 @@ call lex on the module.</p>
 
 <dl class="method">
 <dt id="splparser.lexers.toplevellexer.SPLLexer.token">
-<tt class="descname">token</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.token" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">token</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLLexer.token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLLexer.token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the next token that was last input to the lexer.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -166,14 +182,14 @@ call lex on the module.</p>
 
 <dl class="class">
 <dt id="splparser.lexers.toplevellexer.SPLToken">
-<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLToken</tt><big>(</big><em>type</em>, <em>value</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLToken" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">SPLToken</tt><big>(</big><em>type</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#SPLToken"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.SPLToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the basic unit of a string split into parts for parsing.</p>
 <p>Returned by the lexer after it tokenizes a string.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="splparser.lexers.toplevellexer.lex">
-<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">lex</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.lex" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">lex</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#lex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.lex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an SPLLexer instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -187,7 +203,7 @@ call lex on the module.</p>
 
 <dl class="function">
 <dt id="splparser.lexers.toplevellexer.tokenize">
-<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">tokenize</tt><big>(</big><em>data</em>, <em>debug=False</em>, <em>debuglog=None</em><big>)</big><a class="headerlink" href="#splparser.lexers.toplevellexer.tokenize" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">splparser.lexers.toplevellexer.</tt><tt class="descname">tokenize</tt><big>(</big><em>data</em>, <em>debug=False</em>, <em>debuglog=None</em><big>)</big><a class="reference internal" href="_modules/splparser/lexers/toplevellexer.html#tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.lexers.toplevellexer.tokenize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tokenize the given string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

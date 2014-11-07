@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>splparser.parser &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">splparser 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for splparser.parser</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">imp</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ply.yacc</span>
+
+<span class="n">LOGDIR</span> <span class="o">=</span> <span class="s">&#39;logs&#39;</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SPLParser"><a class="viewcode-back" href="../../splparser.parser.html#splparser.parser.SPLParser">[docs]</a><span class="k">class</span> <span class="nc">SPLParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a parser object that can parse SPL queries.</span>
+
+<span class="sd">    You should not need to create one of these. Simply import</span>
+<span class="sd">    parse from the splparser module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SPLParser.__init__"><a class="viewcode-back" href="../../splparser.parser.html#splparser.parser.SPLParser.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lexermod</span><span class="p">,</span> <span class="n">parsetab_name</span><span class="p">,</span> <span class="n">parsetab_dir</span><span class="p">,</span> <span class="n">logname</span><span class="p">,</span> <span class="n">rulesmod</span><span class="p">,</span> <span class="n">optimize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates an SPLParser object.</span>
+
+<span class="sd">        :param self: The object being created</span>
+<span class="sd">        :type self: SPLParser</span>
+<span class="sd">        :param lexermod: The corresponding lexer module</span>
+<span class="sd">        :type lexermod: module</span>
+<span class="sd">        :param parsetab_name: The name of the toplevel parse table file</span>
+<span class="sd">        :type parsetab_name: str</span>
+<span class="sd">        :param parsetab_dir: The directory in which to store parse tables</span>
+<span class="sd">        :type parsetab_dir: str</span>
+<span class="sd">        :param logname: The name of the log</span>
+<span class="sd">        :type logname: str</span>
+<span class="sd">        :param rulesmod: The module containing the top-level rules</span>
+<span class="sd">        :type rulesmod: module</span>
+<span class="sd">        :param optimize: Whether or not to write a log (it slows performance and can cause the parser to sometimes fail due to too many open file handles -- one for each command parsed as they have separate log files)</span>
+<span class="sd">        :type optimize: dir</span>
+<span class="sd">        :rtype: SPLParser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lexer</span> <span class="o">=</span> <span class="n">lexermod</span><span class="o">.</span><span class="n">lex</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span> <span class="o">=</span> <span class="n">parsetab_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span> <span class="o">=</span> <span class="n">parsetab_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parsetab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_parsetab</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rulesmod</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span> <span class="o">=</span> <span class="n">optimize</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">optimize</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_log</span><span class="p">(</span><span class="n">logname</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">yacc</span><span class="o">.</span><span class="n">yacc</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> 
+                                        <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                        <span class="n">debuglog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> 
+                                        <span class="n">tabmodule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span><span class="p">,</span> 
+                                        <span class="n">outputdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">,</span>
+                                        <span class="n">optimize</span><span class="o">=</span><span class="n">optimize</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">ply</span><span class="o">.</span><span class="n">yacc</span><span class="o">.</span><span class="n">yacc</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> 
+                                        <span class="n">tabmodule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span><span class="p">,</span> 
+                                        <span class="n">outputdir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">,</span>
+                                        <span class="n">optimize</span><span class="o">=</span><span class="n">optimize</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SPLParser.setup_parsetab"><a class="viewcode-back" href="../../splparser.parser.html#splparser.parser.SPLParser.setup_parsetab">[docs]</a>    <span class="k">def</span> <span class="nf">setup_parsetab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up the parse tables in the install location.</span>
+
+<span class="sd">        Writes the parse tables to the installation location so that parse</span>
+<span class="sd">        tables aren&#39;t created in every directory in which the parser is run.</span>
+
+<span class="sd">        :param self: The current SPLParser object</span>
+<span class="sd">        :type self: SPLParser</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loaded</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">try</span><span class="p">:</span> <span class="c"># check for parsetabs in current installation</span>
+            <span class="n">here</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+            <span class="n">path_to_parsetab</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">here</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span> <span class="o">+</span> <span class="s">&#39;.py&#39;</span><span class="p">)</span>
+            <span class="n">parsetab</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span><span class="p">,</span> <span class="n">path_to_parsetab</span><span class="p">)</span>
+            <span class="n">loaded</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="n">parsetab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">loaded</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> <span class="c"># check for parsetabs in current directory </span>
+                <span class="n">path_to_parsetab</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span> <span class="o">+</span> <span class="s">&#39;.py&#39;</span><span class="p">)</span>
+                <span class="n">parsetab</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span><span class="p">,</span> <span class="n">path_to_parsetab</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="n">parsetab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">loaded</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> <span class="c"># in case the above failed, create dir for PLY to write parsetabs in</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;ERROR: </span><span class="se">\</span>
+<span class="s">                                      Need permission to write to ./&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsetab_dir</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span>
+
+        <span class="k">return</span> <span class="n">parsetab</span>
+    </div>
+<div class="viewcode-block" id="SPLParser.setup_log"><a class="viewcode-back" href="../../splparser.parser.html#splparser.parser.SPLParser.setup_log">[docs]</a>    <span class="k">def</span> <span class="nf">setup_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up the log so that parsing info can be written out.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current SPLParser object</span>
+<span class="sd">        :type self: SPLParser</span>
+<span class="sd">        :param name: The name of the log file</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :rtype: logging.Logger</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">LOGDIR</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">LOGDIR</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;WARNING: Can&#39;t write logs to ./&quot;</span> <span class="o">+</span> <span class="n">LOGDIR</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="n">filehandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">LOGDIR</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;.log&quot;</span><span class="p">)</span>
+        <span class="n">filehandler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">filehandler</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logger</span>
+    </div>
+<div class="viewcode-block" id="SPLParser.parse"><a class="viewcode-back" href="../../splparser.parser.html#splparser.parser.SPLParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse the given string.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current SPLParser object</span>
+<span class="sd">        :type self: SPLParser</span>
+<span class="sd">        :param data: The string to parse</span>
+<span class="sd">        :type data: str</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parsetree</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span><span class="p">:</span>
+                <span class="n">parsetree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lexer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parsetree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">lexer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lexer</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">return</span> <span class="n">parsetree</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">API documentation</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

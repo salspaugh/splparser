@@ -1,0 +1,1180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>splparser.parsetree &mdash; splparser 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="splparser 0.3.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">splparser 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for splparser.parsetree</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">schema</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">count</span>
+
+<span class="n">INDENT</span> <span class="o">=</span> <span class="s">&#39;    &#39;</span>
+
+<span class="n">DATATYPES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;INT&quot;</span><span class="p">:</span> <span class="s">&quot;NUMERIC&quot;</span><span class="p">,</span>
+    <span class="s">&quot;FLOAT&quot;</span><span class="p">:</span> <span class="s">&quot;NUMERIC&quot;</span><span class="p">,</span>
+    <span class="s">&quot;BIN&quot;</span><span class="p">:</span> <span class="s">&quot;NUMERIC&quot;</span><span class="p">,</span>
+    <span class="s">&quot;OCT&quot;</span><span class="p">:</span> <span class="s">&quot;NUMERIC&quot;</span><span class="p">,</span>
+    <span class="s">&quot;INT&quot;</span><span class="p">:</span> <span class="s">&quot;NUMERIC&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ID&quot;</span><span class="p">:</span> <span class="s">&quot;STRING&quot;</span><span class="p">,</span>
+    <span class="s">&quot;WORD&quot;</span><span class="p">:</span> <span class="s">&quot;STRING&quot;</span><span class="p">,</span>
+    <span class="s">&quot;NBSTR&quot;</span><span class="p">:</span> <span class="s">&quot;STRING&quot;</span><span class="p">,</span>
+    <span class="s">&quot;BOOLEAN&quot;</span><span class="p">:</span> <span class="s">&quot;BOOLEAN&quot;</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="ParseTreeNode"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode">[docs]</a><span class="k">class</span> <span class="nc">ParseTreeNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A node in a parse tree representing a single parsed element.</span>
+
+<span class="sd">    The parse function in splparser returns a ParseTreeNode representing the root node of a parse tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># TODO: Reorder functions in this module to be in logical groupings.</span>
+
+<div class="viewcode-block" id="ParseTreeNode.__init__"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">nodetype</span><span class="o">=</span><span class="s">&quot;SPL&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">is_associative</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">is_argument</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The constructor for ParseTreeNode</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param role: The &#39;type&#39; of node represented; e.g., ROOT, STAGE, COMMAND, FUNCTION, FIELD</span>
+<span class="sd">        :type role: str</span>
+<span class="sd">        :param nodetype: The data type of the node value; only applies to FIELD and VALUE roles</span>
+<span class="sd">        :type nodetype: str</span>
+<span class="sd">        :param raw: The value of the parsed element</span>
+<span class="sd">        :type raw: str</span>
+<span class="sd">        :param is_associative: Whether the node value is an associative operator; only applies to FUNCTION roles</span>
+<span class="sd">        :type is_associative: bool</span>
+<span class="sd">        :param is_argument: Whether the node value is an argument versus part of the SPL language</span>
+<span class="sd">        :type is_argument: bool</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;TYPE&#39;, raw=&quot;raw&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.role</span>
+<span class="sd">        &#39;TYPE&#39;</span>
+<span class="sd">        &gt;&gt;&gt; p.raw</span>
+<span class="sd">        &#39;raw&#39;</span>
+<span class="sd">        &gt;&gt;&gt; p.children</span>
+<span class="sd">        []</span>
+<span class="sd">        &gt;&gt;&gt; p.parent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO: Use property decorator for the three strings here.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">role</span><span class="p">)</span> <span class="o">==</span> <span class="nb">unicode</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">role</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodetype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nodetype</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodetype</span><span class="p">)</span> <span class="o">==</span> <span class="nb">unicode</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">nodetype</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="o">==</span> <span class="nb">unicode</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span> <span class="o">=</span> <span class="n">is_associative</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_argument</span> <span class="o">=</span> <span class="n">is_argument</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.jsonify"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.jsonify">[docs]</a>    <span class="k">def</span> <span class="nf">jsonify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively convert the ParseTreeNode to types directly convertible to JSON.</span>
+
+<span class="sd">        This function creates a dict that stores all of the attributes of the given</span>
+<span class="sd">        ParseTreeNode as dict, list, str, int, etc. types. It recursively </span>
+<span class="sd">        performs this operation on the children ParseTreeNode objects.</span>
+
+<span class="sd">        This is the inverse function of the function from_dict.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;role&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;nodetype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodetype</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;raw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;is_associative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;is_argument&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_argument</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;corrected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;bound&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span>
+        <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">encoding</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">jsonify</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">encoding</span>
+    </div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ParseTreeNode.from_dict"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively convert a dict representing a ParseTreeNode to a ParseTreeNode.</span>
+
+<span class="sd">        This function creates a ParseTreeNode from a dict whose contents are the</span>
+<span class="sd">        attributes and values of the object. It recursively performs this operation</span>
+<span class="sd">        on the &quot;children&quot; key.</span>
+
+<span class="sd">        This is the inverse function of the function jsonify.</span>
+
+<span class="sd">        :param d: A dictionary that corresponds to a ParseTreeNode object</span>
+<span class="sd">        :type d: dict</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;role&#39;</span><span class="p">]</span>
+        <span class="n">nodetype</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;nodetype&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nodetype</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">nodetype</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="c"># assbackward-compatability</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;raw&#39;</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">nodetype</span><span class="o">=</span><span class="n">nodetype</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">is_associative</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;is_associative&#39;</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">is_argument</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;is_argument&#39;</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;corrected&#39;</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;bound&#39;</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_children</span><span class="p">([</span><span class="n">ParseTreeNode</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]])</span>
+        <span class="c"># TODO: Add code to make sure all keys are set as attributes.</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ParseTreeNode.loads"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.loads">[docs]</a>    <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a JSON string that corresponds to a ParseTreeNode to a ParseTreeNode.</span>
+
+<span class="sd">        This converts a str object to a ParseTreeNode if it represents a valid</span>
+<span class="sd">        ParseTreeNode.</span>
+
+<span class="sd">        :param jsonstr: A string that encodes a ParseTreeNode in JSON format</span>
+<span class="sd">        :type jsonstr: str</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ParseTreeNode</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.ParseTreeNodeEncoder"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder">[docs]</a>    <span class="k">class</span> <span class="nc">ParseTreeNodeEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;An object that knows how to decode a JSON string representing a ParseTreeNode.</span>
+
+<span class="sd">        This needs to be passed to the json module load or loads functions to</span>
+<span class="sd">        tell it how to decode a ParseTreeNode object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ParseTreeNode.ParseTreeNodeEncoder.default"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder.default">[docs]</a>        <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Method that must be implemented to decode the JSON string.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ParseTreeNode</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">jsonify</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    </div></div>
+<div class="viewcode-block" id="ParseTreeNode.dumps"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.dumps">[docs]</a>    <span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert the current object to a JSON-encoded string.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param kwargs: Keyword arguments that are passed to json.dumps</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ParseTreeNodeEncoder</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c"># TODO: Add check to see that other is a ParseTreeNode.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">eq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_eq</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">eq</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> \
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">self_child</span> <span class="o">==</span> <span class="n">other_child</span> <span class="k">for</span> <span class="p">(</span><span class="n">self_child</span><span class="p">,</span> <span class="n">other_child</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">_node_eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test whether a ParseTreeNode is equal to another one.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param other: The object to compare to</span>
+<span class="sd">        :type other: ParseTreeNode</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">role</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">raw</span>
+
+<div class="viewcode-block" id="ParseTreeNode.flatten"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.flatten">[docs]</a>    <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a ParseTreeNode to a flattened string representation.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">paren</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+                <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="s">&#39;(&#39;</span><span class="p">])</span>
+                <span class="n">paren</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="p">])</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span>
+            <span class="k">if</span> <span class="n">paren</span><span class="p">:</span>     
+                <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="p">,</span> <span class="s">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.is_supertree_of"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.is_supertree_of">[docs]</a>    <span class="k">def</span> <span class="nf">is_supertree_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests whether one tree is a supertree of the other node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param other: The object to compare to</span>
+<span class="sd">        :type other: ParseTreeNode</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">eq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_eq</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">eq</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ocidx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">children_eq</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ocidx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">_node_eq</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">ocidx</span><span class="p">]):</span>
+                    <span class="n">children_eq</span> <span class="o">=</span> <span class="n">children_eq</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">is_supertree_of</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">ocidx</span><span class="p">])</span>
+                    <span class="n">ocidx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ocidx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_eq</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="n">children_eq</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.template"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.template">[docs]</a>    <span class="k">def</span> <span class="nf">template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_options</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">drop_rename</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">distinguished_argument</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replaces all parameters in a ParseTreeNode tree with generic symbols.</span>
+
+<span class="sd">        This function takes a ParseTreeNode tree representing a specific query</span>
+<span class="sd">        and converts it to a &quot;template&quot; -- the same query with parameters</span>
+<span class="sd">        replaced with generic symbols.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param drop_options: Whether or not to remove options</span>
+<span class="sd">        :type drop_options: bool</span>
+<span class="sd">        :param drop_rename: Whether or not to drop rename clauses</span>
+<span class="sd">        :type drop_rename: bool</span>
+<span class="sd">        :param distinguished_argument: If there is an argument to name </span>
+<span class="sd">            differently from other variables</span>
+<span class="sd">        :type distinguished_argument: str</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+        <span class="n">keynum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">valnum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">keyvars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">valvars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distinguished_argument</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="n">distinguished_argument</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="s">&quot;x&quot;</span>
+            <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;FIELD&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="ow">in</span> <span class="n">keyvars</span><span class="p">:</span>
+                    <span class="n">keyvars</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;k&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">keynum</span><span class="p">)])</span>
+                    <span class="n">keynum</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">keyvars</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">nodetype</span> <span class="o">!=</span> <span class="s">&#39;SPL&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="ow">in</span> <span class="n">valvars</span><span class="p">:</span>
+                    <span class="n">valvars</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;v&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">valnum</span><span class="p">)])</span>
+                    <span class="n">valnum</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">valvars</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span>
+            <span class="n">new_children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">drop_options</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">drop_rename</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;EQ&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;OPTION&#39;</span><span class="p">):</span>
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">drop_rename</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">drop_options</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;as&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span><span class="p">:</span>
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">drop_options</span> <span class="ow">and</span> <span class="n">drop_rename</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;EQ&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;OPTION&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;rename&#39;</span><span class="p">:</span>
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">c</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;as&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span><span class="p">:</span> 
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">new_children</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.get_parent_stage"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.get_parent_stage">[docs]</a>    <span class="k">def</span> <span class="nf">get_parent_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the first node that is an ancestor of this one that has role=&quot;STAGE&quot;.</span>
+
+<span class="sd">        This function traverses up the tree from the current node until it </span>
+<span class="sd">        finds a node whose role is &quot;STAGE&quot; and then returns that node. If </span>
+<span class="sd">        there is no such node then the function returns None.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;STAGE&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="bp">None</span> <span class="c"># TODO: Throw error here?</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.drop_options"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.drop_options">[docs]</a>    <span class="k">def</span> <span class="nf">drop_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new tree with the subtrees of the current node that represent option parameters removed.</span>
+
+<span class="sd">        This function traverses a copy of the subtree starting at the current node and</span>
+<span class="sd">        removes all subtrees that represent option clauses. It does this by</span>
+<span class="sd">        removing nodes whose role is &quot;OPTION&quot; or whose role is &quot;EQ&quot; and whose</span>
+<span class="sd">        first child is &quot;OPTION&quot;. The reasoning for why one might want to </span>
+<span class="sd">        remove option clauses is that often these are not very important to </span>
+<span class="sd">        the functioning of the query so if you wanted to count how many queries</span>
+<span class="sd">        of a certain type there are you might want to ignore the options when</span>
+<span class="sd">        doing this accounting.</span>
+
+<span class="sd">        This is similar to the drop_rename function.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;EQ&#39;</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;OPTION&#39;</span> <span class="ow">or</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;OPTION&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="n">new_children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;EQ&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;OPTION&#39;</span><span class="p">):</span>
+                    <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">new_children</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.drop_rename"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.drop_rename">[docs]</a>    <span class="k">def</span> <span class="nf">drop_rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new tree with the subtrees of the current node that represent rename clauses removed.</span>
+
+<span class="sd">        This function creates a copy of the tree starting at the current node</span>
+<span class="sd">        and removes all subtrees from that copy that represent rename clauses.</span>
+<span class="sd">        This includes nodes whose role is &quot;FUNCTION&quot; and whose raw value is &quot;as&quot;.</span>
+<span class="sd">        The reasoning for why one might want to do this is that renaming is</span>
+<span class="sd">        something that is often done for asthetic reasons and thus is not</span>
+<span class="sd">        integral to the transformations the query is applying to the data. So if</span>
+<span class="sd">        you wanted to tally similarity across a set of queries you might want</span>
+<span class="sd">        to ignore rename operations.</span>
+
+<span class="sd">        This is similar to the drop_options function.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;as&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="n">new_children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;as&#39;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span><span class="p">:</span> 
+                    <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">new_children</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.descendant_arguments"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.descendant_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">descendant_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all argument nodes from the subtree of the current node.</span>
+
+<span class="sd">        This function traverses the subtree starting from the current node and</span>
+<span class="sd">        returns a list of nodes that have is_argument set to True.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">descendants</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_argument</span><span class="p">:</span>
+                <span class="n">descendants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">descendants</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.ast"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ast">[docs]</a>    <span class="k">def</span> <span class="nf">ast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of the tree rearranged to correspond to the order operations would be executed in.</span>
+
+<span class="sd">        This function creates a copy of the tree starting at the current node</span>
+<span class="sd">        and rearranges the subtrees so that the operations are in an order</span>
+<span class="sd">        that more closely corresponds to the order in which they should be</span>
+<span class="sd">        applied to the data.</span>
+
+<span class="sd">        This is an experimental function.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">drop_options</span><span class="p">()</span>
+        <span class="n">outerstack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">outerstack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">corrected</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">corrected</span><span class="p">:</span>
+            <span class="n">groupby</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">outerstack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">outerstack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_groupby</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">corrected</span><span class="p">:</span>
+                    <span class="n">groupby</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="n">outerstack</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">+</span> <span class="n">outerstack</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">groupby</span><span class="p">:</span>
+                <span class="n">corrected</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stage</span> <span class="o">=</span> <span class="n">groupby</span><span class="o">.</span><span class="n">get_parent_stage</span><span class="p">()</span>
+                <span class="n">groupby</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">groupby</span><span class="p">)</span>
+                <span class="n">groupby</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;GROUPING&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">groupby</span><span class="o">.</span><span class="n">children</span><span class="p">))</span>
+                <span class="n">groupby</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">innerstack</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">innerstack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">innerstack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="n">innerstack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">is_eval_function</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">is_argument</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">raw</span> <span class="o">!=</span> <span class="s">&#39;as&#39;</span><span class="p">):</span>
+                        <span class="n">g</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="s">&#39;FUNCTION&#39;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="s">&#39;groupby&#39;</span><span class="p">)</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">swap_children</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+                        <span class="n">g</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;GROUPING&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">groupby</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+                            <span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+                            <span class="n">g</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> 
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">innerstack</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">+</span> <span class="n">innerstack</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.compile"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.compile">[docs]</a>    <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produce a list of operations to apply to execute the given query.</span>
+
+<span class="sd">        This function takes a ParseTreeNode representing a query and &quot;compiles&quot;</span>
+<span class="sd">        it into a list of single transformations to apply to the arguments in </span>
+<span class="sd">        the query. It actually returns a dictionary whose keys represent the</span>
+<span class="sd">        variable to compute and whose values represent the operations needed to</span>
+<span class="sd">        compute that variable.</span>
+
+<span class="sd">        This is an experimental function.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">drop_options</span><span class="p">()</span> <span class="c"># TODO: Incorporate these.</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">ast</span><span class="p">()</span>
+        <span class="n">exl</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">bound</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span>
+        <span class="n">stages</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">_stage_subtrees</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="n">stages</span><span class="p">:</span>
+            <span class="n">keepgoing</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">while</span> <span class="n">keepgoing</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">exl</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">exl</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+                            <span class="n">keepgoing</span> <span class="o">=</span> <span class="bp">False</span>
+                            <span class="k">break</span>
+                        <span class="c">#key = &#39;&#39;.join([&#39;X&#39;, str(var.next())])</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+                        <span class="n">new</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="s">&#39;VAR&#39;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+                        <span class="n">new</span><span class="o">.</span><span class="n">exl</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">swap_children</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+                        <span class="n">exl</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">()</span>       
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">stack</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">+</span> <span class="n">stack</span>
+        <span class="k">return</span> <span class="n">exl</span> 
+</div>
+<div class="viewcode-block" id="ParseTreeNode.swap_children"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.swap_children">[docs]</a>    <span class="k">def</span> <span class="nf">swap_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replace a given child node in a tree with another node.</span>
+
+<span class="sd">        This function replaces the given child node p with the other node q.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param p: The child node to remove and replace with another</span>
+<span class="sd">        :type p: ParseTreeNode</span>
+<span class="sd">        :param q: The child node to add in place of the other</span>
+<span class="sd">        :type q: ParseTreeNode</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.is_eval_function"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.is_eval_function">[docs]</a>    <span class="k">def</span> <span class="nf">is_eval_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if the current node is the start of an eval function.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_function</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;eval&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.is_groupby"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.is_groupby">[docs]</a>    <span class="k">def</span> <span class="nf">is_groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if the current node is the start of a group by clause.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_function</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;groupby&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.is_function"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.is_function">[docs]</a>    <span class="k">def</span> <span class="nf">is_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if the current node&#39;s role is &quot;FUNCTION&quot;.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.copy_node"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.copy_node">[docs]</a>    <span class="k">def</span> <span class="nf">copy_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of the current node but not its children.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="n">nodetype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodetype</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> 
+                            <span class="n">is_associative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span><span class="p">,</span> 
+                            <span class="n">is_argument</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_argument</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">corrected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corrected</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound</span>
+        <span class="c"># TODO: Check that all attributes are copied using inspect or the __dict__.</span>
+        <span class="k">return</span> <span class="n">p</span>
+    </div>
+<div class="viewcode-block" id="ParseTreeNode.copy_tree"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.copy_tree">[docs]</a>    <span class="k">def</span> <span class="nf">copy_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively copy the entire tree.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> 
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_node</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.ancestral_branch"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ancestral_branch">[docs]</a>    <span class="k">def</span> <span class="nf">ancestral_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of all the nodes along the current branch above the current node.</span>
+
+<span class="sd">        This function traverses up the tree from the current node, while making</span>
+<span class="sd">        a copy of the nodes along the path, finally returning the top-most node</span>
+<span class="sd">        on the branch.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> 
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_node</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">while</span> <span class="n">top</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">copy_node</span><span class="p">()</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">parent</span> 
+            <span class="n">bottom</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="k">return</span> <span class="n">t</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.ancestral_command"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ancestral_command">[docs]</a>    <span class="k">def</span> <span class="nf">ancestral_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the first node that is an ancestor of the current one and has role=&quot;COMMAND&quot;.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">while</span> <span class="n">up</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">up</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;COMMAND&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">up</span>
+            <span class="n">up</span> <span class="o">=</span> <span class="n">up</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.ancestral_function"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.ancestral_function">[docs]</a>    <span class="k">def</span> <span class="nf">ancestral_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the first node that is an ancestor of the current one and has role=&quot;COMMAND&quot; or role=&quot;FUNCTION&quot;.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">while</span> <span class="n">up</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">up</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FUNCTION&#39;</span> <span class="ow">or</span> <span class="n">up</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;COMMAND&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">up</span>
+            <span class="n">up</span> <span class="o">=</span> <span class="n">up</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="bp">None</span>
+        
+</div>
+<div class="viewcode-block" id="ParseTreeNode.skeleton"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a recursive copy of the tree at the current node with all raw argument values set to blank.</span>
+
+<span class="sd">        This function recursively traverses the tree starting at the current </span>
+<span class="sd">        node and copies it, while setting all argument values to blank.</span>
+<span class="sd">        This makes it possible to compare two queries to see if they are the</span>
+<span class="sd">        same except for their arguments.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_argument</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">is_argument</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="n">nodetype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodetype</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">is_associative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span><span class="p">)</span> 
+        <span class="n">p</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.inverse_skeleton"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.inverse_skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a recursive copy of the tree at the current node with all raw values except argument values set to blank.</span>
+
+<span class="sd">        This function recursively traverses the tree starting at the current </span>
+<span class="sd">        node and copies it, while setting all non-argument values to blank.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">inverse_skeleton</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_argument</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">is_argument</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">ParseTreeNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">is_associative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span><span class="p">,</span> <span class="n">is_argument</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.command_argument_tuple_list"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.command_argument_tuple_list">[docs]</a>    <span class="k">def</span> <span class="nf">command_argument_tuple_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of (command, arguments) pairs from the subtree starting at the current node.</span>
+
+<span class="sd">        Traverse the subtree starting at the current node and extract the</span>
+<span class="sd">        arguments for each Splunk command, returning a list of</span>
+<span class="sd">        (command, argument) tuples.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: ParseTreeNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stage_subtrees</span><span class="p">()</span>
+        <span class="n">command_and_arguments</span> <span class="o">=</span> <span class="p">[</span><span class="n">stage</span><span class="o">.</span><span class="n">_command_argument_tuple_from_stage</span><span class="p">()</span> <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="n">stages</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">command_and_arguments</span>
+</div>
+    <span class="k">def</span> <span class="nf">_stage_subtrees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;ROOT&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;This must be &#39;ROOT&#39; node for this to work properly.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span>
+
+    <span class="k">def</span> <span class="nf">_command_argument_tuple_from_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;STAGE&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;This must be &#39;STAGE&#39; node for this to work properly.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">skeleton</span><span class="p">()</span><span class="o">.</span><span class="n">_flatten_roles_to_string</span><span class="p">()</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inverse_skeleton</span><span class="p">()</span><span class="o">.</span><span class="n">_flatten_to_list</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_flatten_roles_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">flattened_children</span> <span class="o">=</span> <span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">_flatten_roles_to_string</span><span class="p">()</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]</span>
+        <span class="n">flattened_children</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&#39;()&#39;</span><span class="p">,</span> <span class="n">flattened_children</span><span class="p">)</span>
+        <span class="n">children_string</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flattened_children</span><span class="p">)</span>
+        <span class="n">children_string</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;(&#39;</span><span class="p">,</span> <span class="n">children_string</span><span class="p">,</span> <span class="s">&#39;)&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">children_string</span>
+        <span class="k">if</span> <span class="n">children_string</span> <span class="o">==</span> <span class="s">&#39;()&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="n">children_string</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_flatten_to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">children_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">_flatten_to_list</span><span class="p">()</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">children_list</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">field</span><span class="p">)]</span> <span class="o">+</span> <span class="n">children_list</span>
+
+<div class="viewcode-block" id="ParseTreeNode.add_child"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.add_child">[docs]</a>    <span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the given ParseTreeNode as a child to the current node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param child: The node to add as a child of the current node</span>
+<span class="sd">        :type child: ParseTreeNode</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_associative</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+    </div>
+<div class="viewcode-block" id="ParseTreeNode.add_children"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.add_children">[docs]</a>    <span class="k">def</span> <span class="nf">add_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add each of the ParseTreeNodes in the given list as a child of the current node.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param children: The nodes to add as children of the current node</span>
+<span class="sd">        :type children: list</span>
+<span class="sd">        :rtype: None</span>
+
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;x&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; a = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;a&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; b = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;b&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; c = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x.add_children([a, b, c])</span>
+<span class="sd">        &gt;&gt;&gt; y = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;y&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; p.children</span>
+<span class="sd">        [{role: &#39;CHILD&#39;, raw: &#39;x&#39;, children: [(&#39;CHILD&#39;: &#39;a&#39;), (&#39;CHILD&#39;: &#39;b&#39;), (&#39;CHILD&#39;: &#39;c&#39;)], parent: (&#39;PARENT&#39;)}, {role: &#39;CHILD&#39;, raw: &#39;y&#39;, children: [], parent: (&#39;PARENT&#39;)}]</span>
+<span class="sd">        &gt;&gt;&gt; x.children</span>
+<span class="sd">        [{role: &#39;CHILD&#39;, raw: &#39;a&#39;, children: [], parent: (&#39;CHILD&#39;: &#39;x&#39;)}, {role: &#39;CHILD&#39;, raw: &#39;b&#39;, children: [], parent: (&#39;CHILD&#39;: &#39;x&#39;)}, {role: &#39;CHILD&#39;, raw: &#39;c&#39;, children: [], parent: (&#39;CHILD&#39;: &#39;x&#39;)}]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="ParseTreeNode.remove_child"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.remove_child">[docs]</a>    <span class="k">def</span> <span class="nf">remove_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the given ParseTreeNode from the children of the current node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param child: The node to remove from the children of the current node</span>
+<span class="sd">        :type child: ParseTreeNode</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.remove_children"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.remove_children">[docs]</a>    <span class="k">def</span> <span class="nf">remove_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove the given list of ParseTreeNodes from the children of the current node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param children: The nodes to remove from the children of the current node</span>
+<span class="sd">        :type children: list</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;x&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; a = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;a&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; b = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;b&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; c = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x.add_children([a, b, c])</span>
+<span class="sd">        &gt;&gt;&gt; y = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;y&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; x.remove_children([a,b])</span>
+<span class="sd">        &gt;&gt;&gt; x.children</span>
+<span class="sd">        [{role: &#39;CHILD&#39;, raw: &#39;c&#39;, children: [], parent: (&#39;CHILD&#39;: &#39;x&#39;)}]</span>
+<span class="sd">        &gt;&gt;&gt; p.remove_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; p.children</span>
+<span class="sd">        [{role: &#39;CHILD&#39;, raw: &#39;x&#39;, children: [(&#39;CHILD&#39;: &#39;c&#39;)], parent: (&#39;PARENT&#39;)}]</span>
+<span class="sd">        &gt;&gt;&gt; a</span>
+<span class="sd">        {role: &#39;CHILD&#39;, raw: &#39;a&#39;, children: [], parent: None}</span>
+<span class="sd">        &gt;&gt;&gt; y</span>
+<span class="sd">        {role: &#39;CHILD&#39;, raw: &#39;y&#39;, children: [], parent: None}</span>
+<span class="sd">        &gt;&gt;&gt; p.remove_child(y)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">          File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="sd">          File &quot;art/splparsetree.py&quot;, line 53, in remove_child</span>
+<span class="sd">            self.children.remove(child)</span>
+<span class="sd">        ValueError: list.remove(x): x not in list</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.remove_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.children</span>
+<span class="sd">        [{role: &#39;CHILD&#39;, raw: &#39;x&#39;, children: [(&#39;CHILD&#39;: &#39;c&#39;)], parent: None}]</span>
+<span class="sd">        &gt;&gt;&gt; p.remove_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.children</span>
+<span class="sd">        []</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.remove_children([x, x])</span>
+<span class="sd">        &gt;&gt;&gt; p</span>
+<span class="sd">        {role: &#39;PARENT&#39;, raw: &#39;&#39;, children: [], parent: None}</span>
+<span class="sd">        &gt;&gt;&gt; x</span>
+<span class="sd">        {role: &#39;CHILD&#39;, raw: &#39;x&#39;, children: [(&#39;CHILD&#39;: &#39;c&#39;)], parent: None}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+               <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">tmp</span>        
+</div>
+<div class="viewcode-block" id="ParseTreeNode.clear_children"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.clear_children">[docs]</a>    <span class="k">def</span> <span class="nf">clear_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove all children from the current node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a string representation of the current node for debugging purposes.</span>
+
+<span class="sd">        Doesn&#39;t conform to the recommended guidelines for __repr__ functions.</span>
+<span class="sd">        This should be fixed.</span>
+
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;x&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; a = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;a&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; b = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;b&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; c = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x.add_children([a, b, c])</span>
+<span class="sd">        &gt;&gt;&gt; y = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;y&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; p</span>
+<span class="sd">        {role: &#39;PARENT&#39;, raw: &#39;&#39;, children: [(&#39;CHILD&#39;: &#39;x&#39;), (&#39;CHILD&#39;: &#39;y&#39;)], parent: None}</span>
+<span class="sd">        &gt;&gt;&gt; x</span>
+<span class="sd">        {role: &#39;CHILD&#39;, raw: &#39;x&#39;, children: [(&#39;CHILD&#39;: &#39;a&#39;), (&#39;CHILD&#39;: &#39;b&#39;), (&#39;CHILD&#39;: &#39;c&#39;)], parent: (&#39;PARENT&#39;)}</span>
+<span class="sd">        &gt;&gt;&gt; a</span>
+<span class="sd">        {role: &#39;CHILD&#39;, raw: &#39;a&#39;, children: [], parent: (&#39;CHILD&#39;: &#39;x&#39;)}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO: Ensure that the output of this function conforms to the recommended guidelines for __repr__ functions.</span>
+        <span class="n">child_repr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="p">:</span>
+                <span class="n">child_repr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">child_repr</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">child</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">child_repr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">to_repr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;{role: &#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span>\
+                            <span class="s">&quot;&#39;, raw: &#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span>\
+                            <span class="s">&quot;&#39;, children: [&quot;</span><span class="p">,</span> <span class="n">child_repr</span><span class="p">,</span>\
+                            <span class="s">&quot;], parent: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span> <span class="s">&quot;}&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">to_repr</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a human-friendly string representation of the current node only.</span>
+<span class="sd">       </span>
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;x&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; a = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;a&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; b = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;b&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; c = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x.add_children([a, b, c])</span>
+<span class="sd">        &gt;&gt;&gt; y = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;y&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(p)</span>
+<span class="sd">        (&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        (&#39;CHILD&#39;: &#39;x&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(a)</span>
+<span class="sd">        (&#39;CHILD&#39;: &#39;a&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span>
+        <span class="n">to_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;(&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="s">&quot;&#39;&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">to_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">to_str</span><span class="p">,</span> <span class="s">&quot;: &#39;&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="s">&quot;&#39;&quot;</span><span class="p">])</span>
+        <span class="n">to_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">to_str</span><span class="p">,</span> <span class="s">&quot;)&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">to_str</span>
+
+    <span class="k">def</span> <span class="nf">_str_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">to_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">to_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">to_str</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">recursive</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">to_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">to_str</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">INDENT</span><span class="o">*</span><span class="n">indent</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">_str_tree</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">to_str</span>
+
+<div class="viewcode-block" id="ParseTreeNode.str_tree"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.str_tree">[docs]</a>    <span class="k">def</span> <span class="nf">str_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively create the string representation of the tree starting at the current node.</span>
+
+<span class="sd">        This function recurses through the tree starting at the current node</span>
+<span class="sd">        and creates a string representation of the tree. Optionally you can</span>
+<span class="sd">        choose to not have the function recurse into the subtree of the node.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param recursive: Whether or not to recurse</span>
+<span class="sd">        :type recursive: bool</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_str_tree</span><span class="p">(</span><span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.print_tree"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.print_tree">[docs]</a>    <span class="k">def</span> <span class="nf">print_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print a string representation of the whole tree starting at the current node.</span>
+<span class="sd">        </span>
+<span class="sd">        If recursive is set to False, only the current node is printed.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :param recursive: Whether or not to recurse</span>
+<span class="sd">        :type recursive: bool</span>
+<span class="sd">        :rtype: None</span>
+
+<span class="sd">        &gt;&gt;&gt; p = ParseTreeNode(&#39;PARENT&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;x&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(x)</span>
+<span class="sd">        &gt;&gt;&gt; p.print_tree()</span>
+<span class="sd">        (&#39;PARENT&#39;)</span>
+<span class="sd">            (&#39;CHILD&#39;: &#39;x&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; a = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;a&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; b = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;b&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; c = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; x.add_children([a, b, c])</span>
+<span class="sd">        &gt;&gt;&gt; p.print_tree()</span>
+<span class="sd">        (&#39;PARENT&#39;)</span>
+<span class="sd">            (&#39;CHILD&#39;: &#39;x&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;a&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;b&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;c&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; y = ParseTreeNode(&#39;CHILD&#39;, raw=&quot;y&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; p.add_child(y)</span>
+<span class="sd">        &gt;&gt;&gt; p.print_tree()</span>
+<span class="sd">        (&#39;PARENT&#39;)</span>
+<span class="sd">            (&#39;CHILD&#39;: &#39;x&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;a&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;b&#39;)</span>
+<span class="sd">                (&#39;CHILD&#39;: &#39;c&#39;)</span>
+<span class="sd">            (&#39;CHILD&#39;: &#39;y&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; p.print_tree(recursive=False)</span>
+<span class="sd">        (&#39;PARENT&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">str_tree</span><span class="p">(</span><span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.itertree"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.itertree">[docs]</a>    <span class="k">def</span> <span class="nf">itertree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate through the entire tree depth-first, yielding nodes along the way.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span> <span class="o">+</span> <span class="n">stack</span>
+            <span class="k">yield</span> <span class="n">node</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.schema"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.schema">[docs]</a>    <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the schema inferred from the query in the subtree starting at the current node.</span>
+
+<span class="sd">        This is an experimental function.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: Schema</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">field_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_fields</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field_token</span> <span class="ow">in</span> <span class="n">field_tokens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">field_token</span><span class="o">.</span><span class="n">raw</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">field_token</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">field_token</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">field_token</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">([</span><span class="n">value</span><span class="o">.</span><span class="n">raw</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">field_token</span><span class="o">.</span><span class="n">values</span><span class="p">]))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Schema</span><span class="p">()</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        
+        <span class="n">value_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_values</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">value_token</span> <span class="ow">in</span> <span class="n">value_tokens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">value_token</span><span class="o">.</span><span class="n">raw</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">value_token</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">value_token</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">present</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value_token</span><span class="o">.</span><span class="n">raw</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                    <span class="n">present</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">present</span><span class="p">:</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">value_token</span><span class="o">.</span><span class="n">raw</span><span class="p">]</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.get_datatype"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.get_datatype">[docs]</a>    <span class="k">def</span> <span class="nf">get_datatype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the estimated data type of the raw value of the current node.</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;FIELD&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodetype</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">nodetype</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">vote</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DATATYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vote</span><span class="p">,</span> <span class="n">vote</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ParseTreeNode.extract_fields"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.extract_fields">[docs]</a>    <span class="k">def</span> <span class="nf">extract_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of nodes in the subtree starting at the current node that have role=&quot;FIELD&quot;.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;FIELD&#39;</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fields</span>
+    </div>
+<div class="viewcode-block" id="ParseTreeNode.extract_values"><a class="viewcode-back" href="../../splparser.parsetree.html#splparser.parsetree.ParseTreeNode.extract_values">[docs]</a>    <span class="k">def</span> <span class="nf">extract_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of nodes in the subtree starting at the current node that have role=&quot;VALUE&quot;.</span>
+
+<span class="sd">        :param self: The current object</span>
+<span class="sd">        :type self: ParseTreeNode</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="s">&#39;VALUE&#39;</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">values</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">splparser</a></h1>
+
+
+
+
+
+<p>
+<iframe src="http://ghbtns.com/github-btn.html?user=salspaugh&repo=splparser&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html#supported-commands">Supported commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloading.html">Downloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using the parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Running the tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Known issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">API documentation</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Sara Alspaugh.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.2.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.6.1</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

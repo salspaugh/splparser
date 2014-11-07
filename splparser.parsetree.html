@@ -62,7 +62,7 @@
 <span id="splparser-parsetree"></span><h1>splparser.parsetree<a class="headerlink" href="#module-splparser.parsetree" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.__init__">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">__init__</tt><big>(</big><em>role</em>, <em>nodetype='SPL'</em>, <em>raw=''</em>, <em>is_associative=False</em>, <em>is_argument=False</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">__init__</tt><big>(</big><em>role</em>, <em>nodetype='SPL'</em>, <em>raw=''</em>, <em>is_associative=False</em>, <em>is_argument=False</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The constructor for ParseTreeNode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -97,18 +97,18 @@
 
 <dl class="class">
 <dt id="splparser.parsetree.ParseTreeNode">
-<em class="property">class </em><tt class="descclassname">splparser.parsetree.</tt><tt class="descname">ParseTreeNode</tt><big>(</big><em>role</em>, <em>nodetype='SPL'</em>, <em>raw=''</em>, <em>is_associative=False</em>, <em>is_argument=False</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">splparser.parsetree.</tt><tt class="descname">ParseTreeNode</tt><big>(</big><em>role</em>, <em>nodetype='SPL'</em>, <em>raw=''</em>, <em>is_associative=False</em>, <em>is_argument=False</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>A node in a parse tree representing a single parsed element.</p>
 <p>The parse function in splparser returns a ParseTreeNode representing the root node of a parse tree.</p>
 <dl class="class">
 <dt id="splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder">
-<em class="property">class </em><tt class="descname">ParseTreeNodeEncoder</tt><big>(</big><em>skipkeys=False</em>, <em>ensure_ascii=True</em>, <em>check_circular=True</em>, <em>allow_nan=True</em>, <em>sort_keys=False</em>, <em>indent=None</em>, <em>separators=None</em>, <em>encoding='utf-8'</em>, <em>default=None</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">ParseTreeNodeEncoder</tt><big>(</big><em>skipkeys=False</em>, <em>ensure_ascii=True</em>, <em>check_circular=True</em>, <em>allow_nan=True</em>, <em>sort_keys=False</em>, <em>indent=None</em>, <em>separators=None</em>, <em>encoding='utf-8'</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ParseTreeNodeEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>An object that knows how to decode a JSON string representing a ParseTreeNode.</p>
 <p>This needs to be passed to the json module load or loads functions to
 tell it how to decode a ParseTreeNode object.</p>
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder.default">
-<tt class="descname">default</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder.default" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">default</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ParseTreeNodeEncoder.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ParseTreeNodeEncoder.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that must be implemented to decode the JSON string.</p>
 </dd></dl>
 
@@ -116,7 +116,7 @@ tell it how to decode a ParseTreeNode object.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.add_child">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">add_child</tt><big>(</big><em>child</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.add_child" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">add_child</tt><big>(</big><em>child</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.add_child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.add_child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the given ParseTreeNode as a child to the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,7 +137,7 @@ tell it how to decode a ParseTreeNode object.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.add_children">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">add_children</tt><big>(</big><em>children</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.add_children" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">add_children</tt><big>(</big><em>children</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.add_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.add_children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add each of the ParseTreeNodes in the given list as a child of the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -173,7 +173,7 @@ tell it how to decode a ParseTreeNode object.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.ancestral_branch">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_branch</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_branch" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_branch</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ancestral_branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of all the nodes along the current branch above the current node.</p>
 <p>This function traverses up the tree from the current node, while making
 a copy of the nodes along the path, finally returning the top-most node
@@ -192,7 +192,7 @@ on the branch.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.ancestral_command">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_command</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_command" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_command</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ancestral_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the first node that is an ancestor of the current one and has role=&#8221;COMMAND&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -208,7 +208,7 @@ on the branch.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.ancestral_function">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_function</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_function" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ancestral_function</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ancestral_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ancestral_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the first node that is an ancestor of the current one and has role=&#8221;COMMAND&#8221; or role=&#8221;FUNCTION&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -224,7 +224,7 @@ on the branch.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.ast">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ast</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ast" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">ast</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.ast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a copy of the tree rearranged to correspond to the order operations would be executed in.</p>
 <p>This function creates a copy of the tree starting at the current node
 and rearranges the subtrees so that the operations are in an order
@@ -245,7 +245,7 @@ applied to the data.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.clear_children">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">clear_children</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.clear_children" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">clear_children</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.clear_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.clear_children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all children from the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -261,7 +261,7 @@ applied to the data.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.command_argument_tuple_list">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">command_argument_tuple_list</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.command_argument_tuple_list" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">command_argument_tuple_list</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.command_argument_tuple_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.command_argument_tuple_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of (command, arguments) pairs from the subtree starting at the current node.</p>
 <p>Traverse the subtree starting at the current node and extract the
 arguments for each Splunk command, returning a list of
@@ -280,7 +280,7 @@ arguments for each Splunk command, returning a list of
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.compile">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">compile</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.compile" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">compile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.compile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce a list of operations to apply to execute the given query.</p>
 <p>This function takes a ParseTreeNode representing a query and &#8220;compiles&#8221;
 it into a list of single transformations to apply to the arguments in 
@@ -302,7 +302,7 @@ compute that variable.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.copy_node">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">copy_node</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.copy_node" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">copy_node</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.copy_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.copy_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a copy of the current node but not its children.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -318,7 +318,7 @@ compute that variable.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.copy_tree">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">copy_tree</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.copy_tree" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">copy_tree</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.copy_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.copy_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively copy the entire tree.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -334,7 +334,7 @@ compute that variable.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.descendant_arguments">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">descendant_arguments</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.descendant_arguments" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">descendant_arguments</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.descendant_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.descendant_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return all argument nodes from the subtree of the current node.</p>
 <p>This function traverses the subtree starting from the current node and
 returns a list of nodes that have is_argument set to True.</p>
@@ -352,7 +352,7 @@ returns a list of nodes that have is_argument set to True.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.drop_options">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">drop_options</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.drop_options" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">drop_options</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.drop_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.drop_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new tree with the subtrees of the current node that represent option parameters removed.</p>
 <p>This function traverses a copy of the subtree starting at the current node and
 removes all subtrees that represent option clauses. It does this by
@@ -377,7 +377,7 @@ doing this accounting.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.drop_rename">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">drop_rename</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.drop_rename" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">drop_rename</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.drop_rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.drop_rename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new tree with the subtrees of the current node that represent rename clauses removed.</p>
 <p>This function creates a copy of the tree starting at the current node
 and removes all subtrees from that copy that represent rename clauses.
@@ -402,7 +402,7 @@ to ignore rename operations.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.dumps">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">dumps</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.dumps" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">dumps</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.dumps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.dumps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the current object to a JSON-encoded string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -423,7 +423,7 @@ to ignore rename operations.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.extract_fields">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">extract_fields</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.extract_fields" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">extract_fields</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.extract_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.extract_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of nodes in the subtree starting at the current node that have role=&#8221;FIELD&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -439,7 +439,7 @@ to ignore rename operations.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.extract_values">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">extract_values</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.extract_values" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">extract_values</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.extract_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.extract_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of nodes in the subtree starting at the current node that have role=&#8221;VALUE&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -455,7 +455,7 @@ to ignore rename operations.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.flatten">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">flatten</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.flatten" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">flatten</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.flatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a ParseTreeNode to a flattened string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -471,7 +471,7 @@ to ignore rename operations.</p>
 
 <dl class="staticmethod">
 <dt id="splparser.parsetree.ParseTreeNode.from_dict">
-<em class="property">static </em><tt class="descclassname">ParseTreeNode.</tt><tt class="descname">from_dict</tt><big>(</big><em>d</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.from_dict" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descclassname">ParseTreeNode.</tt><tt class="descname">from_dict</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively convert a dict representing a ParseTreeNode to a ParseTreeNode.</p>
 <p>This function creates a ParseTreeNode from a dict whose contents are the
 attributes and values of the object. It recursively performs this operation
@@ -491,7 +491,7 @@ on the &#8220;children&#8221; key.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.get_datatype">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">get_datatype</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.get_datatype" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">get_datatype</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.get_datatype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.get_datatype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the estimated data type of the raw value of the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -507,7 +507,7 @@ on the &#8220;children&#8221; key.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.get_parent_stage">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">get_parent_stage</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.get_parent_stage" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">get_parent_stage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.get_parent_stage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.get_parent_stage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the first node that is an ancestor of this one that has role=&#8221;STAGE&#8221;.</p>
 <p>This function traverses up the tree from the current node until it 
 finds a node whose role is &#8220;STAGE&#8221; and then returns that node. If 
@@ -526,7 +526,7 @@ there is no such node then the function returns None.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.inverse_skeleton">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">inverse_skeleton</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.inverse_skeleton" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">inverse_skeleton</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.inverse_skeleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.inverse_skeleton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a recursive copy of the tree at the current node with all raw values except argument values set to blank.</p>
 <p>This function recursively traverses the tree starting at the current 
 node and copies it, while setting all non-argument values to blank.</p>
@@ -544,7 +544,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.is_eval_function">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_eval_function</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_eval_function" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_eval_function</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.is_eval_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_eval_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the current node is the start of an eval function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -560,7 +560,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.is_function">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_function</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_function" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_function</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.is_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the current node&#8217;s role is &#8220;FUNCTION&#8221;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -576,7 +576,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.is_groupby">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_groupby</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_groupby" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_groupby</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.is_groupby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the current node is the start of a group by clause.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -592,7 +592,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.is_supertree_of">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_supertree_of</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_supertree_of" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">is_supertree_of</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.is_supertree_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.is_supertree_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests whether one tree is a supertree of the other node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -613,7 +613,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.itertree">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">itertree</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.itertree" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">itertree</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.itertree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.itertree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate through the entire tree depth-first, yielding nodes along the way.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -629,7 +629,7 @@ node and copies it, while setting all non-argument values to blank.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.jsonify">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">jsonify</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.jsonify" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">jsonify</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.jsonify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.jsonify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively convert the ParseTreeNode to types directly convertible to JSON.</p>
 <p>This function creates a dict that stores all of the attributes of the given
 ParseTreeNode as dict, list, str, int, etc. types. It recursively 
@@ -649,7 +649,7 @@ performs this operation on the children ParseTreeNode objects.</p>
 
 <dl class="staticmethod">
 <dt id="splparser.parsetree.ParseTreeNode.loads">
-<em class="property">static </em><tt class="descclassname">ParseTreeNode.</tt><tt class="descname">loads</tt><big>(</big><em>jsonstr</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.loads" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><tt class="descclassname">ParseTreeNode.</tt><tt class="descname">loads</tt><big>(</big><em>jsonstr</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.loads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.loads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a JSON string that corresponds to a ParseTreeNode to a ParseTreeNode.</p>
 <p>This converts a str object to a ParseTreeNode if it represents a valid
 ParseTreeNode.</p>
@@ -667,7 +667,7 @@ ParseTreeNode.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.print_tree">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">print_tree</tt><big>(</big><em>recursive=True</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.print_tree" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">print_tree</tt><big>(</big><em>recursive=True</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.print_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.print_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print a string representation of the whole tree starting at the current node.</p>
 <p>If recursive is set to False, only the current node is printed.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -718,7 +718,7 @@ ParseTreeNode.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.remove_child">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">remove_child</tt><big>(</big><em>child</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.remove_child" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">remove_child</tt><big>(</big><em>child</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.remove_child"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.remove_child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the given ParseTreeNode from the children of the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -739,7 +739,7 @@ ParseTreeNode.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.remove_children">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">remove_children</tt><big>(</big><em>children</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.remove_children" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">remove_children</tt><big>(</big><em>children</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.remove_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.remove_children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the given list of ParseTreeNodes from the children of the current node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -801,7 +801,7 @@ ParseTreeNode.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.schema">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">schema</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.schema" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">schema</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the schema inferred from the query in the subtree starting at the current node.</p>
 <p>This is an experimental function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -818,7 +818,7 @@ ParseTreeNode.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.skeleton">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">skeleton</tt><big>(</big><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.skeleton" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">skeleton</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.skeleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.skeleton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a recursive copy of the tree at the current node with all raw argument values set to blank.</p>
 <p>This function recursively traverses the tree starting at the current 
 node and copies it, while setting all argument values to blank.
@@ -838,7 +838,7 @@ same except for their arguments.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.str_tree">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">str_tree</tt><big>(</big><em>recursive=True</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.str_tree" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">str_tree</tt><big>(</big><em>recursive=True</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.str_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.str_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively create the string representation of the tree starting at the current node.</p>
 <p>This function recurses through the tree starting at the current node
 and creates a string representation of the tree. Optionally you can
@@ -862,7 +862,7 @@ choose to not have the function recurse into the subtree of the node.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.swap_children">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">swap_children</tt><big>(</big><em>p</em>, <em>q</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.swap_children" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">swap_children</tt><big>(</big><em>p</em>, <em>q</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.swap_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.swap_children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace a given child node in a tree with another node.</p>
 <p>This function replaces the given child node p with the other node q.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -885,7 +885,7 @@ choose to not have the function recurse into the subtree of the node.</p>
 
 <dl class="method">
 <dt id="splparser.parsetree.ParseTreeNode.template">
-<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">template</tt><big>(</big><em>drop_options=False</em>, <em>drop_rename=False</em>, <em>distinguished_argument=None</em><big>)</big><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.template" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ParseTreeNode.</tt><tt class="descname">template</tt><big>(</big><em>drop_options=False</em>, <em>drop_rename=False</em>, <em>distinguished_argument=None</em><big>)</big><a class="reference internal" href="_modules/splparser/parsetree.html#ParseTreeNode.template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#splparser.parsetree.ParseTreeNode.template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces all parameters in a ParseTreeNode tree with generic symbols.</p>
 <p>This function takes a ParseTreeNode tree representing a specific query
 and converts it to a &#8220;template&#8221; &#8211; the same query with parameters
