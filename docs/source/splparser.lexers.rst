@@ -4,4 +4,4 @@ splparser.lexer.toplevellexer
 .. automodule:: splparser.lexers.toplevellexer
    :members:
    
-   .. automethod:: splparser.lexer.toplevellexer.SPLLexer.__init__
+   .. automethod:: splparser.lexers.toplevellexer.SPLLexer.__init__
