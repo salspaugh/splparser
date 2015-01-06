@@ -77,9 +77,9 @@ def p_macro_arglist(p):
     p[0] = ' '.join(p[1:])
 
 def p_cmdexpr_userdefinedcommand(p):
-    """cmdexpr : USER_DEFINED_COMMAND 
-               | USER_DEFINED_COMMAND arglist"""
-    p[0] = ParseTreeNode('USER_DEFINED_COMMAND', nodetype='USER_DEFINED', raw=p[1])
+    """cmdexpr : EXTERNAL_COMMAND 
+               | EXTERNAL_COMMAND arglist"""
+    p[0] = ParseTreeNode('EXTERNAL_COMMAND', nodetype='EXTERNAL', raw=p[1])
     if len(p) > 2:
         args = ParseTreeNode('ARGS', nodetype='UNKNOWN', raw=p[2], is_argument=True)
         p[0].add_child(args)

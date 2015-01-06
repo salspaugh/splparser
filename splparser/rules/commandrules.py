@@ -121,7 +121,13 @@ def p_cmdexpr_concurrency(p):
 def p_cmdexpr_contingency(p):
     """cmdexpr : CONTINGENCY 
                | CONTINGENCY arglist
-               | CONTINGENCY MACRO"""
+               | CONTINGENCY MACRO
+               | COUNTTABLE
+               | COUNTTABLE arglist
+               | COUNTTABLE MACRO
+               | CTABLE
+               | CTABLE arglist
+               | CTABLE MACRO"""
 
 @splcommandrule
 def p_cmdexpr_convert(p):

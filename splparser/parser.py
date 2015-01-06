@@ -35,12 +35,12 @@ class SPLParser(object):
         :rtype: SPLParser
         """
         self.lexer = lexermod.lex()
-        self.parsetab_name = parsetab_name
-        self.parsetab_dir = parsetab_dir
-        self.parsetab = self.setup_parsetab()
+        modname, dirname = self.setup_parsetab(parsetab_name, parsetab_dir)
+        self.parsetab_name = modname
+        self.parsetab_dir = dirname
         self.rules = rulesmod
         self.optimize = optimize
-        if not optimize:
+        if not optimize: # TODO: Why is this conditional necessary?
             self.log = self.setup_log(logname)
             self.parser = ply.yacc.yacc(module=self.rules, 
                                         debug=True,
@@ -54,44 +54,40 @@ class SPLParser(object):
                                         outputdir=self.parsetab_dir,
                                         optimize=optimize)
 
-    def setup_parsetab(self):
-        """Set up the parse tables in the install location.
+    def setup_parsetab(self, parsetab_name, parsetab_dir):
 
-        Writes the parse tables to the installation location so that parse
-        tables aren't created in every directory in which the parser is run.
-
-        :param self: The current SPLParser object
-        :type self: SPLParser
-        :rtype: str
-        """
         loaded = False
         try: # check for parsetabs in current installation
-            here = os.path.dirname(__file__)
-            path_to_parsetab = os.path.join(here, self.parsetab_dir, self.parsetab_name + '.py')
-            parsetab = imp.load_source(self.parsetab_name, path_to_parsetab)
+            install_location = os.path.dirname(__file__)
+            path_to_parsetab = os.path.join(install_location, parsetab_dir, parsetab_name + '.py')
+            parsetab = imp.load_source(parsetab_name, path_to_parsetab)
             loaded = True
-        except IOError:
-            parsetab = self.parsetab_name
+            install_parsetab_dir = os.path.join(install_location, parsetab_dir)
+            return parsetab_name, install_parsetab_dir
+        except IOError: # parsetab module does not exist in install location
+            pass
 
         if not loaded:
             try: # check for parsetabs in current directory 
-                path_to_parsetab = os.path.join(self.parsetab_dir, self.parsetab_name + '.py')
-                parsetab = imp.load_source(self.parsetab_name, path_to_parsetab)
-            except IOError:
-                parsetab = self.parsetab_name
+                path_to_parsetab = os.path.join(parsetab_dir, parsetab_name + '.py')
+                parsetab = imp.load_source(parsetab_name, path_to_parsetab)
+                loaded = True
+                return parsetab_name, parsetab_dir
+            except IOError: # parsetab module does not exist in current directory
+                pass
 
         if not loaded:
             try: # in case the above failed, create dir for PLY to write parsetabs in
-                os.stat(self.parsetab_dir)
+                os.stat(parsetab_dir)
             except:
                 try:
-                    os.makedirs(self.parsetab_dir)
+                    os.makedirs(parsetab_dir)
                 except OSError:
-                    sys.stderr.write("ERROR: \
-                                      Need permission to write to ./" + self.parsetab_dir + "\n")
+                    msg = "ERROR: Need permission to write to ./%s\n" % parsetab_dir
+                    sys.stderr.write(msg)
                     raise
 
-        return parsetab
+        return parsetab_name, parsetab_dir
     
     def setup_log(self, name):
         """Set up the log so that parsing info can be written out.
