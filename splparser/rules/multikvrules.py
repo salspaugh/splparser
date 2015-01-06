@@ -17,6 +17,10 @@ def p_cmdexpr_multikvs(p):
     """cmdexpr : multikvcmd"""
     p[0] = p[1]
 
+def p_multikv(p):
+    """multikvcmd : MULTIKV"""
+    p[0] = ParseTreeNode('COMMAND', raw='multikv')
+
 def p_multikv_multikvopt_fieldlist(p):
     """multikvcmd : MULTIKV multikvoptlist"""
     p[0] = ParseTreeNode('COMMAND', raw='multikv')
