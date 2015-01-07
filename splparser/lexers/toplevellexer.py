@@ -366,7 +366,7 @@ class SPLLexer(object):
         if tok.lower() in reserved:
             if self.first:
                 self.first = False
-                return SPLToken(reserved[tok.lower()], tok)
+                return SPLToken(reserved[tok.lower()], tok.lower())
             else:
                 self.first = False
                 return SPLToken("ARGS", tok)
