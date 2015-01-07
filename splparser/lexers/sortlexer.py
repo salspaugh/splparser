@@ -54,7 +54,7 @@ def type_if_reserved(t, default):
         return reserved.get(t.value, default)
 
 def t_DESC(t):
-    r"""(d|desc)"""
+    r"""(d|desc|DESC)"""
     return t
 
 def t_MACRO(t):
