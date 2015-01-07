@@ -9,7 +9,7 @@ default_datetime_field = r'(?:date_hour|date_mday|date_minute|date_month|date_se
 
 # ---------------- Command specific options: ----------------
 
-sort_fn = r'(auto|str|ip|num)' + end_of_token
+sort_fn = r'(auto|str|ip|max|num)' + end_of_token
 
 chart_opt = r'(?:sep|partial|cont|agg|bins|minspan|span|start|end|fixedrange|usenull|useother|nullstr|otherstr)' + end_of_token
 
