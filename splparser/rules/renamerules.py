@@ -41,20 +41,28 @@ def p_renameexprlist_renameexprlist_nocomma(p):
     p[0].add_children(p[2].children)
 
 def p_renameexpr_simplefield(p):
-    """renameexpr : simplefield as simplevalue"""
+    """renameexpr : simplefield as simplevalue
+                  | simplefield as LPAREN simplevalue RPAREN
+                  | simplefield as simplevalue LPAREN simplevalue RPAREN
+                  | simplefield as LPAREN simplevalue RPAREN simplevalue"""
     as_node = ParseTreeNode('FUNCTION', raw='rename')
-    as_node.add_children([p[1], p[3]])
-    p[3].role = 'FIELD'
+    rename_str = "".join([n.raw if isinstance(n, ParseTreeNode) else n for n in p[3:]])
+    field = ParseTreeNode('FIELD', raw=rename_str)
+    as_node.add_children([p[1], field])
     p[0] = as_node
 
 def p_renameexpr_statsfnexpr(p):
-    """renameexpr : statsfnexpr as simplevalue"""
+    """renameexpr : statsfnexpr as simplevalue
+                  | statsfnexpr as LPAREN simplevalue RPAREN
+                  | statsfnexpr as simplevalue LPAREN simplevalue RPAREN
+                  | statsfnexpr as LPAREN simplevalue RPAREN simplevalue"""
     as_node = ParseTreeNode('FUNCTION', raw='rename')
     as_node.add_children(p[1].children)
-    as_node.add_child(p[3])
-    p[3].role = 'FIELD'
+    rename_str = "".join([n.raw if isinstance(n, ParseTreeNode) else n for n in p[3:]])
+    field = ParseTreeNode('FIELD', raw=rename_str)
+    as_node.add_child(field)
     p[0] = as_node
-    p[3].values.append(p[1])
+    field.values.append(p[1])
 
 def p_error(p):
     raise SPLSyntaxError("Syntax error in rename parser input!") 
