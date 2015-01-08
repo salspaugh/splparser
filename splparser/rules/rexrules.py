@@ -64,7 +64,7 @@ def p_rex_max_match(p):
     p[0].add_child(p[3])
 
 def p_rex_opt(p):
-    """rex_opt : FIELD
+    """rex_opt : FIELD_OPT
                | MODE"""
     p[0] = ParseTreeNode('OPTION', raw=p[1])
 

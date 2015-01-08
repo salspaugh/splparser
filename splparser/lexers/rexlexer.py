@@ -10,6 +10,7 @@ from splparser.exceptions import SPLSyntaxError
 tokens = [
     'WILDCARD',
     'EQ',
+    'FIELD_OPT',
     'IPV4ADDR', 'IPV6ADDR',
     'EMAIL','HOSTNAME', 'URL', 'PATH', 'US_PHONE',
     'WORD',
@@ -26,7 +27,6 @@ tokens = [
 reserved = {
     'rex' : 'REX',
     'max_match' : 'MAX_MATCH',
-    'field' : 'FIELD',
     'mode' : 'MODE',
 }
 
@@ -89,6 +89,10 @@ def type_if_reserved(t, default):
         return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
+
+def t_FIELD_OPT(t):
+    r"""(field|FIELD)"""
+    return t
 
 def t_MACRO(t):
     r"""(`[^`]*`)"""
