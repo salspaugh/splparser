@@ -7,6 +7,13 @@ default_field = r'(?:host|index|linecount|punct|source|sourcetype|splunk_server|
 
 default_datetime_field = r'(?:date_hour|date_mday|date_minute|date_month|date_second|date_wday|date_year|date_zone)' + end_of_token
 
+# ---------------- Logical operators: -----------------------
+
+or_op = r'(or|OR)' + end_of_token
+and_op = r'(and|AND)' + end_of_token
+not_op = r'(not|NOT)' + end_of_token
+xor_op = r'(xor|XOR)' + end_of_token
+
 # ---------------- Command specific options: ----------------
 
 sort_fn = r'(auto|str|ip|max|num)' + end_of_token

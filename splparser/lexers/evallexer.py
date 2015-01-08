@@ -22,14 +22,18 @@ tokens = [
     'COMMON_FN',
     'INTERNAL_FIELD',
     'DEFAULT_FIELD',
-    'DEFAULT_DATETIME_FIELD'
+    'DEFAULT_DATETIME_FIELD',
+    'AND',
+    'OR',
+    'NOT',
+    'XOR'
 ]
 
 reserved = {
-    'AND' : 'AND',
-    'OR' : 'OR',
-    'NOT' : 'NOT',
-    'XOR' : 'XOR',
+#    'AND' : 'AND',
+#    'OR' : 'OR',
+#    'NOT' : 'NOT',
+#    'XOR' : 'XOR',
     'LIKE' : 'LIKE',
     'eval' : 'EVAL', 
 }
@@ -114,6 +118,26 @@ def type_if_reserved(t, default):
         return 'DEFAULT_DATETIME_FIELD'
     else:
         return reserved.get(t.value, default)
+
+@TOKEN(or_op)
+def t_OR(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(and_op)
+def t_AND(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(not_op)
+def t_NOT(t):
+    t.lexer.begin('ipunchecked')
+    return t
+
+@TOKEN(xor_op)
+def t_XOR(t):
+    t.lexer.begin('ipunchecked')
+    return t
 
 def t_COMMA(t):
     r'''(?:\,)|(?:"\,")|(?:'\,')'''
