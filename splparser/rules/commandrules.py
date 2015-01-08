@@ -669,11 +669,9 @@ def p_cmdexpr_typelearner(p):
                | TYPELEARNER arglist
                | TYPELEARNER MACRO"""
 
-@notimplemented
+@splcommandrule
 def p_cmdexpr_typer(p):
-    """cmdexpr : TYPER 
-               | TYPER arglist
-               | TYPER MACRO"""
+    """cmdexpr : TYPER"""
 
 @splcommandrule
 def p_cmdexpr_uniq(p):
