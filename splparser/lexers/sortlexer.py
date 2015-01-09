@@ -118,7 +118,7 @@ def t_ID(t):
 def t_error(t):
     badchar = t.value[0]
     t.lexer.skip(1)
-    raise SPLSyntaxError("Illegal character in search lexer '%s'" % badchar)
+    raise SPLSyntaxError("Illegal character in sort lexer '%s'" % badchar)
 
 def lex():
     return ply.lex.lex()
