@@ -30,38 +30,38 @@ def p_pipeline_pipe(p):
     p[0].add_children(p[1].children) 
     p[0].add_child(p[3])
 
+def p_stage_macro(p):
+    """stage : MACRO"""
+    p[0] = ParseTreeNode('STAGE')
+    p[0].add_child(ParseTreeNode('MACRO', raw=p[1]))
+
 def p_stage_cmdexpr(p):
     """stage : cmdexpr"""
     p[0] = ParseTreeNode('STAGE')
     p[0].add_child(p[1])
 
 def p_stage_cmdexpr_subsearch(p):
-    """stage : cmdexpr LBRACKET start RBRACKET"""
+    """stage : cmdexpr subsearch"""
     p[0] = ParseTreeNode('STAGE')
     p[0].add_child(p[1])
-    subsearch = ParseTreeNode('SUBSEARCH')
-    subsearch.add_child(p[3])
-    p[1].add_child(subsearch)
+    p[1].add_child(p[2])
 
-def p_stage_macro(p):
-    """stage : MACRO"""
-    p[0] = ParseTreeNode('STAGE')
-    p[0].add_child(ParseTreeNode('MACRO', raw=p[1]))
+def p_subsearch(p):
+    """subsearch : LBRACKET start RBRACKET"""
+    subsearch = ParseTreeNode('SUBSEARCH')
+    subsearch.add_child(p[2])
+    p[0] = subsearch
+
+def p_cmdexpr_userdefinedcommand(p):
+    """cmdexpr : EXTERNAL_COMMAND 
+               | EXTERNAL_COMMAND arglist"""
+    p[0] = ParseTreeNode('EXTERNAL_COMMAND', nodetype='EXTERNAL', raw=p[1])
+    if len(p) > 2:
+        args = ParseTreeNode('ARGS', nodetype='UNKNOWN', raw=p[2], is_argument=True)
+        p[0].add_child(args)
 
 def p_arglist(p):
     """arglist : args"""
-    p[0] = p[1]
-
-def p_args(p):
-    """args : ARGS"""
-    p[0] = p[1]
-
-def p_args_fields(p):
-    """args : FIELDS"""
-    p[0] = p[1]
-
-def p_args_where(p):
-    """args : WHERE"""
     p[0] = p[1]
 
 def p_arglist_arg(p):
@@ -76,13 +76,17 @@ def p_macro_arglist(p):
     """arglist : MACRO arglist"""
     p[0] = ' '.join(p[1:])
 
-def p_cmdexpr_userdefinedcommand(p):
-    """cmdexpr : EXTERNAL_COMMAND 
-               | EXTERNAL_COMMAND arglist"""
-    p[0] = ParseTreeNode('EXTERNAL_COMMAND', nodetype='EXTERNAL', raw=p[1])
-    if len(p) > 2:
-        args = ParseTreeNode('ARGS', nodetype='UNKNOWN', raw=p[2], is_argument=True)
-        p[0].add_child(args)
+def p_args(p):
+    """args : ARGS"""
+    p[0] = p[1]
+
+def p_args_fields(p):
+    """args : FIELDS"""
+    p[0] = p[1]
+
+def p_args_where(p):
+    """args : WHERE"""
+    p[0] = p[1]
 
 def p_error(p):
     msg = "Syntax error in top-level parser input: " + str(p)
