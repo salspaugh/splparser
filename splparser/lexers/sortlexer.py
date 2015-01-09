@@ -22,7 +22,9 @@ tokens = [
     'DESC',
     'INTERNAL_FIELD',
     'DEFAULT_FIELD',
-    'DEFAULT_DATETIME_FIELD'
+    'DEFAULT_DATETIME_FIELD',
+    'LIMIT',
+    'EQ'
 ]
 
 reserved = {
@@ -33,6 +35,7 @@ tokens = tokens + list(reserved.values())
 
 t_ignore = ' '
 
+t_EQ = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_PLUS = r'\+'
@@ -53,6 +56,10 @@ def type_if_reserved(t, default):
     else:
         return reserved.get(t.value, default)
 
+@TOKEN(common_opt)
+def t_LIMIT(t):
+    return t
+
 def t_DESC(t):
     r"""(d|desc|DESC)"""
     return t
@@ -67,23 +74,23 @@ def t_COMMA(t):
 
 def t_LITERAL(t):
     r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
-    return(t)
+    return t
 
 @TOKEN(sort_fn)
 def t_SORT_FN(t):
-    return(t)
+    return t
 
 @TOKEN(internal_field)
 def t_INTERNAL_FIELD(t):
-    return(t)
+    return t
 
 @TOKEN(default_field)
 def t_DEFAULT_FIELD(t):
-    return(t)
+    return t
 
 @TOKEN(default_datetime_field)
 def t_DEFAULT_DATETIME_FIELD(t):
-    return(t)
+    return t
 
 @TOKEN(bin)
 def t_BIN(t):

@@ -35,9 +35,18 @@ def p_sort_num_sortfields(p):
     p[0] = ParseTreeNode('COMMAND', raw=p[1])
     p[2].role = 'VALUE'
     eq_node = ParseTreeNode('EQ', raw='assign')
-    opt_node = ParseTreeNode('OPTION')
+    opt_node = ParseTreeNode('OPTION', raw="limit")
     eq_node.add_children([opt_node, p[2]])
     p[0].add_children([eq_node] + p[3])
+
+def p_sort_limit_sortfields(p):
+    """sortcmd : SORT LIMIT EQ int sortfields"""
+    p[0] = ParseTreeNode('COMMAND', raw=p[1])
+    p[4].role = 'VALUE'
+    eq_node = ParseTreeNode('EQ', raw='assign')
+    opt_node = ParseTreeNode('OPTION', raw="limit")
+    eq_node.add_children([opt_node, p[4]])
+    p[0].add_children([eq_node] + p[5])
 
 def p_sortfields_list(p):
     """sortfields : sortfield COMMA sortfields"""
