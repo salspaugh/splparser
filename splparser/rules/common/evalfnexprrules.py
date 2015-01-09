@@ -344,3 +344,6 @@ def p_boolean_op_or(p):
     """boolean_op : OR"""
     p[0] = ParseTreeNode('FUNCTION', raw=p[1], is_associative=True)
 
+def p_times_simplefield(p):
+    """simplefield : TIMES"""
+    p[0] = ParseTreeNode(role='FIELD', nodetype='NBSTR', raw=p[1], is_argument=True)
