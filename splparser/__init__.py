@@ -12,7 +12,7 @@ def parse(data):
     parser = SPLParser(splparser.lexers.toplevellexer, 
                 PARSETAB, PARSETAB_DIR, LOGNAME, 
                 splparser.rules.toplevelrules, 
-                    optimize=OPTIMIZE)
+                optimize=OPTIMIZE)
     return parser.parse(data)
 
 if __name__ == "__main__":
