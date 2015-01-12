@@ -137,3 +137,14 @@ Below are clips from an interactive session in which I test various aspects of t
                         ('FIELD': '"Total Upload MB"')
                         ('VALUE': '"commas"')
                     ('VALUE': '"MB"')
+
+
+>>> splparser.parse('''fieldformat "Last Connected"=strftime('Last Connected', "%D %H:%M:%S %p")''').print_tree()
+('ROOT')
+    ('STAGE')
+        ('COMMAND': 'fieldformat')
+            ('EQ': 'assign')
+                ('FIELD': '"Last Connected"')
+                ('FUNCTION': 'strftime')
+                    ('VALUE': ''Last Connected'')
+                    ('VALUE': '"%D %H:%M:%S %p"')

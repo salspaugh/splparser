@@ -176,8 +176,9 @@ def t_DEFAULT_DATETIME_FIELD(t):
     t.lexer.begin('ipunchecked')
     return(t)
 
+@TOKEN(literal)
 def t_LITERAL(t):
-    r'"(?:[^"]+(?:(\s|-|_)+[^"]+)+\s*)"'
+    t.lexer.begin('ipunchecked')
     return(t)
 
 @TOKEN(bin)

@@ -99,6 +99,7 @@ id = id_no_end + end_of_token
 
 nbstr = r'"((?<=\\)"|[^"])*"|[^,|()=!<>\[\]\s-]+' + end_of_token
 
-literal = r'(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')|(?:"\s*' + id_no_end + r'\s*"' + end_of_token + r')'
+#literal = r'(?:"\s*' + word_no_end + r'\s*"' + end_of_token + r')|(?:"\s*' + id_no_end + r'\s*"' + end_of_token + r')|'+ r"(?:'\s*" + word_no_end + r"\s*'" + end_of_token + r")|(?:'\s*" + id_no_end + r"\s*'" + end_of_token + r')'
+literal = r'(?:"[^"]*")' + r"|(?:'[^']*')" 
 
 #literal = r'"(?:[^"]+(?:(\s|-|\(|\)|_|=)+[^"]+)+\s*)"|"[=;|]+[^"]*"|"[^"]*[;=|]+"' + "|'(?:[^']+(?:(\s|-|\(|\)|_|=)+[^']+)+\s*)'|'[=;|]+[^']*'|'[^']*[;=|]+'" + '|"[^"]"' + end_of_token + "|'[^']'" + end_of_token

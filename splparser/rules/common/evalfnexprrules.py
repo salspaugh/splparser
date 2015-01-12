@@ -30,8 +30,7 @@ def set_range_datatypes(field, fn):
     if fn.raw not in CONDITIONAL_FUNCTIONS: 
         field.datatype = function_range_type(fn)
     else:
-        pass
-        #TODO: something smarter on case and if functions
+        pass #TODO: something smarter on case and if functions
 
 def function_range_type(fn):
     if fn.raw.lower() in NUMERIC_RANGE:
@@ -56,8 +55,7 @@ def set_domain_datatypes(fn, args):
         stack = [args]
     while len(stack) > 0:
         node = stack.pop(0)
-        if node.role == 'FUNCTION':
-            continue
+        if node.role == 'FUNCTION': continue
         if node.role.find('FIELD') > -1:
             node.datatype = function_domain_type(fn)
         stack = node.children + stack
