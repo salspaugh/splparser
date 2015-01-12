@@ -45,6 +45,12 @@ def p_posint(p):
     """int : INT"""
     p[0] = ParseTreeNode(role='FIELD', nodetype='INT', raw=p[1], is_argument=True)
 
+def p_num_float_int(p):
+    """num : PERIOD INT
+             | INT PERIOD INT"""
+    float = "".join(p[1:])
+    p[0] = ParseTreeNode(role='FIELD', nodetype='FLOAT', raw=float, is_argument=True)
+
 def p_num_float(p):
     """num : FLOAT"""
     p[0] = ParseTreeNode(role='FIELD', nodetype='FLOAT', raw=p[1], is_argument=True)

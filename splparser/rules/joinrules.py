@@ -30,6 +30,11 @@ def p_join_optionlist_fieldlist(p):
     p[0] = ParseTreeNode('COMMAND', raw='join')
     p[0].add_children(p[2] + p[3].children)
 
+def p_join_fieldlist_optionlist(p):
+    """joincmd : JOIN fieldlist optionlist"""
+    p[0] = ParseTreeNode('COMMAND', raw='join')
+    p[0].add_children(p[2].children + p[3])
+
 def p_optionlist_single(p):
     """optionlist : JOIN_OPT EQ field"""
     eq = ParseTreeNode('EQ', raw='assign')
