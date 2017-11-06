@@ -84,7 +84,9 @@ class ParseTreeNode(object):
         encoding['raw'] = self.raw
         encoding['is_associative'] = self.is_associative
         encoding['is_argument'] = self.is_argument
-        encoding['values'] = self.values
+        encoding['values'] = []
+        for value in self.values:
+            encoding['values'].append(value.jsonify())
         encoding['corrected'] = self.corrected
         encoding['bound'] = self.bound
         encoding['datatype'] = self.datatype
@@ -863,7 +865,7 @@ class ParseTreeNode(object):
             else:
                 child_repr = str(child)
                 first = False
-        to_repr = ''.join(["{role: '", self.role,\
+        to_repr = ''.join(["ParseTreeNode: ", "{role: '", self.role,\
                             "', raw: '", self.raw,\
                             "', children: [", child_repr,\
                             "], parent: ", str(self.parent), "}"])
